@@ -81,17 +81,6 @@ export function Header({ onOpenModal }: HeaderProps) {
               Войти
             </a>
           )}
-          <a
-            href="/login"
-            title="Вход для сотрудников"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/10 transition-all duration-300"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-              <polyline points="10 17 15 12 10 7" />
-              <line x1="15" y1="12" x2="3" y2="12" />
-            </svg>
-          </a>
         </div>
 
         <button
@@ -161,7 +150,7 @@ export function Header({ onOpenModal }: HeaderProps) {
           <a
             href="/login"
             onClick={closeMobileMenu}
-            className="inline-flex items-center gap-2 text-sm px-5 py-2.5 text-white/40 hover:text-white/60 transition-all duration-300 mb-4 rounded-lg font-medium"
+            className="hidden"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
