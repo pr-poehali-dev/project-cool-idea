@@ -41,9 +41,11 @@ export default function Admin() {
 
   useEffect(() => {
     const check = async () => {
-      if (!ADMIN_TOKEN) { navigate("/login"); return }
-      const res = await fetch(func2url.auth, { headers: { "X-Session-Id": ADMIN_TOKEN } })
-      const data = await res.json()
+      const token = getToken()
+      if (!token) { navigate("/login"); return }
+      const res = await fetch(func2url.auth, { headers: { "X-Session-Id": token } })
+      let data = await res.json()
+      if (typeof data === "string") data = JSON.parse(data)
       if (!data.authenticated) { localStorage.removeItem("admin_session"); navigate("/login") }
       else { setChecking(false) }
     }
