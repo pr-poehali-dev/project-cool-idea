@@ -77,7 +77,7 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
       onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
 
         {/* Шапка с карточкой вакансии */}
         <div className="bg-primary p-5">
