@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { apiVacancies } from "@/lib/api"
 import Icon from "@/components/ui/icon"
+import { ContactModal } from "./ContactModal"
 
 interface VacancyCard {
   id: number; title: string; company: string; specialty: string
@@ -64,6 +65,7 @@ export function VacanciesBoard() {
   const [filter, setFilter] = useState("Все")
   const [roleFilter, setRoleFilter] = useState<"" | "employer" | "worker">("")
   const [expanded, setExpanded] = useState<number | null>(null)
+  const [contactVacancy, setContactVacancy] = useState<VacancyCard | null>(null)
 
   const load = async () => {
     setLoading(true)
@@ -156,29 +158,21 @@ export function VacanciesBoard() {
                     <p className="text-gray-500 text-sm line-clamp-2 mb-3">{c.description}</p>
                   )}
 
-                  <button onClick={() => setExpanded(expanded===c.id ? null : c.id)}
-                    className="text-orange-500 text-sm font-medium hover:text-orange-600 transition-colors">
-                    {expanded===c.id ? "Свернуть ↑" : "Подробнее ↓"}
-                  </button>
+                  <div className="flex items-center justify-between mt-3">
+                    <button onClick={() => setExpanded(expanded===c.id ? null : c.id)}
+                      className="text-gray-400 text-sm hover:text-gray-600 transition-colors">
+                      {expanded===c.id ? "Свернуть ↑" : "Подробнее ↓"}
+                    </button>
+                    <button onClick={() => setContactVacancy(c)}
+                      className="flex items-center gap-1.5 bg-orange-500 text-white text-sm px-4 py-2 rounded-xl font-semibold hover:bg-orange-600 transition-colors">
+                      <Icon name="Phone" size={14} />
+                      Связаться
+                    </button>
+                  </div>
 
-                  {expanded===c.id && (
-                    <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
-                      {c.description && <p className="text-gray-600 text-sm">{c.description}</p>}
-                      <div className="flex flex-col gap-1 mt-3">
-                        {c.contact_phone && (
-                          <a href={`tel:${c.contact_phone}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-orange-500 transition-colors">
-                            <Icon name="Phone" size={14} />{c.contact_phone}
-                          </a>
-                        )}
-                        {c.contact_email && (
-                          <a href={`mailto:${c.contact_email}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-orange-500 transition-colors">
-                            <Icon name="Mail" size={14} />{c.contact_email}
-                          </a>
-                        )}
-                        {!c.contact_phone && !c.contact_email && (
-                          <p className="text-gray-400 text-xs">Контакты не указаны</p>
-                        )}
-                      </div>
+                  {expanded===c.id && c.description && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <p className="text-gray-600 text-sm">{c.description}</p>
                     </div>
                   )}
                 </div>
@@ -194,6 +188,11 @@ export function VacanciesBoard() {
           </a>
         </div>
       </div>
+
+      <ContactModal
+        vacancy={contactVacancy}
+        onClose={() => setContactVacancy(null)}
+      />
     </section>
   )
 }

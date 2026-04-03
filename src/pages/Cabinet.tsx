@@ -27,7 +27,13 @@ const SPECIALTIES = [
 const SCHEDULES = ["Полный день","Вахта","Гибкий","Подработка"]
 const EXPERIENCES = ["Без опыта","1–3 года","3–5 лет","Более 5 лет"]
 
-type Tab = "overview" | "profile" | "vacancies" | "new_vacancy"
+interface SavedContact {
+  id: number; title: string; specialty: string; city: string
+  salary_from: number | null; salary_to: number | null
+  contact_phone: string; contact_email: string; description: string; paid: boolean
+}
+
+type Tab = "overview" | "profile" | "vacancies" | "new_vacancy" | "saved"
 
 export default function Cabinet() {
   const [user, setUser] = useState<User | null>(null)
@@ -44,6 +50,7 @@ export default function Cabinet() {
   })
   const [vacancySaving, setVacancySaving] = useState(false)
   const [vacancyError, setVacancyError] = useState("")
+  const [saved, setSaved] = useState<SavedContact[]>([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -64,6 +71,9 @@ export default function Cabinet() {
 
   useEffect(() => {
     if (tab === "vacancies") loadVacancies()
+    if (tab === "saved") {
+      apiUsers({ action: "my_saved" }).then(({ data }) => setSaved(Array.isArray(data) ? data : []))
+    }
   }, [tab])
 
   const logout = async () => {
@@ -137,6 +147,7 @@ export default function Cabinet() {
             ["overview","Обзор","LayoutDashboard"],
             ["profile","Профиль","User"],
             ["vacancies", isEmployer ? "Мои вакансии" : "Мои объявления","Briefcase"],
+            ["saved","Сохранённые","Bookmark"],
             ["new_vacancy", isEmployer ? "+ Вакансия" : "+ Объявление","Plus"],
           ] as [Tab,string,string][]).map(([t,label,icon]) => (
             <button key={t} onClick={() => setTab(t)}
@@ -340,6 +351,57 @@ export default function Cabinet() {
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* Сохранённые объявления */}
+        {tab === "saved" && (
+          <div className="space-y-4">
+            <h2 className="font-bold text-gray-900 text-lg">Сохранённые объявления</h2>
+            {saved.length === 0 ? (
+              <div className="bg-white rounded-2xl p-12 border border-gray-100 shadow-sm text-center">
+                <Icon name="Bookmark" size={40} className="text-gray-200 mx-auto mb-3"/>
+                <p className="text-gray-400 text-sm">Нет сохранённых объявлений</p>
+                <a href="/#vacancies" className="mt-4 inline-block text-orange-500 text-sm font-medium hover:text-orange-600">Смотреть объявления →</a>
+              </div>
+            ) : saved.map(s => (
+              <div key={s.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-semibold text-gray-900">{s.title}</h3>
+                      {s.paid && <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full">Оплачено</span>}
+                    </div>
+                    <p className="text-sm text-gray-500">{s.specialty} · {s.city}</p>
+                    {(s.salary_from||s.salary_to) && (
+                      <p className="text-sm text-orange-500 font-medium mt-1">
+                        {s.salary_from?`от ${s.salary_from.toLocaleString()} ₽`:""}{s.salary_to?` до ${s.salary_to.toLocaleString()} ₽`:""}
+                      </p>
+                    )}
+                    {s.paid ? (
+                      <div className="flex flex-col gap-1 mt-3 pt-3 border-t border-gray-100">
+                        {s.contact_phone && (
+                          <a href={`tel:${s.contact_phone}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-orange-500 transition-colors">
+                            <Icon name="Phone" size={14}/>{s.contact_phone}
+                          </a>
+                        )}
+                        {s.contact_email && (
+                          <a href={`mailto:${s.contact_email}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-orange-500 transition-colors">
+                            <Icon name="Mail" size={14}/>{s.contact_email}
+                          </a>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 mt-3">
+                        <Icon name="Lock" size={14} className="text-gray-400"/>
+                        <span className="text-sm text-gray-400">Контакты скрыты — </span>
+                        <a href="/#vacancies" className="text-sm text-orange-500 hover:text-orange-600 font-medium">оплатить доступ</a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

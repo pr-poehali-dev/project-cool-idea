@@ -160,4 +160,46 @@ def handler(event: dict, context) -> dict:
             conn.close()
         return resp(200, {"ok": True})
 
+    if action == "save_vacancy":
+        if not token:
+            return resp(401, {"error": "Не авторизован"})
+        conn = get_db()
+        cur = conn.cursor()
+        user = get_user_by_token(cur, token)
+        if not user:
+            conn.close()
+            return resp(401, {"error": "Сессия истекла"})
+        vacancy_id = body.get("vacancy_id")
+        if not vacancy_id:
+            conn.close()
+            return resp(400, {"error": "Не указан vacancy_id"})
+        cur.execute(
+            "INSERT INTO saved_contacts (user_id, vacancy_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
+            (user[0], vacancy_id)
+        )
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True})
+
+    if action == "my_saved":
+        if not token:
+            return resp(401, {"error": "Не авторизован"})
+        conn = get_db()
+        cur = conn.cursor()
+        user = get_user_by_token(cur, token)
+        if not user:
+            conn.close()
+            return resp(401, {"error": "Сессия истекла"})
+        cur.execute(
+            "SELECT v.id, v.title, v.specialty, v.city, v.salary_from, v.salary_to, "
+            "v.contact_phone, v.contact_email, v.description, sc.paid, sc.created_at "
+            "FROM saved_contacts sc JOIN vacancies v ON v.id = sc.vacancy_id "
+            "WHERE sc.user_id = %s ORDER BY sc.created_at DESC",
+            (user[0],)
+        )
+        rows = cur.fetchall()
+        conn.close()
+        keys = ["id","title","specialty","city","salary_from","salary_to","contact_phone","contact_email","description","paid","saved_at"]
+        return resp(200, [dict(zip(keys, r)) for r in rows])
+
     return resp(404, {"error": "Неизвестное действие"})
