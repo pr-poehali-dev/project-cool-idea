@@ -22,7 +22,7 @@ def check_admin(session_id: str) -> bool:
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
-        "SELECT id FROM admin_sessions WHERE session_id = %s AND expires_at > NOW()",
+        f"SELECT id FROM {t('admin_sessions')} WHERE session_id = %s AND expires_at > NOW()",
         (session_id,)
     )
     row = cur.fetchone()
@@ -49,17 +49,17 @@ def handler(event: dict, context) -> dict:
     cur = conn.cursor()
 
     if action == "stats":
-        cur.execute("SELECT COUNT(*) FROM users")
+        cur.execute(f"SELECT COUNT(*) FROM {t('users')}")
         total_users = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM users WHERE role = 'employer'")
+        cur.execute(f"SELECT COUNT(*) FROM {t('users')} WHERE role = 'employer'")
         employers = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM users WHERE role = 'worker'")
+        cur.execute(f"SELECT COUNT(*) FROM {t('users')} WHERE role = 'worker'")
         workers = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM vacancies WHERE is_active = TRUE")
+        cur.execute(f"SELECT COUNT(*) FROM {t('vacancies')} WHERE is_active = TRUE")
         active_vacancies = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM vacancies")
+        cur.execute(f"SELECT COUNT(*) FROM {t('vacancies')}")
         total_vacancies = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM saved_contacts")
+        cur.execute(f"SELECT COUNT(*) FROM {t('saved_contacts')}")
         saved = cur.fetchone()[0]
         conn.close()
         return resp(200, {
@@ -85,7 +85,7 @@ def handler(event: dict, context) -> dict:
         where_sql = ("WHERE " + " AND ".join(where)) if where else ""
         cur.execute(
             f"SELECT id, name, email, role, phone, specialty, created_at, is_blocked "
-            f"FROM users {where_sql} ORDER BY created_at DESC LIMIT 100",
+            f"FROM {t('users')} {where_sql} ORDER BY created_at DESC LIMIT 100",
             params
         )
         rows = cur.fetchall()
@@ -112,7 +112,7 @@ def handler(event: dict, context) -> dict:
             f"SELECT v.id, v.title, v.specialty, v.city, v.salary_from, v.salary_to, "
             f"v.contact_phone, v.contact_email, v.description, v.is_active, v.created_at, "
             f"u.id, u.name, u.email, u.role "
-            f"FROM vacancies v JOIN users u ON u.id = v.user_id "
+            f"FROM {t('vacancies')} v JOIN {t('users')} u ON u.id = v.user_id "
             f"{where_sql} ORDER BY v.created_at DESC LIMIT 100",
             params
         )
@@ -144,7 +144,7 @@ def handler(event: dict, context) -> dict:
             conn.close()
             return resp(400, {"error": "Нечего обновлять"})
         params.append(user_id)
-        cur.execute(f"UPDATE users SET {', '.join(updates)} WHERE id = %s", params)
+        cur.execute(f"UPDATE {t('users')} SET {', '.join(updates)} WHERE id = %s", params)
         conn.commit()
         conn.close()
         return resp(200, {"ok": True})
@@ -152,32 +152,32 @@ def handler(event: dict, context) -> dict:
     if action == "toggle_block_user":
         user_id = body.get("user_id")
         block = body.get("block", True)
-        cur.execute("UPDATE users SET is_blocked = %s WHERE id = %s", (block, user_id))
+        cur.execute(f"UPDATE {t('users')} SET is_blocked = %s WHERE id = %s", (block, user_id))
         if block:
-            cur.execute("UPDATE user_sessions SET expires_at = NOW() WHERE user_id = %s", (user_id,))
+            cur.execute(f"UPDATE {t('user_sessions')} SET expires_at = NOW() WHERE user_id = %s", (user_id,))
         conn.commit()
         conn.close()
         return resp(200, {"ok": True, "is_blocked": block})
 
     if action == "delete_user":
         user_id = body.get("user_id")
-        cur.execute("UPDATE vacancies SET is_active = FALSE WHERE user_id = %s", (user_id,))
-        cur.execute("UPDATE user_sessions SET expires_at = NOW() WHERE user_id = %s", (user_id,))
-        cur.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        cur.execute(f"UPDATE {t('vacancies')} SET is_active = FALSE WHERE user_id = %s", (user_id,))
+        cur.execute(f"UPDATE {t('user_sessions')} SET expires_at = NOW() WHERE user_id = %s", (user_id,))
+        cur.execute(f"DELETE FROM {t('users')} WHERE id = %s", (user_id,))
         conn.commit()
         conn.close()
         return resp(200, {"ok": True})
 
     if action == "delete_vacancy":
         vacancy_id = body.get("vacancy_id")
-        cur.execute("UPDATE vacancies SET is_active = FALSE WHERE id = %s", (vacancy_id,))
+        cur.execute(f"UPDATE {t('vacancies')} SET is_active = FALSE WHERE id = %s", (vacancy_id,))
         conn.commit()
         conn.close()
         return resp(200, {"ok": True})
 
     if action == "restore_vacancy":
         vacancy_id = body.get("vacancy_id")
-        cur.execute("UPDATE vacancies SET is_active = TRUE WHERE id = %s", (vacancy_id,))
+        cur.execute(f"UPDATE {t('vacancies')} SET is_active = TRUE WHERE id = %s", (vacancy_id,))
         conn.commit()
         conn.close()
         return resp(200, {"ok": True})
