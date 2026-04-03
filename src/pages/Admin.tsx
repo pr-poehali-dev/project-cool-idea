@@ -169,20 +169,24 @@ export default function Admin() {
         {tab === "stats" && stats && (
           <div className="space-y-6">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {[
-                ["Всего пользователей", stats.total_users, "Users", "blue"],
-                ["Работодатели", stats.employers, "Building2", "yellow"],
-                ["Соискатели", stats.workers, "HardHat", "green"],
-                ["Активных объявлений", stats.active_vacancies, "Briefcase", "purple"],
-                ["Всего объявлений", stats.total_vacancies, "FileText", "gray"],
-                ["Сохранений в избранном", stats.saved_contacts, "Bookmark", "pink"],
-              ].map(([label, val, icon, color]) => (
-                <div key={label as string} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+              {([
+                ["Всего пользователей", stats.total_users, "Users", "blue", null],
+                ["Работодатели", stats.employers, "Building2", "yellow", "employers"],
+                ["Соискатели", stats.workers, "HardHat", "green", "workers"],
+                ["Активных объявлений", stats.active_vacancies, "Briefcase", "purple", "vacancies_employer"],
+                ["Всего объявлений", stats.total_vacancies, "FileText", "gray", "vacancies_employer"],
+                ["Сохранений в избранном", stats.saved_contacts, "Bookmark", "pink", null],
+              ] as [string, number, string, string, Tab | null][]).map(([label, val, icon, color, target]) => (
+                <div
+                  key={label}
+                  onClick={() => target && setTab(target)}
+                  className={`bg-white rounded-2xl p-5 border border-gray-100 shadow-sm transition-all ${target ? "cursor-pointer hover:border-yellow-300 hover:shadow-md" : ""}`}
+                >
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-${color}-100`}>
                     <Icon name={icon as "User"} size={20} className={`text-${color}-500`} />
                   </div>
-                  <p className="text-2xl font-bold text-gray-900">{val as number}</p>
-                  <p className="text-gray-500 text-sm mt-0.5">{label as string}</p>
+                  <p className="text-2xl font-bold text-gray-900">{val}</p>
+                  <p className={`text-sm mt-0.5 ${target ? "text-yellow-500" : "text-gray-500"}`}>{label}{target ? " →" : ""}</p>
                 </div>
               ))}
             </div>
