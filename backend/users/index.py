@@ -160,6 +160,33 @@ def handler(event: dict, context) -> dict:
             conn.close()
         return resp(200, {"ok": True})
 
+    if action == "change_password":
+        if not token:
+            return resp(401, {"error": "Не авторизован"})
+        conn = get_db()
+        cur = conn.cursor()
+        user = get_user_by_token(cur, token)
+        if not user:
+            conn.close()
+            return resp(401, {"error": "Сессия истекла"})
+        old_password = body.get("old_password", "")
+        new_password = body.get("new_password", "")
+        if not old_password or not new_password:
+            conn.close()
+            return resp(400, {"error": "Заполните все поля"})
+        if len(new_password) < 6:
+            conn.close()
+            return resp(400, {"error": "Новый пароль минимум 6 символов"})
+        cur.execute("SELECT password_hash FROM users WHERE id = %s", (user[0],))
+        row = cur.fetchone()
+        if not row or row[0] != hash_password(old_password):
+            conn.close()
+            return resp(400, {"error": "Неверный текущий пароль"})
+        cur.execute("UPDATE users SET password_hash = %s WHERE id = %s", (hash_password(new_password), user[0]))
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True})
+
     if action == "save_vacancy":
         if not token:
             return resp(401, {"error": "Не авторизован"})

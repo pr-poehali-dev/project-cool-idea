@@ -45,6 +45,10 @@ export default function Cabinet() {
   const [profileForm, setProfileForm] = useState<Partial<User>>({})
   const [profileSaving, setProfileSaving] = useState(false)
   const [profileSaved, setProfileSaved] = useState(false)
+  const [pwForm, setPwForm] = useState({ old_password: "", new_password: "", confirm: "" })
+  const [pwSaving, setPwSaving] = useState(false)
+  const [pwError, setPwError] = useState("")
+  const [pwSaved, setPwSaved] = useState(false)
   const [vacancyForm, setVacancyForm] = useState({
     company:"",specialty:"",salary_from:"",salary_to:"",
     city:"Ялта",schedule:"",experience_required:"",description:"",
@@ -83,6 +87,21 @@ export default function Cabinet() {
     await apiUsers({ action: "logout" })
     clearToken()
     navigate("/")
+  }
+
+  const changePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setPwError("")
+    if (pwForm.new_password !== pwForm.confirm) {
+      setPwError("Новые пароли не совпадают"); return
+    }
+    setPwSaving(true)
+    const { ok, data } = await apiUsers({ action: "change_password", old_password: pwForm.old_password, new_password: pwForm.new_password })
+    setPwSaving(false)
+    if (!ok) { setPwError(data.error || "Ошибка"); return }
+    setPwSaved(true)
+    setPwForm({ old_password: "", new_password: "", confirm: "" })
+    setTimeout(() => setPwSaved(false), 3000)
   }
 
   const saveProfile = async (e: React.FormEvent) => {
@@ -242,6 +261,43 @@ export default function Cabinet() {
                 {profileSaved && <span className="text-green-500 text-sm flex items-center gap-1"><Icon name="CheckCircle" size={16}/>Сохранено!</span>}
               </div>
             </form>
+
+            {/* Смена пароля */}
+            <div className="mt-6 pt-6 border-t border-gray-100">
+              <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <Icon name="Lock" size={16} className="text-gray-400"/>
+                Сменить пароль
+              </h3>
+              <form onSubmit={changePassword} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="sm:col-span-2">
+                  <label className={labelCls}>Текущий пароль</label>
+                  <input required type="password" placeholder="Введите текущий пароль" className={inputCls}
+                    value={pwForm.old_password} onChange={e=>setPwForm({...pwForm,old_password:e.target.value})}/>
+                </div>
+                <div>
+                  <label className={labelCls}>Новый пароль</label>
+                  <input required type="password" placeholder="Минимум 6 символов" className={inputCls}
+                    value={pwForm.new_password} onChange={e=>setPwForm({...pwForm,new_password:e.target.value})}/>
+                </div>
+                <div>
+                  <label className={labelCls}>Повторите новый пароль</label>
+                  <input required type="password" placeholder="Повторите пароль" className={inputCls}
+                    value={pwForm.confirm} onChange={e=>setPwForm({...pwForm,confirm:e.target.value})}/>
+                </div>
+                {pwError && (
+                  <div className="sm:col-span-2 flex items-center gap-2 text-red-500 text-sm bg-red-50 rounded-xl px-4 py-2.5">
+                    <Icon name="AlertCircle" size={15}/>{pwError}
+                  </div>
+                )}
+                <div className="sm:col-span-2 flex items-center gap-3">
+                  <button type="submit" disabled={pwSaving}
+                    className="bg-gray-800 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-gray-900 transition-colors disabled:opacity-50 text-sm">
+                    {pwSaving?"Сохраняю...":"Изменить пароль"}
+                  </button>
+                  {pwSaved && <span className="text-green-500 text-sm flex items-center gap-1"><Icon name="CheckCircle" size={16}/>Пароль изменён!</span>}
+                </div>
+              </form>
+            </div>
           </div>
         )}
 
