@@ -1,0 +1,12 @@
+{
+  "tests": [
+    {
+      "name": "No token - unauthorized",
+      "method": "POST",
+      "path": "/",
+      "body": {"image": "abc"},
+      "expectedStatus": 401,
+      "bodyMatcher": "partial"
+    }
+  ]
+}

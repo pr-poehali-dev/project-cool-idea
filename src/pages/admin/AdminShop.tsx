@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Icon from "@/components/ui/icon"
-import { ShopProduct, api } from "./types"
+import { ShopProduct, api, getToken } from "./types"
+import func2url from "../../../backend/func2url.json"
 
 const SHOP_CATEGORY_LABELS: Record<string, string> = {
   windows: "Окна", doors: "Двери", fence: "3D Забор", mixtures: "Сыпучие смеси", concrete: "Бетон"
@@ -22,6 +23,25 @@ export default function AdminShop({ shopProducts, setShopProducts, shopCategory,
   const [shopModal, setShopModal] = useState<ShopProduct | null | "new">(null)
   const [shopForm, setShopForm] = useState<ShopForm>({ category: "windows", title: "", description: "", price: "", image_url: "", tags: "", sort_order: 0 })
   const [shopSaving, setShopSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const uploadImage = async (file: File) => {
+    setUploading(true)
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      const base64 = (e.target?.result as string) || ""
+      const res = await fetch(func2url["upload-image"], {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Session-Id": getToken() },
+        body: JSON.stringify({ image: base64, mime_type: file.type }),
+      })
+      const data = await res.json()
+      if (data.url) setShopForm(f => ({ ...f, image_url: data.url }))
+      setUploading(false)
+    }
+    reader.readAsDataURL(file)
+  }
 
   const openShopNew = () => {
     setShopForm({ category: "windows", title: "", description: "", price: "", image_url: "", tags: "", sort_order: 0 })
@@ -152,10 +172,43 @@ export default function AdminShop({ shopProducts, setShopProducts, shopCategory,
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium text-gray-500 mb-1 block">URL фото</label>
-                <input value={shopForm.image_url} onChange={e => setShopForm(f => ({ ...f, image_url: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
-                {shopForm.image_url && <img src={shopForm.image_url} alt="" className="mt-2 h-24 w-full object-cover rounded-xl" />}
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Фото товара</label>
+                <input ref={fileInputRef} type="file" accept="image/*" className="hidden"
+                  onChange={e => e.target.files?.[0] && uploadImage(e.target.files[0])} />
+                {shopForm.image_url ? (
+                  <div className="relative rounded-xl overflow-hidden border border-gray-200">
+                    <img src={shopForm.image_url} alt="" className="w-full h-40 object-cover" />
+                    <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center gap-2 group">
+                      <button type="button" onClick={() => fileInputRef.current?.click()}
+                        className="opacity-0 group-hover:opacity-100 bg-white text-gray-800 px-3 py-1.5 rounded-lg text-xs font-medium transition-opacity flex items-center gap-1">
+                        <Icon name="Upload" size={13} />Заменить
+                      </button>
+                      <button type="button" onClick={() => setShopForm(f => ({ ...f, image_url: "" }))}
+                        className="opacity-0 group-hover:opacity-100 bg-red-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-opacity flex items-center gap-1">
+                        <Icon name="Trash2" size={13} />Удалить
+                      </button>
+                    </div>
+                    {uploading && (
+                      <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+                        <div className="text-sm text-gray-500">Загрузка...</div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading}
+                    className="w-full border-2 border-dashed border-gray-200 hover:border-yellow-400 rounded-xl p-6 flex flex-col items-center gap-2 text-gray-400 hover:text-yellow-500 transition-colors disabled:opacity-50">
+                    {uploading ? (
+                      <><Icon name="Loader" size={24} className="animate-spin" /><span className="text-sm">Загрузка...</span></>
+                    ) : (
+                      <><Icon name="Upload" size={24} /><span className="text-sm font-medium">Нажмите чтобы загрузить фото</span><span className="text-xs">JPG, PNG, WEBP до 5 МБ</span></>
+                    )}
+                  </button>
+                )}
+                <div className="mt-2">
+                  <input value={shopForm.image_url} onChange={e => setShopForm(f => ({ ...f, image_url: e.target.value }))}
+                    placeholder="или вставьте URL изображения"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2 text-xs text-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+                </div>
               </div>
               <div>
                 <label className="text-xs font-medium text-gray-500 mb-1 block">Теги (через запятую)</label>
