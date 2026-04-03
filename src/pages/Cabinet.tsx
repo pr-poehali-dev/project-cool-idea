@@ -216,6 +216,18 @@ export default function Cabinet() {
 
         {/* Профиль */}
         {tab === "profile" && (
+          <div className="space-y-4">
+          {!isEmployer && (!user?.specialty || !user?.phone) && (
+            <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-start gap-3">
+              <div className="w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Icon name="Lightbulb" size={18} className="text-orange-500" />
+              </div>
+              <div>
+                <p className="font-semibold text-orange-800 text-sm">Заполните профиль</p>
+                <p className="text-orange-600 text-sm mt-0.5">Работодатели ищут специалистов по специальности и городу. Чем полнее профиль — тем больше шансов получить предложение.</p>
+              </div>
+            </div>
+          )}
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
             <h2 className="font-bold text-gray-900 text-lg mb-6">Редактировать профиль</h2>
             <form onSubmit={saveProfile} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -299,6 +311,7 @@ export default function Cabinet() {
                 </div>
               </form>
             </div>
+          </div>
           </div>
         )}
 
