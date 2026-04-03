@@ -1,7 +1,11 @@
 import { useState, useEffect, MouseEvent } from "react"
 import { cn } from "../lib/utils"
 
-export function Header() {
+interface HeaderProps {
+  onOpenModal: () => void
+}
+
+export function Header({ onOpenModal }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -59,12 +63,12 @@ export function Header() {
           ))}
         </ul>
 
-        <a
-          href="#contact"
+        <button
+          onClick={onOpenModal}
           className="hidden md:inline-flex items-center gap-2 text-sm px-5 py-2.5 transition-all duration-300 bg-orange-500 text-white hover:bg-orange-600 rounded-lg font-medium"
         >
           Разместить вакансию
-        </a>
+        </button>
 
         <button
           className="md:hidden z-50 transition-colors duration-300 text-white"
@@ -106,13 +110,12 @@ export function Header() {
             ))}
           </ul>
 
-          <a
-            href="#contact"
+          <button
             className="inline-flex items-center justify-center gap-2 text-sm px-5 py-2.5 bg-orange-500 text-white hover:bg-orange-600 transition-all duration-300 mb-4 rounded-lg font-medium"
-            onClick={closeMobileMenu}
+            onClick={() => { closeMobileMenu(); onOpenModal() }}
           >
             Разместить вакансию
-          </a>
+          </button>
         </div>
       </div>
     </header>

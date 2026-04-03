@@ -1,7 +1,11 @@
 import Icon from "@/components/ui/icon"
 import { HighlightedText } from "./HighlightedText"
 
-export function CallToAction() {
+interface CallToActionProps {
+  onOpenModal: () => void
+}
+
+export function CallToAction({ onOpenModal }: CallToActionProps) {
   return (
     <section id="contact" className="py-32 md:py-24 bg-primary text-primary-foreground">
       <div className="container mx-auto px-6 md:px-12">
@@ -19,13 +23,13 @@ export function CallToAction() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <a
-              href="mailto:help@ug-transfer.com"
-              className="inline-flex items-center justify-center gap-3 bg-orange-500 text-white px-8 py-4 text-sm font-semibold hover:bg-orange-600 transition-colors duration-300 rounded-xl group"
+            <button
+              onClick={onOpenModal}
+              className="inline-flex items-center justify-center gap-3 bg-orange-500 text-white px-8 py-4 text-sm font-semibold hover:bg-orange-600 transition-colors duration-300 rounded-xl"
             >
-              <Icon name="Search" size={18} />
-              Найти работу бесплатно
-            </a>
+              <Icon name="Briefcase" size={18} />
+              Разместить вакансию
+            </button>
             <a
               href="tel:+79956141414"
               className="inline-flex items-center justify-center gap-2 border border-primary-foreground/30 px-8 py-4 text-sm font-semibold hover:bg-primary-foreground/10 transition-colors duration-300 rounded-xl"

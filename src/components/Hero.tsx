@@ -1,6 +1,10 @@
 import Icon from "@/components/ui/icon"
 
-export function Hero() {
+interface HeroProps {
+  onOpenModal: () => void
+}
+
+export function Hero({ onOpenModal }: HeroProps) {
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -35,13 +39,13 @@ export function Hero() {
             <Icon name="Search" size={20} />
             Найти работу
           </a>
-          <a
-            href="#contact"
+          <button
+            onClick={onOpenModal}
             className="inline-flex items-center justify-center gap-2 border-2 border-white/40 text-white px-8 py-4 text-base font-semibold hover:bg-white/10 transition-colors duration-300 rounded-xl"
           >
             <Icon name="Briefcase" size={20} />
             Разместить вакансию
-          </a>
+          </button>
         </div>
 
         <div className="flex flex-wrap justify-center gap-6 text-white/70 text-sm">
