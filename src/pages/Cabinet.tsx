@@ -283,22 +283,20 @@ export default function Cabinet() {
         {/* Новая вакансия */}
         {tab === "new_vacancy" && (
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <h2 className="font-bold text-gray-900 text-lg mb-6">{isEmployer?"Разместить вакансию":"Разместить объявление о поиске работы"}</h2>
+            <h2 className="font-bold text-gray-900 text-lg mb-6">Разместить объявление</h2>
             <form onSubmit={createVacancy} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className={isEmployer ? "" : "sm:col-span-2"}>
+              <div>
                 <label className={labelCls}>Специальность *</label>
                 <select required className={inputCls} value={vacancyForm.specialty} onChange={e=>setVacancyForm({...vacancyForm,specialty:e.target.value})}>
                   <option value="">Выберите специальность</option>
                   {SPECIALTIES.map(s=><option key={s}>{s}</option>)}
                 </select>
               </div>
-              {isEmployer&&(
-                <div>
-                  <label className={labelCls}>Компания</label>
-                  <input className={inputCls} placeholder="ООО Стройград"
-                    value={vacancyForm.company} onChange={e=>setVacancyForm({...vacancyForm,company:e.target.value})}/>
-                </div>
-              )}
+              <div>
+                <label className={labelCls}>Компания / имя</label>
+                <input className={inputCls} placeholder={isEmployer ? "ООО Стройград" : "Ваше имя"}
+                  value={vacancyForm.company} onChange={e=>setVacancyForm({...vacancyForm,company:e.target.value})}/>
+              </div>
               <div>
                 <label className={labelCls}>Зарплата от (₽)</label>
                 <input type="number" className={inputCls} placeholder="40000"
@@ -336,7 +334,7 @@ export default function Cabinet() {
               <div className="sm:col-span-2">
                 <label className={labelCls}>Описание</label>
                 <textarea rows={4} className={`${inputCls} resize-none`}
-                  placeholder={isEmployer?"Опишите обязанности, условия, требования...":"Расскажите о своём опыте, навыках, пожеланиях..."}
+                  placeholder="Опишите условия, требования, опыт, пожелания..."
                   value={vacancyForm.description} onChange={e=>setVacancyForm({...vacancyForm,description:e.target.value})}/>
               </div>
               {vacancyError&&(
