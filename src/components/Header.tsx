@@ -29,11 +29,11 @@ export function Header({ onOpenModal }: HeaderProps) {
   }
 
   const navItems = [
-    { label: "Аренда техники", href: "/rental" },
-    { label: "Наш магазин", href: "/shop" },
-    { label: "Вакансии", href: "#vacancies" },
-    { label: "Агентство", href: "#agency" },
-    { label: "Вопросы", href: "#faq" },
+    { label: "Аренда техники", mobile: "Техника", href: "/rental" },
+    { label: "Наш магазин", mobile: "Магазин", href: "/shop" },
+    { label: "Вакансии", mobile: "Вакансии", href: "#vacancies" },
+    { label: "Агентство", mobile: "Агентство", href: "#agency" },
+    { label: "Вопросы", mobile: "Вопросы", href: "#faq" },
   ]
 
   return (
@@ -117,7 +117,7 @@ export function Header({ onOpenModal }: HeaderProps) {
                   className="hover:text-yellow-400 transition-colors duration-300 text-white text-3xl font-light block"
                   onClick={closeMobileMenu}
                 >
-                  {item.label}
+                  {item.mobile}
                 </a>
               </li>
             ))}
