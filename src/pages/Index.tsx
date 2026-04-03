@@ -8,6 +8,7 @@ import { FAQ } from "../components/FAQ"
 import { CallToAction } from "../components/CallToAction"
 import { Footer } from "../components/Footer"
 import { VacancyModal } from "../components/VacancyModal"
+import { VacanciesBoard } from "../components/VacanciesBoard"
 
 export default function Index() {
   const [modalOpen, setModalOpen] = useState(false)
@@ -16,6 +17,7 @@ export default function Index() {
     <main className="min-h-screen">
       <Header onOpenModal={() => setModalOpen(true)} />
       <Hero onOpenModal={() => setModalOpen(true)} />
+      <VacanciesBoard />
       <Philosophy />
       <Projects />
       <Expertise />

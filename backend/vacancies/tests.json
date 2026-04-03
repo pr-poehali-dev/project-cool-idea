@@ -1,0 +1,20 @@
+{
+  "tests": [
+    {
+      "name": "List vacancies - public",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "list"},
+      "expectedStatus": 200,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Create without auth",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "create", "title": "Тест", "specialty": "Сварщик"},
+      "expectedStatus": 401,
+      "bodyMatcher": "partial"
+    }
+  ]
+}

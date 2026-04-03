@@ -33,7 +33,7 @@ def resp(status: int, data: dict) -> dict:
     return {"statusCode": status, "headers": CORS, "body": json.dumps(data, ensure_ascii=False)}
 
 def handler(event: dict, context) -> dict:
-    """Пользователи: action=register|login|logout|me"""
+    """Пользователи: action=register|login|logout|me|update_profile"""
     if event.get("httpMethod") == "OPTIONS":
         return {"statusCode": 200, "headers": CORS, "body": ""}
 
@@ -47,11 +47,46 @@ def handler(event: dict, context) -> dict:
             return resp(401, {"error": "Не авторизован"})
         conn = get_db()
         cur = conn.cursor()
-        user = get_user_by_token(cur, token)
+        cur.execute(
+            "SELECT u.id, u.name, u.email, u.role, u.phone, u.specialty, u.experience, u.city, u.about "
+            "FROM users u JOIN user_sessions s ON s.user_id = u.id "
+            "WHERE s.token = %s AND s.expires_at > NOW()",
+            (token,)
+        )
+        user = cur.fetchone()
         conn.close()
         if not user:
             return resp(401, {"error": "Сессия истекла"})
-        return resp(200, {"id": user[0], "name": user[1], "email": user[2], "role": user[3]})
+        return resp(200, {
+            "id": user[0], "name": user[1], "email": user[2], "role": user[3],
+            "phone": user[4] or "", "specialty": user[5] or "",
+            "experience": user[6] or "", "city": user[7] or "", "about": user[8] or ""
+        })
+
+    if action == "update_profile":
+        if not token:
+            return resp(401, {"error": "Не авторизован"})
+        conn = get_db()
+        cur = conn.cursor()
+        user = get_user_by_token(cur, token)
+        if not user:
+            conn.close()
+            return resp(401, {"error": "Сессия истекла"})
+        cur.execute(
+            "UPDATE users SET name=%s, phone=%s, specialty=%s, experience=%s, city=%s, about=%s WHERE id=%s",
+            (
+                body.get("name", user[1]).strip(),
+                body.get("phone", ""),
+                body.get("specialty", ""),
+                body.get("experience", ""),
+                body.get("city", ""),
+                body.get("about", ""),
+                user[0]
+            )
+        )
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True})
 
     if action == "register":
         name = body.get("name", "").strip()
