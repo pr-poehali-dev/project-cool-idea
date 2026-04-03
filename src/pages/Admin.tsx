@@ -9,7 +9,7 @@ interface Stats {
   total_users: number; employers: number; workers: number
   active_vacancies: number; total_vacancies: number; saved_contacts: number
 }
-interface User { id: number; name: string; email: string; role: string; phone: string; specialty: string; created_at: string }
+interface User { id: number; name: string; email: string; role: string; phone: string; specialty: string; created_at: string; is_blocked: boolean }
 interface Vacancy {
   id: number; title: string; specialty: string; city: string
   salary_from: number | null; salary_to: number | null
@@ -29,6 +29,8 @@ async function api(action: string, extra: object = {}) {
   return res.json()
 }
 
+interface EditState { name: string; email: string; phone: string; new_password: string; confirm_password: string }
+
 export default function Admin() {
   const [checking, setChecking] = useState(true)
   const [tab, setTab] = useState<Tab>("stats")
@@ -37,6 +39,10 @@ export default function Admin() {
   const [vacancies, setVacancies] = useState<Vacancy[]>([])
   const [search, setSearch] = useState("")
   const [showAll, setShowAll] = useState(false)
+  const [editUser, setEditUser] = useState<User | null>(null)
+  const [editForm, setEditForm] = useState<EditState>({ name: "", email: "", phone: "", new_password: "", confirm_password: "" })
+  const [editLoading, setEditLoading] = useState(false)
+  const [editError, setEditError] = useState("")
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -82,6 +88,35 @@ export default function Admin() {
   const restoreVacancy = async (id: number) => {
     await api("restore_vacancy", { vacancy_id: id })
     setVacancies(prev => prev.map(v => v.id === id ? { ...v, is_active: true } : v))
+  }
+
+  const openEdit = (u: User) => {
+    setEditUser(u)
+    setEditForm({ name: u.name, email: u.email, phone: u.phone || "", new_password: "", confirm_password: "" })
+    setEditError("")
+  }
+
+  const saveEdit = async () => {
+    if (!editUser) return
+    if (editForm.new_password && editForm.new_password !== editForm.confirm_password) {
+      setEditError("Пароли не совпадают"); return
+    }
+    if (editForm.new_password && editForm.new_password.length < 6) {
+      setEditError("Пароль минимум 6 символов"); return
+    }
+    setEditLoading(true); setEditError("")
+    const payload: Record<string, string | number> = { user_id: editUser.id, name: editForm.name, email: editForm.email, phone: editForm.phone }
+    if (editForm.new_password) payload.new_password = editForm.new_password
+    await api("edit_user", payload)
+    setUsers(prev => prev.map(u => u.id === editUser.id ? { ...u, name: editForm.name, email: editForm.email, phone: editForm.phone } : u))
+    setEditLoading(false)
+    setEditUser(null)
+  }
+
+  const toggleBlock = async (u: User) => {
+    const block = !u.is_blocked
+    await api("toggle_block_user", { user_id: u.id, block })
+    setUsers(prev => prev.map(x => x.id === u.id ? { ...x, is_blocked: block } : x))
   }
 
   const logout = async () => {
@@ -218,6 +253,13 @@ export default function Admin() {
                     <span className="text-xs text-gray-400 hidden sm:block">
                       {new Date(u.created_at).toLocaleDateString("ru")}
                     </span>
+                    {u.is_blocked && <span className="text-xs bg-red-100 text-red-500 px-2 py-0.5 rounded-full hidden sm:block">Заблокирован</span>}
+                    <button onClick={() => openEdit(u)} className="text-gray-300 hover:text-yellow-500 transition-colors" title="Редактировать">
+                      <Icon name="Pencil" size={16} />
+                    </button>
+                    <button onClick={() => toggleBlock(u)} className={`transition-colors ${u.is_blocked ? "text-red-400 hover:text-gray-400" : "text-gray-300 hover:text-red-500"}`} title={u.is_blocked ? "Разблокировать" : "Заблокировать"}>
+                      <Icon name={u.is_blocked ? "LockOpen" : "Lock"} size={16} />
+                    </button>
                     <button onClick={() => deleteUser(u.id)} className="text-gray-300 hover:text-red-500 transition-colors" title="Удалить">
                       <Icon name="Trash2" size={16} />
                     </button>
@@ -279,6 +321,86 @@ export default function Admin() {
           </div>
         )}
       </div>
+
+      {/* Модалка редактирования пользователя */}
+      {editUser && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between p-5 border-b border-gray-100">
+              <div>
+                <h2 className="font-bold text-gray-900 text-lg">Редактировать пользователя</h2>
+                <p className="text-sm text-gray-400">{editUser.role === "employer" ? "Работодатель" : "Соискатель"}</p>
+              </div>
+              <button onClick={() => setEditUser(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <Icon name="X" size={20} />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Имя</label>
+                <input
+                  value={editForm.name}
+                  onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Email</label>
+                <input
+                  type="email"
+                  value={editForm.email}
+                  onChange={e => setEditForm(f => ({ ...f, email: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Телефон</label>
+                <input
+                  value={editForm.phone}
+                  onChange={e => setEditForm(f => ({ ...f, phone: e.target.value }))}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  placeholder="+7..."
+                />
+              </div>
+              <div className="border-t border-gray-100 pt-4">
+                <p className="text-xs font-medium text-gray-500 mb-3">Смена пароля (оставьте пустым, чтобы не менять)</p>
+                <div className="space-y-3">
+                  <input
+                    type="password"
+                    value={editForm.new_password}
+                    onChange={e => setEditForm(f => ({ ...f, new_password: e.target.value }))}
+                    placeholder="Новый пароль"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  />
+                  <input
+                    type="password"
+                    value={editForm.confirm_password}
+                    onChange={e => setEditForm(f => ({ ...f, confirm_password: e.target.value }))}
+                    placeholder="Повторите пароль"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  />
+                </div>
+              </div>
+              {editError && <p className="text-sm text-red-500">{editError}</p>}
+            </div>
+            <div className="p-5 pt-0 flex gap-3">
+              <button
+                onClick={() => setEditUser(null)}
+                className="flex-1 border border-gray-200 text-gray-600 rounded-xl py-2.5 text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={saveEdit}
+                disabled={editLoading}
+                className="flex-1 bg-yellow-400 text-primary rounded-xl py-2.5 text-sm font-medium hover:bg-yellow-300 transition-colors disabled:opacity-50"
+              >
+                {editLoading ? "Сохранение..." : "Сохранить"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
