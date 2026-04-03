@@ -63,7 +63,7 @@ export function Philosophy() {
 
             <div className="relative hidden lg:block mt-8">
               <img
-                src="/images/exterior.png"
+                src="https://cdn.poehali.dev/projects/7f03272f-bca4-46b6-9dc3-4ea2338fe786/files/3771c20b-8601-46d8-8e04-7e6a61183c71.jpg"
                 alt="Строительство в Ялте"
                 className="opacity-80 relative z-10 w-full rounded-2xl object-cover"
               />

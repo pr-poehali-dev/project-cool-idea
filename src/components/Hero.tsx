@@ -9,7 +9,7 @@ export function Hero({ onOpenModal }: HeroProps) {
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img
-          src="https://cdn.poehali.dev/projects/7f03272f-bca4-46b6-9dc3-4ea2338fe786/files/062770a3-2064-425c-91c2-43c1e8b6add4.jpg"
+          src="https://cdn.poehali.dev/projects/7f03272f-bca4-46b6-9dc3-4ea2338fe786/files/38a6ad2b-8c2c-4038-9850-9987ccb47233.jpg"
           alt="Строители и спецтехника на объекте в Ялте"
           className="w-full h-full object-cover object-center"
         />
