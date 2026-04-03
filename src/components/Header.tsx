@@ -39,11 +39,21 @@ export function Header({ onOpenModal }: HeaderProps) {
   return (
     <header className="fixed z-50 top-0 left-0 right-0 bg-primary backdrop-blur-md py-4">
       <nav className="container mx-auto px-6 flex items-center justify-between md:px-[24]">
-        <a href="/" className="flex items-center gap-2 group">
+        <a href="/" className="flex items-center gap-2 group flex-shrink-0">
           <span className="text-white font-bold text-xl tracking-tight">
             Работа-<span className="text-yellow-400">Ялта</span>
           </span>
         </a>
+
+        {/* Мобильные быстрые ссылки */}
+        <div className="flex md:hidden items-center gap-1 flex-1 justify-center px-2">
+          <a href="/rental" className="text-white/80 hover:text-yellow-400 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap">
+            Техника
+          </a>
+          <a href="/shop" className="text-white/80 hover:text-yellow-400 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap">
+            Магазин
+          </a>
+        </div>
 
         <ul className="hidden md:flex items-center gap-10 text-sm tracking-wide">
           {navItems.map((item) => (
