@@ -83,7 +83,7 @@ def handler(event: dict, context) -> dict:
         cur.execute(
             f"SELECT id, title, company, specialty, salary_from, salary_to, city, "
             f"schedule, experience_required, description, contact_phone, contact_email, "
-            f"is_active, created_at FROM {t('vacancies')} WHERE user_id = %s ORDER BY created_at DESC",
+            f"is_active, created_at FROM {t('vacancies')} WHERE user_id = %s AND is_active = TRUE ORDER BY created_at DESC",
             (user[0],)
         )
         rows = cur.fetchall()

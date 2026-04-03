@@ -44,8 +44,8 @@ export default function CabinetVacancies({ vacancies, loadVacancies, isEmployer,
   }
 
   const deleteVacancy = async (id: number) => {
-    await apiVacancies({ action: "delete", id })
-    loadVacancies()
+    const { ok } = await apiVacancies({ action: "delete", id })
+    if (ok) await loadVacancies()
   }
 
   if (tab === "new_vacancy") return (
