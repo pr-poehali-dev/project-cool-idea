@@ -4,6 +4,7 @@ import { apiUsers, clearToken } from "@/lib/auth"
 import { apiVacancies } from "@/lib/api"
 import { getSpecialtyPhoto } from "@/lib/specialtyPhotos"
 import Icon from "@/components/ui/icon"
+import { PaymentModal } from "@/components/PaymentModal"
 
 interface User {
   id: number; name: string; email: string; role: string
@@ -52,6 +53,7 @@ export default function Cabinet() {
   const [vacancySaving, setVacancySaving] = useState(false)
   const [vacancyError, setVacancyError] = useState("")
   const [saved, setSaved] = useState<SavedContact[]>([])
+  const [payingVacancy, setPayingVacancy] = useState<SavedContact | null>(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -325,7 +327,7 @@ export default function Cabinet() {
                       <div className="flex items-center gap-2 mt-3">
                         <Icon name="Lock" size={14} className="text-gray-400"/>
                         <span className="text-sm text-gray-400">Контакты скрыты — </span>
-                        <a href="/#vacancies" className="text-sm text-orange-500 hover:text-orange-600 font-medium">оплатить доступ</a>
+                        <button onClick={() => setPayingVacancy(s)} className="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors">оплатить доступ</button>
                       </div>
                     )}
                   </div>
@@ -345,6 +347,12 @@ export default function Cabinet() {
           </div>
         )}
       </div>
+
+      <PaymentModal
+        open={!!payingVacancy}
+        onClose={() => setPayingVacancy(null)}
+        vacancyTitle={payingVacancy?.title || ""}
+      />
     </div>
   )
 }
