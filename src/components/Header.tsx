@@ -29,7 +29,7 @@ export function Header({ onOpenModal }: HeaderProps) {
   }
 
   const navItems = [
-    { label: "Главная", href: "#hero" },
+    { label: "Наш магазин", href: "/shop" },
     { label: "Вакансии", href: "#vacancies" },
     { label: "Агентство", href: "#agency" },
     { label: "Преимущества", href: "#benefits" },
