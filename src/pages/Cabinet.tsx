@@ -2,40 +2,12 @@ import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { apiUsers, clearToken } from "@/lib/auth"
 import { apiVacancies } from "@/lib/api"
-import { getSpecialtyPhoto } from "@/lib/specialtyPhotos"
 import Icon from "@/components/ui/icon"
 import { PaymentModal } from "@/components/PaymentModal"
-
-interface User {
-  id: number; name: string; email: string; role: string
-  phone: string; specialty: string; experience: string; city: string; about: string
-}
-
-interface Vacancy {
-  id: number; title: string; company: string; specialty: string
-  salary_from: number | null; salary_to: number | null
-  city: string; schedule: string; description: string
-  contact_phone: string; contact_email: string; is_active: boolean
-}
-
-const SPECIALTIES = [
-  "Сварщик","Каменщик","Штукатур","Плиточник","Маляр","Электрик","Сантехник",
-  "Монтажник","Плотник","Кровельщик","Бетонщик","Арматурщик","Оператор спецтехники",
-  "Прораб","Геодезист","Инженер-строитель","Дорожный рабочий","Асфальтировщик",
-  "Изолировщик","Стекольщик","Облицовщик","Паркетчик","Лепщик","Трубопроводчик",
-  "Такелажник","Разнорабочий","Водитель спецтехники","Экскаваторщик","Крановщик",
-  "Бульдозерист","Сигналист","Охранник объекта","Другое"
-]
-const SCHEDULES = ["Полный день","Вахта","Гибкий","Подработка"]
-const EXPERIENCES = ["Без опыта","1–3 года","3–5 лет","Более 5 лет"]
-
-interface SavedContact {
-  id: number; title: string; specialty: string; city: string
-  salary_from: number | null; salary_to: number | null
-  contact_phone: string; contact_email: string; description: string; paid: boolean
-}
-
-type Tab = "overview" | "profile" | "vacancies" | "new_vacancy" | "saved"
+import { User, Vacancy, SavedContact, Tab } from "./cabinet/types"
+import CabinetProfile from "./cabinet/CabinetProfile"
+import CabinetVacancies from "./cabinet/CabinetVacancies"
+import CabinetSaved from "./cabinet/CabinetSaved"
 
 export default function Cabinet() {
   const [searchParams] = useSearchParams()
@@ -43,20 +15,6 @@ export default function Cabinet() {
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState<Tab>((searchParams.get("tab") as Tab) || "overview")
   const [vacancies, setVacancies] = useState<Vacancy[]>([])
-  const [profileForm, setProfileForm] = useState<Partial<User>>({})
-  const [profileSaving, setProfileSaving] = useState(false)
-  const [profileSaved, setProfileSaved] = useState(false)
-  const [pwForm, setPwForm] = useState({ old_password: "", new_password: "", confirm: "" })
-  const [pwSaving, setPwSaving] = useState(false)
-  const [pwError, setPwError] = useState("")
-  const [pwSaved, setPwSaved] = useState(false)
-  const [vacancyForm, setVacancyForm] = useState({
-    company:"",specialty:"",salary_from:"",salary_to:"",
-    city:"Ялта",schedule:"",experience_required:"",description:"",
-    contact_phone:"",contact_email:""
-  })
-  const [vacancySaving, setVacancySaving] = useState(false)
-  const [vacancyError, setVacancyError] = useState("")
   const [vacancySuccess, setVacancySuccess] = useState(false)
   const [saved, setSaved] = useState<SavedContact[]>([])
   const [payingVacancy, setPayingVacancy] = useState<SavedContact | null>(null)
@@ -67,7 +25,6 @@ export default function Cabinet() {
       const { ok, data } = await apiUsers({ action: "me" })
       if (!ok) { navigate("/auth"); return }
       setUser(data)
-      setProfileForm(data)
       setLoading(false)
     }
     init()
@@ -91,57 +48,6 @@ export default function Cabinet() {
     navigate("/")
   }
 
-  const changePassword = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setPwError("")
-    if (pwForm.new_password !== pwForm.confirm) {
-      setPwError("Новые пароли не совпадают"); return
-    }
-    setPwSaving(true)
-    const { ok, data } = await apiUsers({ action: "change_password", old_password: pwForm.old_password, new_password: pwForm.new_password })
-    setPwSaving(false)
-    if (!ok) { setPwError(data.error || "Ошибка"); return }
-    setPwSaved(true)
-    setPwForm({ old_password: "", new_password: "", confirm: "" })
-    setTimeout(() => setPwSaved(false), 3000)
-  }
-
-  const saveProfile = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setProfileSaving(true)
-    await apiUsers({ action: "update_profile", ...profileForm })
-    setProfileSaving(false)
-    setProfileSaved(true)
-    setTimeout(() => setProfileSaved(false), 3000)
-    const { data } = await apiUsers({ action: "me" })
-    setUser(data)
-  }
-
-  const createVacancy = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setVacancyError("")
-    setVacancySaving(true)
-    const { ok, data } = await apiVacancies({
-      action: "create",
-      title: vacancyForm.specialty,
-      ...vacancyForm,
-      salary_from: vacancyForm.salary_from ? parseInt(vacancyForm.salary_from) : null,
-      salary_to: vacancyForm.salary_to ? parseInt(vacancyForm.salary_to) : null,
-    })
-    setVacancySaving(false)
-    if (!ok) { setVacancyError(data.error || "Ошибка"); return }
-    setVacancyForm({ company:"",specialty:"",salary_from:"",salary_to:"",city:"Ялта",schedule:"",experience_required:"",description:"",contact_phone:"",contact_email:"" })
-    setVacancySuccess(true)
-    await loadVacancies()
-    setTab("vacancies")
-    setTimeout(() => setVacancySuccess(false), 4000)
-  }
-
-  const deleteVacancy = async (id: number) => {
-    await apiVacancies({ action: "delete", id })
-    loadVacancies()
-  }
-
   if (loading) return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="text-gray-400 text-sm">Загрузка...</div>
@@ -150,8 +56,13 @@ export default function Cabinet() {
 
   const isEmployer = user?.role === "employer"
   const roleLabel = isEmployer ? "Работодатель" : "Соискатель"
-  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white"
-  const labelCls = "block text-sm font-medium text-gray-700 mb-1"
+
+  const tabs: [Tab, string, string][] = [
+    ["overview", "Обзор", "LayoutDashboard"],
+    ["profile", "Профиль", "User"],
+    ["vacancies", isEmployer ? "Мои вакансии" : "Мои объявления", "Briefcase"],
+    ["saved", "Сохранённые", "Bookmark"],
+  ]
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -170,14 +81,9 @@ export default function Cabinet() {
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         {/* Навигация */}
         <div className="flex gap-1 bg-white rounded-2xl p-1 shadow-sm border border-gray-100 mb-6 overflow-x-auto">
-          {([
-            ["overview","Обзор","LayoutDashboard"],
-            ["profile","Профиль","User"],
-            ["vacancies", isEmployer ? "Мои вакансии" : "Мои объявления","Briefcase"],
-            ["saved","Сохранённые","Bookmark"],
-          ] as [Tab,string,string][]).map(([t,label,icon]) => (
+          {tabs.map(([t, label, icon]) => (
             <button key={t} onClick={() => setTab(t)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${tab===t ? "bg-primary text-white shadow" : "text-gray-500 hover:text-gray-800"}`}>
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${tab === t ? "bg-primary text-white shadow" : "text-gray-500 hover:text-gray-800"}`}>
               <Icon name={icon as "User"} size={16} />{label}
             </button>
           ))}
@@ -219,322 +125,30 @@ export default function Cabinet() {
         )}
 
         {/* Профиль */}
-        {tab === "profile" && (
-          <div className="space-y-4">
-          {!isEmployer && (!user?.specialty || !user?.phone) && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
-              <div className="w-9 h-9 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Icon name="Lightbulb" size={18} className="text-yellow-500" />
-              </div>
-              <div>
-                <p className="font-semibold text-yellow-800 text-sm">Заполните профиль</p>
-                <p className="text-yellow-600 text-sm mt-0.5">Работодатели ищут специалистов по специальности и городу. Чем полнее профиль — тем больше шансов получить предложение.</p>
-              </div>
-            </div>
-          )}
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <h2 className="font-bold text-gray-900 text-lg mb-6">Редактировать профиль</h2>
-            <form onSubmit={saveProfile} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className={labelCls}>Имя *</label>
-                <input required className={inputCls} value={profileForm.name||""} onChange={e=>setProfileForm({...profileForm,name:e.target.value})} />
-              </div>
-              <div>
-                <label className={labelCls}>Телефон</label>
-                <input className={inputCls} placeholder="+7 (999) 000-00-00" value={profileForm.phone||""} onChange={e=>setProfileForm({...profileForm,phone:e.target.value})} />
-              </div>
-              <div>
-                <label className={labelCls}>Специальность</label>
-                <select className={inputCls} value={profileForm.specialty||""} onChange={e=>setProfileForm({...profileForm,specialty:e.target.value})}>
-                  <option value="">Выберите</option>
-                  {SPECIALTIES.map(s=><option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className={labelCls}>Опыт работы</label>
-                <select className={inputCls} value={profileForm.experience||""} onChange={e=>setProfileForm({...profileForm,experience:e.target.value})}>
-                  <option value="">Выберите</option>
-                  {EXPERIENCES.map(s=><option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className={labelCls}>Город</label>
-                <input className={inputCls} placeholder="Ялта" value={profileForm.city||""} onChange={e=>setProfileForm({...profileForm,city:e.target.value})} />
-              </div>
-              <div>
-                <label className={labelCls}>Email</label>
-                <input className={`${inputCls} bg-gray-50 text-gray-400`} disabled value={user?.email||""} />
-              </div>
-              <div className="sm:col-span-2">
-                <label className={labelCls}>О себе</label>
-                <textarea rows={3} className={`${inputCls} resize-none`} placeholder="Расскажите о своём опыте, навыках..."
-                  value={profileForm.about||""} onChange={e=>setProfileForm({...profileForm,about:e.target.value})} />
-              </div>
-              <div className="sm:col-span-2 flex items-center gap-3">
-                <button type="submit" disabled={profileSaving}
-                  className="bg-yellow-500 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-yellow-600 transition-colors disabled:opacity-50 text-sm">
-                  {profileSaving?"Сохраняю...":"Сохранить"}
-                </button>
-                {profileSaved && <span className="text-green-500 text-sm flex items-center gap-1"><Icon name="CheckCircle" size={16}/>Сохранено!</span>}
-              </div>
-            </form>
-
-            {/* Смена пароля */}
-            <div className="mt-6 pt-6 border-t border-gray-100">
-              <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <Icon name="Lock" size={16} className="text-gray-400"/>
-                Сменить пароль
-              </h3>
-              <form onSubmit={changePassword} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                  <label className={labelCls}>Текущий пароль</label>
-                  <input required type="password" placeholder="Введите текущий пароль" className={inputCls}
-                    value={pwForm.old_password} onChange={e=>setPwForm({...pwForm,old_password:e.target.value})}/>
-                </div>
-                <div>
-                  <label className={labelCls}>Новый пароль</label>
-                  <input required type="password" placeholder="Минимум 6 символов" className={inputCls}
-                    value={pwForm.new_password} onChange={e=>setPwForm({...pwForm,new_password:e.target.value})}/>
-                </div>
-                <div>
-                  <label className={labelCls}>Повторите новый пароль</label>
-                  <input required type="password" placeholder="Повторите пароль" className={inputCls}
-                    value={pwForm.confirm} onChange={e=>setPwForm({...pwForm,confirm:e.target.value})}/>
-                </div>
-                {pwError && (
-                  <div className="sm:col-span-2 flex items-center gap-2 text-red-500 text-sm bg-red-50 rounded-xl px-4 py-2.5">
-                    <Icon name="AlertCircle" size={15}/>{pwError}
-                  </div>
-                )}
-                <div className="sm:col-span-2 flex items-center gap-3">
-                  <button type="submit" disabled={pwSaving}
-                    className="bg-gray-800 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-gray-900 transition-colors disabled:opacity-50 text-sm">
-                    {pwSaving?"Сохраняю...":"Изменить пароль"}
-                  </button>
-                  {pwSaved && <span className="text-green-500 text-sm flex items-center gap-1"><Icon name="CheckCircle" size={16}/>Пароль изменён!</span>}
-                </div>
-              </form>
-            </div>
-          </div>
-          </div>
+        {tab === "profile" && user && (
+          <CabinetProfile user={user} setUser={setUser} isEmployer={isEmployer} />
         )}
 
-        {/* Мои вакансии */}
-        {tab === "vacancies" && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-gray-900 text-lg">{isEmployer?"Мои вакансии":"Мои объявления"}</h2>
-              <button onClick={()=>setTab("new_vacancy")} className="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-yellow-600 transition-colors">
-                <Icon name="Plus" size={16}/>Добавить
-              </button>
-            </div>
-            {vacancySuccess && (
-              <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
-                <Icon name="CheckCircle" size={16} className="text-green-500 flex-shrink-0" />
-                <span>Объявление опубликовано! Оно появится в общем списке на главной странице.</span>
-              </div>
-            )}
-            {vacancies.length===0 ? (
-              <div className="bg-white rounded-2xl p-12 border border-gray-100 shadow-sm text-center">
-                <Icon name="Inbox" size={40} className="text-gray-200 mx-auto mb-3"/>
-                <p className="text-gray-400 text-sm">Объявлений пока нет</p>
-                <button onClick={()=>setTab("new_vacancy")} className="mt-4 text-yellow-500 text-sm font-medium hover:text-yellow-600">Создать первое →</button>
-              </div>
-            ) : vacancies.map(v=>(
-              <div key={v.id} className="bg-white rounded-2xl border-2 border-yellow-400 shadow-sm overflow-hidden flex flex-col sm:flex-row">
-                <div className="relative w-full sm:w-36 h-32 sm:h-auto flex-shrink-0">
-                  <img src={getSpecialtyPhoto(v.specialty)} alt={v.specialty} className="w-full h-full object-cover"/>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent sm:bg-gradient-to-r"/>
-                </div>
-                <div className="flex-1 p-5 flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{v.title}</h3>
-                    <p className="text-sm text-gray-500 mt-0.5">{v.specialty} · {v.city}</p>
-                    {(v.salary_from||v.salary_to)&&(
-                      <p className="text-sm text-yellow-500 font-medium mt-1">
-                        {v.salary_from?`от ${v.salary_from.toLocaleString()} ₽`:""}{v.salary_to?` до ${v.salary_to.toLocaleString()} ₽`:""}
-                      </p>
-                    )}
-                    {v.description&&<p className="text-sm text-gray-400 mt-2 line-clamp-2">{v.description}</p>}
-                  </div>
-                  <button onClick={()=>deleteVacancy(v.id)} className="text-yellow-300 hover:text-red-400 transition-colors flex-shrink-0">
-                    <Icon name="Trash2" size={18}/>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        {/* Мои вакансии + Новое объявление */}
+        {(tab === "vacancies" || tab === "new_vacancy") && (
+          <CabinetVacancies
+            vacancies={vacancies}
+            loadVacancies={loadVacancies}
+            isEmployer={isEmployer}
+            tab={tab}
+            setTab={setTab}
+            vacancySuccess={vacancySuccess}
+            setVacancySuccess={setVacancySuccess}
+          />
         )}
 
-        {/* Добавить вакансию/объявление */}
-        {tab === "new_vacancy" && (
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <button onClick={() => setTab("vacancies")} className="text-gray-400 hover:text-gray-600 transition-colors">
-                <Icon name="ArrowLeft" size={20} />
-              </button>
-              <h2 className="font-bold text-gray-900 text-lg">{isEmployer ? "Новая вакансия" : "Новое объявление"}</h2>
-            </div>
-            <form onSubmit={createVacancy} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2">
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Специальность *</label>
-                <select required value={vacancyForm.specialty}
-                  onChange={e => setVacancyForm({...vacancyForm, specialty: e.target.value})}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white">
-                  <option value="">Выберите специальность</option>
-                  {SPECIALTIES.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-              {isEmployer && (
-                <div className="sm:col-span-2">
-                  <label className="text-xs font-medium text-gray-500 mb-1 block">Название компании</label>
-                  <input value={vacancyForm.company}
-                    onChange={e => setVacancyForm({...vacancyForm, company: e.target.value})}
-                    placeholder="ООО Строитель"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
-                </div>
-              )}
-              <div>
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Зарплата от (₽)</label>
-                <input type="number" value={vacancyForm.salary_from}
-                  onChange={e => setVacancyForm({...vacancyForm, salary_from: e.target.value})}
-                  placeholder="50000"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Зарплата до (₽)</label>
-                <input type="number" value={vacancyForm.salary_to}
-                  onChange={e => setVacancyForm({...vacancyForm, salary_to: e.target.value})}
-                  placeholder="80000"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Город</label>
-                <input value={vacancyForm.city}
-                  onChange={e => setVacancyForm({...vacancyForm, city: e.target.value})}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 mb-1 block">График работы</label>
-                <select value={vacancyForm.schedule}
-                  onChange={e => setVacancyForm({...vacancyForm, schedule: e.target.value})}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white">
-                  <option value="">Не указан</option>
-                  {SCHEDULES.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-              <div className="sm:col-span-2">
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Требуемый опыт</label>
-                <select value={vacancyForm.experience_required}
-                  onChange={e => setVacancyForm({...vacancyForm, experience_required: e.target.value})}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white">
-                  <option value="">Не важно</option>
-                  {EXPERIENCES.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              </div>
-              <div className="sm:col-span-2">
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Описание</label>
-                <textarea value={vacancyForm.description} rows={4}
-                  onChange={e => setVacancyForm({...vacancyForm, description: e.target.value})}
-                  placeholder="Опишите условия работы, требования и обязанности..."
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none" />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Контактный телефон</label>
-                <input value={vacancyForm.contact_phone}
-                  onChange={e => setVacancyForm({...vacancyForm, contact_phone: e.target.value})}
-                  placeholder="+7 999 000 00 00"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 mb-1 block">Контактный email</label>
-                <input type="email" value={vacancyForm.contact_email}
-                  onChange={e => setVacancyForm({...vacancyForm, contact_email: e.target.value})}
-                  placeholder="email@example.com"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
-              </div>
-              {vacancyError && (
-                <div className="sm:col-span-2 flex items-center gap-2 text-red-500 text-sm bg-red-50 rounded-xl px-4 py-2.5">
-                  <Icon name="AlertCircle" size={15} />{vacancyError}
-                </div>
-              )}
-              <div className="sm:col-span-2 flex gap-3">
-                <button type="button" onClick={() => setTab("vacancies")}
-                  className="flex-1 border border-gray-200 text-gray-600 rounded-xl py-2.5 text-sm font-medium hover:bg-gray-50 transition-colors">
-                  Отмена
-                </button>
-                <button type="submit" disabled={vacancySaving}
-                  className="flex-1 bg-yellow-500 text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-yellow-600 transition-colors disabled:opacity-50">
-                  {vacancySaving ? "Сохранение..." : "Опубликовать"}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {/* Сохранённые объявления */}
+        {/* Сохранённые */}
         {tab === "saved" && (
-          <div className="space-y-4">
-            <h2 className="font-bold text-gray-900 text-lg">Сохранённые объявления</h2>
-            {saved.length === 0 ? (
-              <div className="bg-white rounded-2xl p-12 border border-gray-100 shadow-sm text-center">
-                <Icon name="Bookmark" size={40} className="text-gray-200 mx-auto mb-3"/>
-                <p className="text-gray-400 text-sm">Нет сохранённых объявлений</p>
-                <a href="/#vacancies" className="mt-4 inline-block text-yellow-500 text-sm font-medium hover:text-yellow-600">Смотреть объявления →</a>
-              </div>
-            ) : saved.map(s => (
-              <div key={s.id} className="bg-white rounded-2xl border-2 border-yellow-400 shadow-sm overflow-hidden flex flex-col sm:flex-row">
-                <div className="relative w-full sm:w-36 h-32 sm:h-auto flex-shrink-0">
-                  <img src={getSpecialtyPhoto(s.specialty)} alt={s.specialty} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent sm:bg-gradient-to-r" />
-                </div>
-                <div className="flex-1 p-5 flex items-start justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-gray-900">{s.title}</h3>
-                      {s.paid && <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full">Оплачено</span>}
-                    </div>
-                    <p className="text-sm text-gray-500">{s.specialty} · {s.city}</p>
-                    {(s.salary_from||s.salary_to) && (
-                      <p className="text-sm text-yellow-500 font-medium mt-1">
-                        {s.salary_from?`от ${s.salary_from.toLocaleString()} ₽`:""}{s.salary_to?` до ${s.salary_to.toLocaleString()} ₽`:""}
-                      </p>
-                    )}
-                    {s.paid ? (
-                      <div className="flex flex-col gap-1 mt-3 pt-3 border-t border-gray-100">
-                        {s.contact_phone && (
-                          <a href={`tel:${s.contact_phone}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-yellow-500 transition-colors">
-                            <Icon name="Phone" size={14}/>{s.contact_phone}
-                          </a>
-                        )}
-                        {s.contact_email && (
-                          <a href={`mailto:${s.contact_email}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-yellow-500 transition-colors">
-                            <Icon name="Mail" size={14}/>{s.contact_email}
-                          </a>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2 mt-3">
-                        <Icon name="Lock" size={14} className="text-gray-400"/>
-                        <span className="text-sm text-gray-400">Контакты скрыты — </span>
-                        <button onClick={() => setPayingVacancy(s)} className="text-sm text-yellow-500 hover:text-yellow-600 font-medium transition-colors">оплатить доступ</button>
-                      </div>
-                    )}
-                  </div>
-                  <button
-                    onClick={async () => {
-                      await apiUsers({ action: "unsave_vacancy", vacancy_id: s.id })
-                      setSaved(prev => prev.filter(x => x.id !== s.id))
-                    }}
-                    className="text-yellow-300 hover:text-red-400 transition-colors flex-shrink-0"
-                    title="Удалить из избранного"
-                  >
-                    <Icon name="BookmarkX" size={18}/>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <CabinetSaved
+            saved={saved}
+            setSaved={setSaved}
+            setPayingVacancy={setPayingVacancy}
+          />
         )}
       </div>
 
