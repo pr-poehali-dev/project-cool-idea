@@ -39,7 +39,7 @@ export function Header({ onOpenModal }: HeaderProps) {
   return (
     <header className="fixed z-50 top-0 left-0 right-0 bg-primary backdrop-blur-md py-4">
       <nav className="container mx-auto px-6 flex items-center justify-between md:px-[24]">
-        <a href="/" className="flex items-center gap-2 group" onClick={scrollToTop}>
+        <a href="/" className="flex items-center gap-2 group">
           <span className="text-white font-bold text-xl tracking-tight">
             Работа-<span className="text-orange-400">Ялта</span>
           </span>
