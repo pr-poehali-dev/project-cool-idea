@@ -41,7 +41,12 @@ export default function Auth() {
       await apiUsers({ action: "save_vacancy", vacancy_id: parseInt(pendingId) })
     }
 
-    navigate("/cabinet")
+    const userRole = data.role || role
+    if (userRole === "employer") {
+      navigate("/cabinet?tab=vacancies")
+    } else {
+      navigate("/cabinet?tab=profile")
+    }
   }
 
   return (

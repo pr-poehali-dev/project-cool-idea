@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { apiUsers, clearToken } from "@/lib/auth"
 import { apiVacancies } from "@/lib/api"
 import { getSpecialtyPhoto } from "@/lib/specialtyPhotos"
@@ -38,9 +38,10 @@ interface SavedContact {
 type Tab = "overview" | "profile" | "vacancies" | "new_vacancy" | "saved"
 
 export default function Cabinet() {
+  const [searchParams] = useSearchParams()
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<Tab>("overview")
+  const [tab, setTab] = useState<Tab>((searchParams.get("tab") as Tab) || "overview")
   const [vacancies, setVacancies] = useState<Vacancy[]>([])
   const [profileForm, setProfileForm] = useState<Partial<User>>({})
   const [profileSaving, setProfileSaving] = useState(false)
