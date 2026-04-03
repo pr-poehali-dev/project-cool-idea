@@ -11,3 +11,24 @@
 8:29:19 AM [vite] vite.config.ts changed, restarting server...
 8:29:19 AM [vite] (client) page reload index.html
 8:29:19 AM [vite] changed tsconfig file detected: /app/webapp/tsconfig.json - Clearing cache and forcing full-reload to ensure TypeScript is compiled with updated config values.
+[vite:react-swc] We recommend switching to `@vitejs/plugin-react-oxc` for improved performance as no swc plugins are used. More information at https://vite.dev/rolldown
+8:29:19 AM [vite] server restarted.
+8:29:27 AM [vite] (client) hmr update /src/index.css
+8:31:00 AM [vite] (client) hmr update /src/index.css
+8:31:00 AM [vite] (client) hmr update /src/index.css
+8:31:11 AM [vite] (client) hmr update /src/index.css
+8:31:11 AM [vite] (client) hmr update /src/index.css
+8:31:23 AM [vite] (client) hmr update /src/index.css
+8:31:24 AM [vite] (client) hmr update /src/index.css
+8:31:30 AM [vite] (client) hmr update /src/index.css
+8:31:31 AM [vite] (client) hmr update /src/index.css
+8:32:01 AM [vite] (client) hmr update /src/components/Header.tsx, /src/index.css
+8:32:32 AM [vite] (client) hmr update /src/components/Hero.tsx, /src/index.css
+8:32:56 AM [vite] (client) hmr update /src/components/Expertise.tsx, /src/index.css
+8:33:08 AM [vite] (client) hmr update /src/components/Expertise.tsx, /src/index.css
+8:33:33 AM [vite] (client) hmr update /src/components/Philosophy.tsx, /src/index.css
+8:33:58 AM [vite] (client) hmr update /src/components/Projects.tsx, /src/index.css
+8:34:23 AM [vite] (client) hmr update /src/components/FAQ.tsx, /src/index.css
+8:34:42 AM [vite] (client) hmr update /src/components/CallToAction.tsx, /src/index.css
+8:34:57 AM [vite] (client) hmr update /src/components/Footer.tsx, /src/index.css
+8:35:19 AM [vite] (client) page reload index.html

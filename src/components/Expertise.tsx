@@ -1,30 +1,43 @@
 import { useEffect, useRef, useState } from "react"
-import { Home, Building, Armchair, Trees } from "lucide-react"
 import { HighlightedText } from "./HighlightedText"
+import Icon from "@/components/ui/icon"
 
-const expertiseAreas = [
+const categories = [
   {
-    title: "Жилая архитектура",
-    description: "Создаем дома, которые сочетают красоту с комфортом, где каждое пространство служит и форме, и функции.",
-    icon: Home,
+    title: "Сварщики",
+    description: "Ручная и автоматическая сварка. Опыт работы с металлоконструкциями, трубопроводами, сварочными роботами.",
+    icon: "Flame",
+    count: "18 вакансий",
   },
   {
-    title: "Коммерческие объекты",
-    description:
-      "Проектируем рабочие пространства, которые вдохновляют на продуктивность и отражают ценности передовых организаций.",
-    icon: Building,
+    title: "Плиточники",
+    description: "Укладка керамогранита, мозаики, натурального камня. Работа в жилых и коммерческих объектах.",
+    icon: "Grid3x3",
+    count: "24 вакансии",
   },
   {
-    title: "Дизайн интерьеров",
-    description:
-      "Создаем интерьеры, которые гармонируют с архитектурной оболочкой, формируя целостный пространственный опыт.",
-    icon: Armchair,
+    title: "Каменщики",
+    description: "Кладка из блоков, кирпича, камня. Работа с газоблоком, керамзитоблоком и натуральным камнем.",
+    icon: "Layers",
+    count: "15 вакансий",
   },
   {
-    title: "Градостроительство",
-    description:
-      "Формируем сообщества через продуманную интеграцию общественных пространств, зданий и природных элементов.",
-    icon: Trees,
+    title: "Штукатуры",
+    description: "Ручная и механическая штукатурка. Гипсовые смеси, цементные составы, финишная отделка.",
+    icon: "PaintRoller",
+    count: "21 вакансия",
+  },
+  {
+    title: "Разнорабочие",
+    description: "Подсобные работы на строительных объектах. Опыт не обязателен, обучение на месте.",
+    icon: "HardHat",
+    count: "32 вакансии",
+  },
+  {
+    title: "Мастера / Прорабы",
+    description: "Управление строительными бригадами, контроль качества, ведение объектов под ключ.",
+    icon: "ClipboardList",
+    count: "10 вакансий",
   },
 ]
 
@@ -43,61 +56,60 @@ export function Expertise() {
           }
         })
       },
-      { threshold: 0.2 },
+      { threshold: 0.15 },
     )
-
     itemRefs.current.forEach((ref) => {
       if (ref) observer.observe(ref)
     })
-
     return () => observer.disconnect()
   }, [])
 
   return (
-    <section id="services" ref={sectionRef} className="py-32 md:py-29">
+    <section id="vacancies" ref={sectionRef} className="py-32 md:py-24">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="max-w-3xl mb-20">
-          <p className="text-muted-foreground text-sm tracking-[0.3em] uppercase mb-6">Наши услуги</p>
-          <h2 className="text-6xl font-medium leading-[1.15] tracking-tight mb-6 text-balance lg:text-8xl">
-            <HighlightedText>Экспертиза</HighlightedText>, отточенная
+        <div className="max-w-3xl mb-16">
+          <p className="text-muted-foreground text-sm tracking-[0.3em] uppercase mb-6">Категории вакансий</p>
+          <h2 className="text-5xl font-bold leading-[1.15] tracking-tight mb-6 text-balance lg:text-7xl">
+            <HighlightedText>Специальности</HighlightedText> для
             <br />
-            практикой
+            строительной сферы
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            Каждый проект опирается на десятилетия совокупного опыта, создавая архитектуру, которая одновременно инновационна и вневременна.
+            Более 120 актуальных вакансий по строительным специальностям в Ялте и пригородах. Обновляется ежедневно.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-x-12 gap-y-16">
-          {expertiseAreas.map((area, index) => {
-            const Icon = area.icon
-            return (
-              <div
-                key={area.title}
-                ref={(el) => {
-                  itemRefs.current[index] = el
-                }}
-                data-index={index}
-                className={`relative pl-8 border-l border-border transition-all duration-700 ${
-                  visibleItems.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-                }`}
-                style={{ transitionDelay: `${index * 150}ms` }}
-              >
-                <div
-                  className={`transition-all duration-1000 ${
-                    visibleItems.includes(index) ? "animate-draw-stroke" : ""
-                  }`}
-                  style={{
-                    transitionDelay: `${index * 150}ms`,
-                  }}
-                >
-                  <Icon className="w-10 h-10 mb-4 text-foreground" strokeWidth={1.25} />
-                </div>
-                <h3 className="text-xl font-medium mb-4">{area.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{area.description}</p>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {categories.map((cat, index) => (
+            <div
+              key={cat.title}
+              ref={(el) => {
+                itemRefs.current[index] = el
+              }}
+              data-index={index}
+              className={`relative p-6 border border-border rounded-2xl hover:border-orange-400 hover:shadow-lg transition-all duration-500 cursor-pointer group bg-card ${
+                visibleItems.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+              }`}
+              style={{ transitionDelay: `${index * 100}ms` }}
+            >
+              <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors">
+                <Icon name={cat.icon} size={24} fallback="Briefcase" className="text-orange-500" />
               </div>
-            )
-          })}
+              <h3 className="text-lg font-semibold mb-2">{cat.title}</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-4">{cat.description}</p>
+              <span className="text-orange-500 text-sm font-medium">{cat.count}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 bg-primary text-white px-8 py-4 rounded-xl font-semibold hover:bg-primary/90 transition-colors"
+          >
+            <Icon name="Search" size={18} />
+            Смотреть все вакансии
+          </a>
         </div>
       </div>
     </section>

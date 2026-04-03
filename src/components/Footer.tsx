@@ -1,82 +1,85 @@
 export function Footer() {
   return (
-    <footer className="py-16 md:py-24 border-t border-border">
+    <footer className="py-16 md:py-20 border-t border-border">
       <div className="container mx-auto px-6 md:px-12">
         <div className="grid md:grid-cols-4 gap-12 mb-16">
-          {/* Brand */}
           <div className="md:col-span-2">
             <a href="/" className="inline-block mb-6">
-              <img src="/images/hously-logo.svg" alt="Пространство" width={120} height={32} className="w-auto h-6" />
+              <span className="text-2xl font-bold tracking-tight">
+                Работа<span className="text-orange-500">Ялта</span>
+              </span>
             </a>
-            <p className="text-muted-foreground leading-relaxed max-w-sm">
-              Создаем пространства для жизни. Архитектурный опыт, где форма, свет и намерение встречаются.
+            <p className="text-muted-foreground leading-relaxed max-w-sm text-sm">
+              Портал трудоустройства для строительных специалистов. Соединяем рабочих и работодателей Ялты и пригородов.
             </p>
           </div>
 
-          {/* Navigation */}
           <div>
-            <h4 className="text-sm font-medium mb-4">Студия</h4>
+            <h4 className="text-sm font-semibold mb-4">Навигация</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <a href="#projects" className="hover:text-foreground transition-colors">
-                  Проекты
+                <a href="#vacancies" className="hover:text-foreground hover:text-orange-500 transition-colors">
+                  Вакансии
                 </a>
               </li>
               <li>
-                <a href="#about" className="hover:text-foreground transition-colors">
-                  О нас
+                <a href="#agency" className="hover:text-foreground hover:text-orange-500 transition-colors">
+                  Агентство
                 </a>
               </li>
               <li>
-                <a href="#services" className="hover:text-foreground transition-colors">
-                  Услуги
+                <a href="#benefits" className="hover:text-foreground hover:text-orange-500 transition-colors">
+                  Преимущества
                 </a>
               </li>
               <li>
-                <a href="#contact" className="hover:text-foreground transition-colors">
+                <a href="#faq" className="hover:text-foreground hover:text-orange-500 transition-colors">
+                  Вопросы и ответы
+                </a>
+              </li>
+              <li>
+                <a href="#contact" className="hover:text-foreground hover:text-orange-500 transition-colors">
                   Контакты
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
-            <h4 className="text-sm font-medium mb-4">Связь</h4>
+            <h4 className="text-sm font-semibold mb-4">Контакты</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <a href="mailto:hello@prostranstvo.ru" className="hover:text-foreground transition-colors">
-                  hello@prostranstvo.ru
+                <a href="mailto:help@ug-transfer.com" className="hover:text-orange-500 transition-colors">
+                  help@ug-transfer.com
                 </a>
               </li>
               <li>
-                <a href="tel:+74951234567" className="hover:text-foreground transition-colors">
-                  +7 (495) 123-45-67
+                <a href="tel:+79956141414" className="hover:text-orange-500 transition-colors">
+                  +7 (995) 614-14-14
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  Телеграм
+                <a href="#" className="hover:text-orange-500 transition-colors">
+                  Telegram
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-foreground transition-colors">
-                  ВКонтакте
+                <a href="#" className="hover:text-orange-500 transition-colors">
+                  WhatsApp
                 </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row md:items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>© 2025 Пространство. Все права защищены.</p>
+          <p>© 2026 Работа Ялта. Все права защищены.</p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-foreground transition-colors">
               Политика конфиденциальности
             </a>
             <a href="#" className="hover:text-foreground transition-colors">
-              Условия использования
+              Пользовательское соглашение
             </a>
           </div>
         </div>
