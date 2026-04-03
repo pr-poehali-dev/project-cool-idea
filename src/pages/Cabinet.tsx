@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { apiUsers, clearToken } from "@/lib/auth"
 import { apiVacancies } from "@/lib/api"
+import { getSpecialtyPhoto } from "@/lib/specialtyPhotos"
 import Icon from "@/components/ui/icon"
 
 interface User {
@@ -290,8 +291,12 @@ export default function Cabinet() {
                 <a href="/#vacancies" className="mt-4 inline-block text-orange-500 text-sm font-medium hover:text-orange-600">Смотреть объявления →</a>
               </div>
             ) : saved.map(s => (
-              <div key={s.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
+              <div key={s.id} className="bg-white rounded-2xl border-2 border-orange-400 shadow-sm overflow-hidden flex flex-col sm:flex-row">
+                <div className="relative w-full sm:w-36 h-32 sm:h-auto flex-shrink-0">
+                  <img src={getSpecialtyPhoto(s.specialty)} alt={s.specialty} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent sm:bg-gradient-to-r" />
+                </div>
+                <div className="flex-1 p-5 flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold text-gray-900">{s.title}</h3>
@@ -329,7 +334,7 @@ export default function Cabinet() {
                       await apiUsers({ action: "unsave_vacancy", vacancy_id: s.id })
                       setSaved(prev => prev.filter(x => x.id !== s.id))
                     }}
-                    className="text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
+                    className="text-orange-300 hover:text-red-400 transition-colors flex-shrink-0"
                     title="Удалить из избранного"
                   >
                     <Icon name="BookmarkX" size={18}/>
