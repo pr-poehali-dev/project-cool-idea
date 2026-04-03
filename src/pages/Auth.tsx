@@ -38,46 +38,46 @@ export default function Auth() {
   }
 
   return (
-    <div className="min-h-screen bg-primary flex items-center justify-center px-4 py-12">
+    <div className="h-screen overflow-hidden bg-primary flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
+        <div className="text-center mb-5">
           <a href="/" className="text-white font-bold text-2xl tracking-tight">
             Работа-<span className="text-orange-400">Ялта</span>
           </a>
-          <p className="text-white/50 text-sm mt-2">Портал трудоустройства строительных специалистов</p>
+          <p className="text-white/50 text-sm mt-1">Портал трудоустройства строительных специалистов</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           {/* Таб переключатель */}
           <div className="flex">
             <button
-              className={`flex-1 py-4 text-sm font-semibold transition-colors ${mode === "login" ? "bg-primary text-white" : "bg-gray-50 text-gray-500 hover:text-gray-700"}`}
+              className={`flex-1 py-3 text-sm font-semibold transition-colors ${mode === "login" ? "bg-primary text-white" : "bg-gray-50 text-gray-500 hover:text-gray-700"}`}
               onClick={() => { setMode("login"); setError("") }}
             >
               Вход
             </button>
             <button
-              className={`flex-1 py-4 text-sm font-semibold transition-colors ${mode === "register" ? "bg-primary text-white" : "bg-gray-50 text-gray-500 hover:text-gray-700"}`}
+              className={`flex-1 py-3 text-sm font-semibold transition-colors ${mode === "register" ? "bg-primary text-white" : "bg-gray-50 text-gray-500 hover:text-gray-700"}`}
               onClick={() => { setMode("register"); setError("") }}
             >
               Регистрация
             </button>
           </div>
 
-          <div className="p-8">
+          <div className="p-6">
             {/* Выбор роли (только при регистрации) */}
             {mode === "register" && (
-              <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
+              <div className="flex bg-gray-100 rounded-xl p-1 mb-4">
                 <button
                   type="button"
-                  className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${role === "worker" ? "bg-white shadow text-gray-900" : "text-gray-500"}`}
+                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${role === "worker" ? "bg-white shadow text-gray-900" : "text-gray-500"}`}
                   onClick={() => setRole("worker")}
                 >
                   Соискатель
                 </button>
                 <button
                   type="button"
-                  className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${role === "employer" ? "bg-white shadow text-gray-900" : "text-gray-500"}`}
+                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${role === "employer" ? "bg-white shadow text-gray-900" : "text-gray-500"}`}
                   onClick={() => setRole("employer")}
                 >
                   Работодатель
@@ -85,7 +85,7 @@ export default function Auth() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               {mode === "register" && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -97,7 +97,7 @@ export default function Auth() {
                     placeholder="Например, Александр"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                   />
                 </div>
               )}
@@ -112,7 +112,7 @@ export default function Auth() {
                   placeholder="example@mail.ru"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                 />
               </div>
 
@@ -126,12 +126,12 @@ export default function Auth() {
                   placeholder={mode === "register" ? "Минимум 6 символов" : "Введите пароль"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
                 />
               </div>
 
               {error && (
-                <div className="flex items-center gap-2 text-red-500 text-sm bg-red-50 rounded-xl px-4 py-3">
+                <div className="flex items-center gap-2 text-red-500 text-sm bg-red-50 rounded-xl px-4 py-2.5">
                   <Icon name="AlertCircle" size={16} />
                   {error}
                 </div>
@@ -140,7 +140,7 @@ export default function Auth() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-orange-500 text-white py-3.5 rounded-xl font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-1"
+                className="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Загрузка..." : mode === "login" ? "Войти" : "Зарегистрироваться"}
               </button>
@@ -148,7 +148,7 @@ export default function Auth() {
           </div>
         </div>
 
-        <p className="text-center text-white/40 text-xs mt-6">
+        <p className="text-center text-white/40 text-xs mt-4">
           <a href="/" className="hover:text-white/70 transition-colors">← На главную</a>
         </p>
       </div>
