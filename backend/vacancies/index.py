@@ -12,13 +12,17 @@ CORS = {
 def get_db():
     return psycopg2.connect(os.environ["DATABASE_URL"])
 
+def t(name: str) -> str:
+    schema = os.environ.get("MAIN_DB_SCHEMA", "public")
+    return f"{schema}.{name}"
+
 def get_user_by_token(cur, token: str):
     if not token:
         return None
     cur.execute(
-        "SELECT u.id, u.name, u.email, u.role FROM users u "
-        "JOIN user_sessions s ON s.user_id = u.id "
-        "WHERE s.token = %s AND s.expires_at > NOW()",
+        f"SELECT u.id, u.name, u.email, u.role FROM {t('users')} u "
+        f"JOIN {t('user_sessions')} s ON s.user_id = u.id "
+        f"WHERE s.token = %s AND s.expires_at > NOW()",
         (token,)
     )
     return cur.fetchone()
@@ -42,7 +46,7 @@ def handler(event: dict, context) -> dict:
     # Публичный список вакансий
     if action == "list":
         specialty = body.get("specialty", "")
-        role_filter = body.get("role", "")  # employer=вакансии, worker=соискатели
+        role_filter = body.get("role", "")
         limit = int(body.get("limit", 20))
 
         where = ["v.is_active = TRUE"]
@@ -59,7 +63,7 @@ def handler(event: dict, context) -> dict:
             f"SELECT v.id, v.title, v.company, v.specialty, v.salary_from, v.salary_to, "
             f"v.city, v.schedule, v.experience_required, v.description, "
             f"v.contact_phone, v.contact_email, v.created_at, u.name, u.role "
-            f"FROM vacancies v JOIN users u ON u.id = v.user_id "
+            f"FROM {t('vacancies')} v JOIN {t('users')} u ON u.id = v.user_id "
             f"WHERE {where_sql} ORDER BY v.created_at DESC LIMIT %s",
             params + [limit]
         )
@@ -77,9 +81,9 @@ def handler(event: dict, context) -> dict:
             conn.close()
             return resp(401, {"error": "Не авторизован"})
         cur.execute(
-            "SELECT id, title, company, specialty, salary_from, salary_to, city, "
-            "schedule, experience_required, description, contact_phone, contact_email, "
-            "is_active, created_at FROM vacancies WHERE user_id = %s ORDER BY created_at DESC",
+            f"SELECT id, title, company, specialty, salary_from, salary_to, city, "
+            f"schedule, experience_required, description, contact_phone, contact_email, "
+            f"is_active, created_at FROM {t('vacancies')} WHERE user_id = %s ORDER BY created_at DESC",
             (user[0],)
         )
         rows = cur.fetchall()
@@ -103,9 +107,9 @@ def handler(event: dict, context) -> dict:
             return resp(400, {"error": "Заполните название и специальность"})
 
         cur.execute(
-            "INSERT INTO vacancies (user_id, title, company, specialty, salary_from, salary_to, "
-            "city, schedule, experience_required, description, contact_phone, contact_email) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+            f"INSERT INTO {t('vacancies')} (user_id, title, company, specialty, salary_from, salary_to, "
+            f"city, schedule, experience_required, description, contact_phone, contact_email) "
+            f"VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
             (
                 user[0], title,
                 body.get("company", ""),
@@ -133,7 +137,7 @@ def handler(event: dict, context) -> dict:
             return resp(401, {"error": "Не авторизован"})
         vacancy_id = body.get("id")
         cur.execute(
-            "UPDATE vacancies SET is_active = FALSE WHERE id = %s AND user_id = %s",
+            f"UPDATE {t('vacancies')} SET is_active = FALSE WHERE id = %s AND user_id = %s",
             (vacancy_id, user[0])
         )
         conn.commit()

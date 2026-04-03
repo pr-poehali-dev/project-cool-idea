@@ -14,6 +14,10 @@ CORS = {
 def get_db():
     return psycopg2.connect(os.environ["DATABASE_URL"])
 
+def t(name: str) -> str:
+    schema = os.environ.get("MAIN_DB_SCHEMA", "public")
+    return f"{schema}.{name}"
+
 def hash_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
 
@@ -22,9 +26,9 @@ def make_token() -> str:
 
 def get_user_by_token(cur, token: str):
     cur.execute(
-        "SELECT u.id, u.name, u.email, u.role FROM users u "
-        "JOIN user_sessions s ON s.user_id = u.id "
-        "WHERE s.token = %s AND s.expires_at > NOW()",
+        f"SELECT u.id, u.name, u.email, u.role FROM {t('users')} u "
+        f"JOIN {t('user_sessions')} s ON s.user_id = u.id "
+        f"WHERE s.token = %s AND s.expires_at > NOW()",
         (token,)
     )
     return cur.fetchone()
@@ -48,9 +52,9 @@ def handler(event: dict, context) -> dict:
         conn = get_db()
         cur = conn.cursor()
         cur.execute(
-            "SELECT u.id, u.name, u.email, u.role, u.phone, u.specialty, u.experience, u.city, u.about "
-            "FROM users u JOIN user_sessions s ON s.user_id = u.id "
-            "WHERE s.token = %s AND s.expires_at > NOW()",
+            f"SELECT u.id, u.name, u.email, u.role, u.phone, u.specialty, u.experience, u.city, u.about "
+            f"FROM {t('users')} u JOIN {t('user_sessions')} s ON s.user_id = u.id "
+            f"WHERE s.token = %s AND s.expires_at > NOW()",
             (token,)
         )
         user = cur.fetchone()
@@ -73,7 +77,7 @@ def handler(event: dict, context) -> dict:
             conn.close()
             return resp(401, {"error": "Сессия истекла"})
         cur.execute(
-            "UPDATE users SET name=%s, phone=%s, specialty=%s, experience=%s, city=%s, about=%s WHERE id=%s",
+            f"UPDATE {t('users')} SET name=%s, phone=%s, specialty=%s, experience=%s, city=%s, about=%s WHERE id=%s",
             (
                 body.get("name", user[1]).strip(),
                 body.get("phone", ""),
@@ -103,20 +107,20 @@ def handler(event: dict, context) -> dict:
 
         conn = get_db()
         cur = conn.cursor()
-        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+        cur.execute(f"SELECT id FROM {t('users')} WHERE email = %s", (email,))
         if cur.fetchone():
             conn.close()
             return resp(409, {"error": "Email уже зарегистрирован"})
 
         pw_hash = hash_password(password)
         cur.execute(
-            "INSERT INTO users (name, email, password_hash, role) VALUES (%s, %s, %s, %s) RETURNING id",
+            f"INSERT INTO {t('users')} (name, email, password_hash, role) VALUES (%s, %s, %s, %s) RETURNING id",
             (name, email, pw_hash, role)
         )
         user_id = cur.fetchone()[0]
         token_val = make_token()
         cur.execute(
-            "INSERT INTO user_sessions (user_id, token, expires_at) VALUES (%s, %s, NOW() + INTERVAL '30 days')",
+            f"INSERT INTO {t('user_sessions')} (user_id, token, expires_at) VALUES (%s, %s, NOW() + INTERVAL '30 days')",
             (user_id, token_val)
         )
         conn.commit()
@@ -134,7 +138,7 @@ def handler(event: dict, context) -> dict:
         cur = conn.cursor()
         pw_hash = hash_password(password)
         cur.execute(
-            "SELECT id, name, email, role FROM users WHERE email = %s AND password_hash = %s",
+            f"SELECT id, name, email, role FROM {t('users')} WHERE email = %s AND password_hash = %s",
             (email, pw_hash)
         )
         user = cur.fetchone()
@@ -144,7 +148,7 @@ def handler(event: dict, context) -> dict:
 
         token_val = make_token()
         cur.execute(
-            "INSERT INTO user_sessions (user_id, token, expires_at) VALUES (%s, %s, NOW() + INTERVAL '30 days')",
+            f"INSERT INTO {t('user_sessions')} (user_id, token, expires_at) VALUES (%s, %s, NOW() + INTERVAL '30 days')",
             (user[0], token_val)
         )
         conn.commit()
@@ -155,7 +159,7 @@ def handler(event: dict, context) -> dict:
         if token:
             conn = get_db()
             cur = conn.cursor()
-            cur.execute("UPDATE user_sessions SET expires_at = NOW() WHERE token = %s", (token,))
+            cur.execute(f"UPDATE {t('user_sessions')} SET expires_at = NOW() WHERE token = %s", (token,))
             conn.commit()
             conn.close()
         return resp(200, {"ok": True})
@@ -177,12 +181,12 @@ def handler(event: dict, context) -> dict:
         if len(new_password) < 6:
             conn.close()
             return resp(400, {"error": "Новый пароль минимум 6 символов"})
-        cur.execute("SELECT password_hash FROM users WHERE id = %s", (user[0],))
+        cur.execute(f"SELECT password_hash FROM {t('users')} WHERE id = %s", (user[0],))
         row = cur.fetchone()
         if not row or row[0] != hash_password(old_password):
             conn.close()
             return resp(400, {"error": "Неверный текущий пароль"})
-        cur.execute("UPDATE users SET password_hash = %s WHERE id = %s", (hash_password(new_password), user[0]))
+        cur.execute(f"UPDATE {t('users')} SET password_hash = %s WHERE id = %s", (hash_password(new_password), user[0]))
         conn.commit()
         conn.close()
         return resp(200, {"ok": True})
@@ -201,7 +205,7 @@ def handler(event: dict, context) -> dict:
             conn.close()
             return resp(400, {"error": "Не указан vacancy_id"})
         cur.execute(
-            "INSERT INTO saved_contacts (user_id, vacancy_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
+            f"INSERT INTO {t('saved_contacts')} (user_id, vacancy_id) VALUES (%s, %s) ON CONFLICT DO NOTHING",
             (user[0], vacancy_id)
         )
         conn.commit()
@@ -218,10 +222,10 @@ def handler(event: dict, context) -> dict:
             conn.close()
             return resp(401, {"error": "Сессия истекла"})
         cur.execute(
-            "SELECT v.id, v.title, v.specialty, v.city, v.salary_from, v.salary_to, "
-            "v.contact_phone, v.contact_email, v.description, sc.paid, sc.created_at "
-            "FROM saved_contacts sc JOIN vacancies v ON v.id = sc.vacancy_id "
-            "WHERE sc.user_id = %s ORDER BY sc.created_at DESC",
+            f"SELECT v.id, v.title, v.specialty, v.city, v.salary_from, v.salary_to, "
+            f"v.contact_phone, v.contact_email, v.description, sc.paid, sc.created_at "
+            f"FROM {t('saved_contacts')} sc JOIN {t('vacancies')} v ON v.id = sc.vacancy_id "
+            f"WHERE sc.user_id = %s ORDER BY sc.created_at DESC",
             (user[0],)
         )
         rows = cur.fetchall()
@@ -240,7 +244,7 @@ def handler(event: dict, context) -> dict:
             return resp(401, {"error": "Сессия истекла"})
         vacancy_id = body.get("vacancy_id")
         cur.execute(
-            "DELETE FROM saved_contacts WHERE user_id = %s AND vacancy_id = %s",
+            f"DELETE FROM {t('saved_contacts')} WHERE user_id = %s AND vacancy_id = %s",
             (user[0], vacancy_id)
         )
         conn.commit()
