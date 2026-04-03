@@ -324,6 +324,16 @@ export default function Cabinet() {
                       </div>
                     )}
                   </div>
+                  <button
+                    onClick={async () => {
+                      await apiUsers({ action: "unsave_vacancy", vacancy_id: s.id })
+                      setSaved(prev => prev.filter(x => x.id !== s.id))
+                    }}
+                    className="text-gray-300 hover:text-red-400 transition-colors flex-shrink-0"
+                    title="Удалить из избранного"
+                  >
+                    <Icon name="BookmarkX" size={18}/>
+                  </button>
                 </div>
               </div>
             ))}

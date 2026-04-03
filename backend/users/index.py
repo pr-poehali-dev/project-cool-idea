@@ -202,4 +202,22 @@ def handler(event: dict, context) -> dict:
         keys = ["id","title","specialty","city","salary_from","salary_to","contact_phone","contact_email","description","paid","saved_at"]
         return resp(200, [dict(zip(keys, r)) for r in rows])
 
+    if action == "unsave_vacancy":
+        if not token:
+            return resp(401, {"error": "Не авторизован"})
+        conn = get_db()
+        cur = conn.cursor()
+        user = get_user_by_token(cur, token)
+        if not user:
+            conn.close()
+            return resp(401, {"error": "Сессия истекла"})
+        vacancy_id = body.get("vacancy_id")
+        cur.execute(
+            "DELETE FROM saved_contacts WHERE user_id = %s AND vacancy_id = %s",
+            (user[0], vacancy_id)
+        )
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True})
+
     return resp(404, {"error": "Неизвестное действие"})

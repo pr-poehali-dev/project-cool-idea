@@ -98,8 +98,13 @@ export function VacanciesBoard() {
       return
     }
     setSaving(c.id)
-    await apiUsers({ action: "save_vacancy", vacancy_id: c.id })
-    setSaved(prev => new Set([...prev, c.id]))
+    if (saved.has(c.id)) {
+      await apiUsers({ action: "unsave_vacancy", vacancy_id: c.id })
+      setSaved(prev => { const s = new Set(prev); s.delete(c.id); return s })
+    } else {
+      await apiUsers({ action: "save_vacancy", vacancy_id: c.id })
+      setSaved(prev => new Set([...prev, c.id]))
+    }
     setSaving(null)
   }
 
