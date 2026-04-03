@@ -94,6 +94,7 @@ export function VacanciesBoard() {
 
   const toggleSave = async (c: VacancyCard) => {
     if (!getToken()) {
+      localStorage.setItem("pending_save_vacancy", String(c.id))
       window.location.href = "/auth"
       return
     }

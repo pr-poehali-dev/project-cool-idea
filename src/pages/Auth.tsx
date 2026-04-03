@@ -34,6 +34,13 @@ export default function Auth() {
     }
 
     saveToken(data.token)
+
+    const pendingId = localStorage.getItem("pending_save_vacancy")
+    if (pendingId) {
+      localStorage.removeItem("pending_save_vacancy")
+      await apiUsers({ action: "save_vacancy", vacancy_id: parseInt(pendingId) })
+    }
+
     navigate("/cabinet")
   }
 
