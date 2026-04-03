@@ -47,12 +47,25 @@ export function Header({ onOpenModal }: HeaderProps) {
           ))}
         </ul>
 
-        <button
-          onClick={onOpenModal}
-          className="hidden md:inline-flex items-center gap-2 text-sm px-5 py-2.5 transition-all duration-300 bg-orange-500 text-white hover:bg-orange-600 rounded-lg font-medium"
-        >
-          Разместить вакансию
-        </button>
+        <div className="hidden md:flex items-center gap-2">
+          <button
+            onClick={onOpenModal}
+            className="inline-flex items-center gap-2 text-sm px-5 py-2.5 transition-all duration-300 bg-orange-500 text-white hover:bg-orange-600 rounded-lg font-medium"
+          >
+            Разместить вакансию
+          </button>
+          <a
+            href="/admin"
+            title="Вход для сотрудников"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-all duration-300"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+              <polyline points="10 17 15 12 10 7" />
+              <line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+          </a>
+        </div>
 
         <button
           className="md:hidden z-50 transition-colors duration-300 text-white"
@@ -95,11 +108,23 @@ export function Header({ onOpenModal }: HeaderProps) {
           </ul>
 
           <button
-            className="inline-flex items-center justify-center gap-2 text-sm px-5 py-2.5 bg-orange-500 text-white hover:bg-orange-600 transition-all duration-300 mb-4 rounded-lg font-medium"
+            className="inline-flex items-center justify-center gap-2 text-sm px-5 py-2.5 bg-orange-500 text-white hover:bg-orange-600 transition-all duration-300 mb-3 rounded-lg font-medium"
             onClick={() => { closeMobileMenu(); onOpenModal() }}
           >
             Разместить вакансию
           </button>
+          <a
+            href="/admin"
+            onClick={closeMobileMenu}
+            className="inline-flex items-center gap-2 text-sm px-5 py-2.5 text-white/60 hover:text-white border border-white/20 hover:border-white/40 transition-all duration-300 mb-4 rounded-lg font-medium"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+              <polyline points="10 17 15 12 10 7" />
+              <line x1="15" y1="12" x2="3" y2="12" />
+            </svg>
+            Вход для сотрудников
+          </a>
         </div>
       </div>
     </header>
