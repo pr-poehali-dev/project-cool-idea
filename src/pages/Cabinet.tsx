@@ -356,6 +356,112 @@ export default function Cabinet() {
           </div>
         )}
 
+        {/* Добавить вакансию/объявление */}
+        {tab === "new_vacancy" && (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+            <div className="flex items-center gap-3 mb-6">
+              <button onClick={() => setTab("vacancies")} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <Icon name="ArrowLeft" size={20} />
+              </button>
+              <h2 className="font-bold text-gray-900 text-lg">{isEmployer ? "Новая вакансия" : "Новое объявление"}</h2>
+            </div>
+            <form onSubmit={createVacancy} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2">
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Специальность *</label>
+                <select required value={vacancyForm.specialty}
+                  onChange={e => setVacancyForm({...vacancyForm, specialty: e.target.value})}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white">
+                  <option value="">Выберите специальность</option>
+                  {SPECIALTIES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              {isEmployer && (
+                <div className="sm:col-span-2">
+                  <label className="text-xs font-medium text-gray-500 mb-1 block">Название компании</label>
+                  <input value={vacancyForm.company}
+                    onChange={e => setVacancyForm({...vacancyForm, company: e.target.value})}
+                    placeholder="ООО Строитель"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+                </div>
+              )}
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Зарплата от (₽)</label>
+                <input type="number" value={vacancyForm.salary_from}
+                  onChange={e => setVacancyForm({...vacancyForm, salary_from: e.target.value})}
+                  placeholder="50000"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Зарплата до (₽)</label>
+                <input type="number" value={vacancyForm.salary_to}
+                  onChange={e => setVacancyForm({...vacancyForm, salary_to: e.target.value})}
+                  placeholder="80000"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Город</label>
+                <input value={vacancyForm.city}
+                  onChange={e => setVacancyForm({...vacancyForm, city: e.target.value})}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">График работы</label>
+                <select value={vacancyForm.schedule}
+                  onChange={e => setVacancyForm({...vacancyForm, schedule: e.target.value})}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white">
+                  <option value="">Не указан</option>
+                  {SCHEDULES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Требуемый опыт</label>
+                <select value={vacancyForm.experience_required}
+                  onChange={e => setVacancyForm({...vacancyForm, experience_required: e.target.value})}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white">
+                  <option value="">Не важно</option>
+                  {EXPERIENCES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Описание</label>
+                <textarea value={vacancyForm.description} rows={4}
+                  onChange={e => setVacancyForm({...vacancyForm, description: e.target.value})}
+                  placeholder="Опишите условия работы, требования и обязанности..."
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 resize-none" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Контактный телефон</label>
+                <input value={vacancyForm.contact_phone}
+                  onChange={e => setVacancyForm({...vacancyForm, contact_phone: e.target.value})}
+                  placeholder="+7 999 000 00 00"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 mb-1 block">Контактный email</label>
+                <input type="email" value={vacancyForm.contact_email}
+                  onChange={e => setVacancyForm({...vacancyForm, contact_email: e.target.value})}
+                  placeholder="email@example.com"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+              </div>
+              {vacancyError && (
+                <div className="sm:col-span-2 flex items-center gap-2 text-red-500 text-sm bg-red-50 rounded-xl px-4 py-2.5">
+                  <Icon name="AlertCircle" size={15} />{vacancyError}
+                </div>
+              )}
+              <div className="sm:col-span-2 flex gap-3">
+                <button type="button" onClick={() => setTab("vacancies")}
+                  className="flex-1 border border-gray-200 text-gray-600 rounded-xl py-2.5 text-sm font-medium hover:bg-gray-50 transition-colors">
+                  Отмена
+                </button>
+                <button type="submit" disabled={vacancySaving}
+                  className="flex-1 bg-yellow-500 text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-yellow-600 transition-colors disabled:opacity-50">
+                  {vacancySaving ? "Сохранение..." : "Опубликовать"}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
         {/* Сохранённые объявления */}
         {tab === "saved" && (
           <div className="space-y-4">
