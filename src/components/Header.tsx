@@ -29,10 +29,10 @@ export function Header({ onOpenModal }: HeaderProps) {
   }
 
   const navItems = [
+    { label: "Аренда техники", href: "/rental" },
     { label: "Наш магазин", href: "/shop" },
     { label: "Вакансии", href: "#vacancies" },
     { label: "Агентство", href: "#agency" },
-    { label: "Аренда техники", href: "/rental" },
     { label: "Вопросы", href: "#faq" },
   ]
 
