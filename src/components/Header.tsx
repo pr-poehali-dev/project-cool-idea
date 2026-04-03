@@ -1,5 +1,6 @@
-import { useState, MouseEvent } from "react"
+import { useState, MouseEvent, useEffect } from "react"
 import { cn } from "../lib/utils"
+import { getToken, clearToken, apiUsers } from "../lib/auth"
 
 interface HeaderProps {
   onOpenModal: () => void
@@ -7,6 +8,16 @@ interface HeaderProps {
 
 export function Header({ onOpenModal }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userName, setUserName] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (getToken()) {
+      apiUsers({ action: "me" }).then(({ ok, data }) => {
+        if (ok) setUserName(data.name)
+        else clearToken()
+      })
+    }
+  }, [])
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false)
@@ -54,12 +65,28 @@ export function Header({ onOpenModal }: HeaderProps) {
           >
             Разместить вакансию
           </button>
+          {userName ? (
+            <a
+              href="/cabinet"
+              className="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-lg text-white bg-white/10 hover:bg-white/20 transition-all duration-300 font-medium"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              {userName}
+            </a>
+          ) : (
+            <a
+              href="/auth"
+              className="inline-flex items-center gap-2 text-sm px-4 py-2.5 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300 font-medium"
+            >
+              Войти
+            </a>
+          )}
           <a
-            href="/admin"
+            href="/login"
             title="Вход для сотрудников"
-            className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition-all duration-300"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-lg text-white/30 hover:text-white/60 hover:bg-white/10 transition-all duration-300"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
               <polyline points="10 17 15 12 10 7" />
               <line x1="15" y1="12" x2="3" y2="12" />
@@ -113,10 +140,28 @@ export function Header({ onOpenModal }: HeaderProps) {
           >
             Разместить вакансию
           </button>
+          {userName ? (
+            <a
+              href="/cabinet"
+              onClick={closeMobileMenu}
+              className="inline-flex items-center gap-2 text-sm px-5 py-2.5 text-white bg-white/10 hover:bg-white/20 transition-all duration-300 mb-3 rounded-lg font-medium"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              Мой кабинет
+            </a>
+          ) : (
+            <a
+              href="/auth"
+              onClick={closeMobileMenu}
+              className="inline-flex items-center gap-2 text-sm px-5 py-2.5 text-white/70 hover:text-white border border-white/20 hover:border-white/40 transition-all duration-300 mb-3 rounded-lg font-medium"
+            >
+              Войти / Регистрация
+            </a>
+          )}
           <a
-            href="/admin"
+            href="/login"
             onClick={closeMobileMenu}
-            className="inline-flex items-center gap-2 text-sm px-5 py-2.5 text-white/60 hover:text-white border border-white/20 hover:border-white/40 transition-all duration-300 mb-4 rounded-lg font-medium"
+            className="inline-flex items-center gap-2 text-sm px-5 py-2.5 text-white/40 hover:text-white/60 transition-all duration-300 mb-4 rounded-lg font-medium"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />

@@ -1,0 +1,28 @@
+{
+  "tests": [
+    {
+      "name": "Me without token - unauthorized",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "me"},
+      "expectedStatus": 401,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Login with wrong credentials",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "login", "email": "noone@test.ru", "password": "wrongpass"},
+      "expectedStatus": 401,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Register missing fields",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "register", "name": "", "email": "", "password": ""},
+      "expectedStatus": 400,
+      "bodyMatcher": "partial"
+    }
+  ]
+}
