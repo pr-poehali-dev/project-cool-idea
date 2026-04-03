@@ -1,15 +1,20 @@
+import { useEffect, useState } from "react"
 import Icon from "@/components/ui/icon"
+import func2url from "../../backend/func2url.json"
 
 const PHONE = "+7 995 614-14-14"
 const PHONE_HREF = "tel:+79956141414"
 const TG_HREF = "https://t.me/ug_transfer_online"
 
-export interface CatalogItem {
+interface DbProduct {
+  id: number
+  category: string
   title: string
   description: string
-  price?: string
-  image: string
-  tags?: string[]
+  price: string
+  image_url: string
+  tags: string[]
+  sort_order: number
 }
 
 export interface ShopCatalogPageProps {
@@ -17,11 +22,24 @@ export interface ShopCatalogPageProps {
   icon: string
   description: string
   heroImage: string
-  items: CatalogItem[]
   features: string[]
+  category: string
 }
 
-export default function ShopCatalogPage({ title, icon, description, heroImage, items, features }: ShopCatalogPageProps) {
+export default function ShopCatalogPage({ title, icon, description, heroImage, features, category }: ShopCatalogPageProps) {
+  const [products, setProducts] = useState<DbProduct[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch(`${func2url["shop-catalog"]}?category=${category}`)
+      .then(r => r.json())
+      .then(data => {
+        setProducts(Array.isArray(data) ? data : [])
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [category])
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Шапка */}
@@ -83,41 +101,71 @@ export default function ShopCatalogPage({ title, icon, description, heroImage, i
 
       {/* Товары */}
       <main className="container mx-auto px-4 max-w-5xl py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {items.map((item, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col">
-              <div className="h-48 overflow-hidden relative">
-                <img src={item.image} alt={item.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-                {item.tags && item.tags.length > 0 && (
-                  <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
-                    {item.tags.map((tag) => (
-                      <span key={tag} className="bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">{tag}</span>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="p-4 flex flex-col flex-1">
-                <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed flex-1 mb-3">{item.description}</p>
-                {item.price && (
-                  <p className="text-primary font-bold text-lg mb-3">{item.price}</p>
-                )}
-                <div className="flex gap-2">
-                  <a href={PHONE_HREF}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 border border-gray-200 hover:border-primary text-gray-700 hover:text-primary font-medium py-2 rounded-xl transition-colors text-sm">
-                    <Icon name="Phone" size={14} />
-                    Позвонить
-                  </a>
-                  <a href={TG_HREF} target="_blank" rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-xl transition-colors text-sm">
-                    <Icon name="Send" size={14} />
-                    Telegram
-                  </a>
+        {loading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[1,2,3,4,5,6].map(i => (
+              <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-pulse">
+                <div className="h-48 bg-gray-200" />
+                <div className="p-4 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-200 rounded w-full" />
+                  <div className="h-3 bg-gray-200 rounded w-2/3" />
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
+
+        {!loading && products.length === 0 && (
+          <div className="text-center py-16 text-gray-400">
+            <Icon name="Package" size={48} className="mx-auto mb-3 opacity-30" />
+            <p>Товары в этой категории скоро появятся</p>
+          </div>
+        )}
+
+        {!loading && products.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {products.map((item) => (
+              <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col">
+                <div className="h-48 overflow-hidden relative">
+                  {item.image_url ? (
+                    <img src={item.image_url} alt={item.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                      <Icon name={icon as "Square"} size={40} className="text-gray-300" />
+                    </div>
+                  )}
+                  {item.tags && item.tags.length > 0 && (
+                    <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
+                      {item.tags.map((tag) => (
+                        <span key={tag} className="bg-yellow-500 text-white text-xs font-semibold px-2 py-0.5 rounded-full">{tag}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="p-4 flex flex-col flex-1">
+                  <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed flex-1 mb-3">{item.description}</p>
+                  {item.price && (
+                    <p className="text-primary font-bold text-lg mb-3">{item.price}</p>
+                  )}
+                  <div className="flex gap-2">
+                    <a href={PHONE_HREF}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 border border-gray-200 hover:border-primary text-gray-700 hover:text-primary font-medium py-2 rounded-xl transition-colors text-sm">
+                      <Icon name="Phone" size={14} />
+                      Позвонить
+                    </a>
+                    <a href={TG_HREF} target="_blank" rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-xl transition-colors text-sm">
+                      <Icon name="Send" size={14} />
+                      Telegram
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
 
       {/* Нижняя плашка */}
