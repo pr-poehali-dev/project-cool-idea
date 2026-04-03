@@ -27,14 +27,6 @@ const services = [
     tag: "Бригады",
     time: "от 3 дней",
   },
-  {
-    id: 4,
-    title: "Гарантийная замена",
-    description: "Если специалист не подошёл — бесплатно заменим в течение 5 рабочих дней. Работаем по договору.",
-    image: "/images/hously-4.png",
-    tag: "Гарантия",
-    time: "5 дней",
-  },
 ]
 
 export function Projects() {
@@ -83,7 +75,7 @@ export function Projects() {
           </a>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           {services.map((service, index) => (
             <article
               key={service.id}
