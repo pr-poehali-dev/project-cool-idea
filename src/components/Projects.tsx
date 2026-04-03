@@ -109,10 +109,22 @@ export function Projects() {
                 </div>
               </div>
 
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-3">
                 <div>
                   <h3 className="text-xl font-semibold mb-2 group-hover:text-yellow-500 transition-colors">{service.title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{service.description}</p>
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <a href="https://t.me/ug_transfer_online" target="_blank" rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-semibold py-2.5 rounded-xl transition-colors">
+                    <Icon name="Send" size={14} />
+                    Заказать
+                  </a>
+                  <a href="tel:+79956141414"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 border border-gray-200 hover:border-yellow-400 text-gray-700 hover:text-yellow-500 text-sm font-medium py-2.5 rounded-xl transition-colors">
+                    <Icon name="Phone" size={14} />
+                    Позвонить
+                  </a>
                 </div>
               </div>
             </article>
