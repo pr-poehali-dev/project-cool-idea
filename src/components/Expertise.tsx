@@ -87,17 +87,17 @@ export function Expertise() {
                 itemRefs.current[index] = el
               }}
               data-index={index}
-              className={`relative p-6 border border-border rounded-2xl hover:border-orange-400 hover:shadow-lg transition-all duration-500 cursor-pointer group bg-card ${
+              className={`relative p-6 border border-border rounded-2xl hover:border-yellow-400 hover:shadow-lg transition-all duration-500 cursor-pointer group bg-card ${
                 visibleItems.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors">
-                <Icon name={cat.icon} size={24} fallback="Briefcase" className="text-orange-500" />
+              <div className="w-12 h-12 rounded-xl bg-yellow-50 flex items-center justify-center mb-4 group-hover:bg-yellow-100 transition-colors">
+                <Icon name={cat.icon} size={24} fallback="Briefcase" className="text-yellow-500" />
               </div>
               <h3 className="text-lg font-semibold mb-2">{cat.title}</h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-4">{cat.description}</p>
-              <span className="text-orange-500 text-sm font-medium">{cat.count}</span>
+              <span className="text-yellow-500 text-sm font-medium">{cat.count}</span>
             </div>
           ))}
         </div>

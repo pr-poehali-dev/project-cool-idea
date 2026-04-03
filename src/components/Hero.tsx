@@ -17,14 +17,14 @@ export function Hero({ onOpenModal }: HeroProps) {
       </div>
 
       <div className="container mx-auto px-6 md:px-12 relative z-10 text-center py-32">
-        <p className="text-sm tracking-[0.3em] uppercase text-orange-300 mb-4">
+        <p className="text-sm tracking-[0.3em] uppercase text-yellow-300 mb-4">
           г. Ялта и пригороды · Строительные специальности
         </p>
 
         <h1 className="text-5xl font-bold text-white mb-6 tracking-tight leading-[1.1] lg:text-7xl">
           Найдите работу
           <br />
-          <span className="text-orange-400">в строительстве</span>
+          <span className="text-yellow-400">в строительстве</span>
         </h1>
 
         <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -34,7 +34,7 @@ export function Hero({ onOpenModal }: HeroProps) {
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <a
             href="#vacancies"
-            className="inline-flex items-center justify-center gap-2 bg-orange-500 text-white px-8 py-4 text-base font-semibold hover:bg-orange-600 transition-colors duration-300 rounded-xl"
+            className="inline-flex items-center justify-center gap-2 bg-yellow-500 text-white px-8 py-4 text-base font-semibold hover:bg-yellow-600 transition-colors duration-300 rounded-xl"
           >
             <Icon name="Search" size={20} />
             Найти работу

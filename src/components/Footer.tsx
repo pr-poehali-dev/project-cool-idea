@@ -6,7 +6,7 @@ export function Footer() {
           <div className="md:col-span-2">
             <a href="/" className="inline-block mb-6">
               <span className="text-2xl font-bold tracking-tight">
-                Работа<span className="text-orange-500">Ялта</span>
+                Работа<span className="text-yellow-500">Ялта</span>
               </span>
             </a>
             <p className="text-muted-foreground leading-relaxed max-w-sm text-sm">
@@ -18,27 +18,27 @@ export function Footer() {
             <h4 className="text-sm font-semibold mb-4">Навигация</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <a href="#vacancies" className="hover:text-foreground hover:text-orange-500 transition-colors">
+                <a href="#vacancies" className="hover:text-foreground hover:text-yellow-500 transition-colors">
                   Вакансии
                 </a>
               </li>
               <li>
-                <a href="#agency" className="hover:text-foreground hover:text-orange-500 transition-colors">
+                <a href="#agency" className="hover:text-foreground hover:text-yellow-500 transition-colors">
                   Агентство
                 </a>
               </li>
               <li>
-                <a href="#benefits" className="hover:text-foreground hover:text-orange-500 transition-colors">
+                <a href="#benefits" className="hover:text-foreground hover:text-yellow-500 transition-colors">
                   Преимущества
                 </a>
               </li>
               <li>
-                <a href="#faq" className="hover:text-foreground hover:text-orange-500 transition-colors">
+                <a href="#faq" className="hover:text-foreground hover:text-yellow-500 transition-colors">
                   Вопросы и ответы
                 </a>
               </li>
               <li>
-                <a href="#contact" className="hover:text-foreground hover:text-orange-500 transition-colors">
+                <a href="#contact" className="hover:text-foreground hover:text-yellow-500 transition-colors">
                   Контакты
                 </a>
               </li>
@@ -49,22 +49,22 @@ export function Footer() {
             <h4 className="text-sm font-semibold mb-4">Контакты</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <a href="mailto:help@ug-transfer.com" className="hover:text-orange-500 transition-colors">
+                <a href="mailto:help@ug-transfer.com" className="hover:text-yellow-500 transition-colors">
                   help@ug-transfer.com
                 </a>
               </li>
               <li>
-                <a href="tel:+79956141414" className="hover:text-orange-500 transition-colors">
+                <a href="tel:+79956141414" className="hover:text-yellow-500 transition-colors">
                   +7 (995) 614-14-14
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-orange-500 transition-colors">
+                <a href="#" className="hover:text-yellow-500 transition-colors">
                   Telegram
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-orange-500 transition-colors">
+                <a href="#" className="hover:text-yellow-500 transition-colors">
                   WhatsApp
                 </a>
               </li>

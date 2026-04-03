@@ -111,7 +111,7 @@ export default function Admin() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-primary py-4 px-6 flex items-center justify-between">
         <a href="/" className="text-white font-bold text-xl tracking-tight">
-          Работа-<span className="text-orange-400">Ялта</span>
+          Работа-<span className="text-yellow-400">Ялта</span>
           <span className="text-white/40 text-sm font-normal ml-3">Админ-панель</span>
         </a>
         <button onClick={logout} className="flex items-center gap-2 text-white/60 hover:text-white text-sm transition-colors">
@@ -136,7 +136,7 @@ export default function Admin() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {[
                 ["Всего пользователей", stats.total_users, "Users", "blue"],
-                ["Работодатели", stats.employers, "Building2", "orange"],
+                ["Работодатели", stats.employers, "Building2", "yellow"],
                 ["Соискатели", stats.workers, "HardHat", "green"],
                 ["Активных объявлений", stats.active_vacancies, "Briefcase", "purple"],
                 ["Всего объявлений", stats.total_vacancies, "FileText", "gray"],
@@ -152,11 +152,11 @@ export default function Admin() {
               ))}
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <button onClick={() => setTab("employers")} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-left hover:border-orange-300 transition-colors">
+              <button onClick={() => setTab("employers")} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-left hover:border-yellow-300 transition-colors">
                 <p className="font-semibold text-gray-800 mb-1">Управление работодателями →</p>
                 <p className="text-gray-400 text-sm">Просмотр, поиск, удаление</p>
               </button>
-              <button onClick={() => setTab("workers")} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-left hover:border-orange-300 transition-colors">
+              <button onClick={() => setTab("workers")} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm text-left hover:border-yellow-300 transition-colors">
                 <p className="font-semibold text-gray-800 mb-1">Управление соискателями →</p>
                 <p className="text-gray-400 text-sm">Просмотр, поиск, удаление</p>
               </button>
@@ -172,9 +172,9 @@ export default function Admin() {
               onChange={e => setSearch(e.target.value)}
               onKeyDown={e => e.key === "Enter" && doSearch()}
               placeholder="Поиск по имени, email, специальности..."
-              className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
             />
-            <button onClick={doSearch} className="bg-orange-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-orange-600 transition-colors">
+            <button onClick={doSearch} className="bg-yellow-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-yellow-600 transition-colors">
               Найти
             </button>
             {isVacancyTab && (
@@ -211,7 +211,7 @@ export default function Admin() {
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
                     {u.phone && (
-                      <a href={`tel:${u.phone}`} className="text-gray-400 hover:text-orange-500 transition-colors">
+                      <a href={`tel:${u.phone}`} className="text-gray-400 hover:text-yellow-500 transition-colors">
                         <Icon name="Phone" size={16} />
                       </a>
                     )}
@@ -244,7 +244,7 @@ export default function Admin() {
                       </div>
                       <p className="text-sm text-gray-500">{v.specialty} · {v.city}</p>
                       {(v.salary_from || v.salary_to) && (
-                        <p className="text-sm text-orange-500 font-medium mt-0.5">
+                        <p className="text-sm text-yellow-500 font-medium mt-0.5">
                           {v.salary_from ? `от ${v.salary_from.toLocaleString()} ₽` : ""}{v.salary_to ? ` до ${v.salary_to.toLocaleString()} ₽` : ""}
                         </p>
                       )}
@@ -253,7 +253,7 @@ export default function Admin() {
                           <Icon name="User" size={11} />{v.user_name} · {v.user_email}
                         </span>
                         {v.contact_phone && (
-                          <a href={`tel:${v.contact_phone}`} className="text-xs text-orange-500 flex items-center gap-1 hover:underline">
+                          <a href={`tel:${v.contact_phone}`} className="text-xs text-yellow-500 flex items-center gap-1 hover:underline">
                             <Icon name="Phone" size={11} />{v.contact_phone}
                           </a>
                         )}

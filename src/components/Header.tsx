@@ -41,7 +41,7 @@ export function Header({ onOpenModal }: HeaderProps) {
       <nav className="container mx-auto px-6 flex items-center justify-between md:px-[24]">
         <a href="/" className="flex items-center gap-2 group">
           <span className="text-white font-bold text-xl tracking-tight">
-            Работа-<span className="text-orange-400">Ялта</span>
+            Работа-<span className="text-yellow-400">Ялта</span>
           </span>
         </a>
 
@@ -50,7 +50,7 @@ export function Header({ onOpenModal }: HeaderProps) {
             <li key={item.label}>
               <a
                 href={item.href}
-                className="hover:text-orange-400 transition-colors duration-300 relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 hover:after:w-full after:bg-orange-400 after:transition-all after:duration-300 text-white"
+                className="hover:text-yellow-400 transition-colors duration-300 relative after:absolute after:bottom-0 after:left-0 after:h-px after:w-0 hover:after:w-full after:bg-yellow-400 after:transition-all after:duration-300 text-white"
               >
                 {item.label}
               </a>
@@ -61,7 +61,7 @@ export function Header({ onOpenModal }: HeaderProps) {
         <div className="hidden md:flex items-center gap-2">
           <button
             onClick={onOpenModal}
-            className="inline-flex items-center gap-2 text-sm px-5 py-2.5 transition-all duration-300 bg-orange-500 text-white hover:bg-orange-600 rounded-lg font-medium"
+            className="inline-flex items-center gap-2 text-sm px-5 py-2.5 transition-all duration-300 bg-yellow-500 text-white hover:bg-yellow-600 rounded-lg font-medium"
           >
             Разместить вакансию
           </button>
@@ -114,7 +114,7 @@ export function Header({ onOpenModal }: HeaderProps) {
               <li key={item.label}>
                 <a
                   href={item.href}
-                  className="hover:text-orange-400 transition-colors duration-300 text-white text-3xl font-light block"
+                  className="hover:text-yellow-400 transition-colors duration-300 text-white text-3xl font-light block"
                   onClick={closeMobileMenu}
                 >
                   {item.label}
@@ -124,7 +124,7 @@ export function Header({ onOpenModal }: HeaderProps) {
           </ul>
 
           <button
-            className="inline-flex items-center justify-center gap-2 text-sm px-5 py-2.5 bg-orange-500 text-white hover:bg-orange-600 transition-all duration-300 mb-3 rounded-lg font-medium"
+            className="inline-flex items-center justify-center gap-2 text-sm px-5 py-2.5 bg-yellow-500 text-white hover:bg-yellow-600 transition-all duration-300 mb-3 rounded-lg font-medium"
             onClick={() => { closeMobileMenu(); onOpenModal() }}
           >
             Разместить вакансию

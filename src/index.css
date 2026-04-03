@@ -19,15 +19,15 @@
     --secondary-foreground: 215 25% 18%;
     --muted: 210 15% 92%;
     --muted-foreground: 215 15% 45%;
-    --accent: 25 95% 53%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 45 100% 51%;
+    --accent-foreground: 215 50% 12%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 210 20% 88%;
     --input: 210 20% 88%;
-    --ring: 25 95% 53%;
+    --ring: 45 100% 51%;
     --radius: 0.375rem;
-    --orange: 25 95% 53%;
+    --orange: 45 100% 51%;
     --blue-dark: 215 50% 18%;
 
     --sidebar-background: 0 0% 98%;

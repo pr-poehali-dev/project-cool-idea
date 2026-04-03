@@ -76,7 +76,7 @@ export function Projects() {
           </div>
           <a
             href="#contact"
-            className="inline-flex items-center gap-2 text-sm text-orange-500 hover:text-orange-600 transition-colors group font-semibold"
+            className="inline-flex items-center gap-2 text-sm text-yellow-500 hover:text-yellow-600 transition-colors group font-semibold"
           >
             Оставить заявку
             <Icon name="ArrowUpRight" size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -107,7 +107,7 @@ export function Projects() {
                   }}
                 />
                 <div className="absolute top-4 left-4 z-10">
-                  <span className="bg-orange-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                  <span className="bg-yellow-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
                     {service.tag}
                   </span>
                 </div>
@@ -119,7 +119,7 @@ export function Projects() {
 
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="text-xl font-semibold mb-2 group-hover:text-orange-500 transition-colors">{service.title}</h3>
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-yellow-500 transition-colors">{service.title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed">{service.description}</p>
                 </div>
               </div>

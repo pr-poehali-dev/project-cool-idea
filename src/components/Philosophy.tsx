@@ -88,9 +88,9 @@ export function Philosophy() {
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <div className="flex gap-5 p-5 rounded-2xl bg-card border border-border hover:border-orange-300 hover:shadow-md transition-all duration-300">
-                  <div className="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
-                    <Icon name={item.icon} size={22} fallback="Star" className="text-orange-500" />
+                <div className="flex gap-5 p-5 rounded-2xl bg-card border border-border hover:border-yellow-300 hover:shadow-md transition-all duration-300">
+                  <div className="w-11 h-11 rounded-xl bg-yellow-50 flex items-center justify-center flex-shrink-0">
+                    <Icon name={item.icon} size={22} fallback="Star" className="text-yellow-500" />
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold mb-2">{item.title}</h3>

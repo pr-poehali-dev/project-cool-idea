@@ -33,7 +33,7 @@ export function VacancyModal({ open, onClose }: VacancyModalProps) {
             <a
               href="/cabinet"
               onClick={onClose}
-              className="w-full bg-orange-500 text-white py-3.5 rounded-xl font-semibold hover:bg-orange-600 transition-colors text-sm text-center"
+              className="w-full bg-yellow-500 text-white py-3.5 rounded-xl font-semibold hover:bg-yellow-600 transition-colors text-sm text-center"
             >
               Перейти в кабинет →
             </a>
@@ -42,7 +42,7 @@ export function VacancyModal({ open, onClose }: VacancyModalProps) {
               <a
                 href="/auth"
                 onClick={onClose}
-                className="w-full bg-orange-500 text-white py-3.5 rounded-xl font-semibold hover:bg-orange-600 transition-colors text-sm text-center"
+                className="w-full bg-yellow-500 text-white py-3.5 rounded-xl font-semibold hover:bg-yellow-600 transition-colors text-sm text-center"
               >
                 Зарегистрироваться и разместить
               </a>

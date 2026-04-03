@@ -59,14 +59,14 @@ export function FAQ() {
                 onClick={() => toggleQuestion(index)}
                 className="w-full py-6 flex items-start justify-between gap-6 text-left group"
               >
-                <span className="text-base md:text-lg font-semibold text-foreground transition-colors group-hover:text-orange-500">
+                <span className="text-base md:text-lg font-semibold text-foreground transition-colors group-hover:text-yellow-500">
                   {faq.question}
                 </span>
                 <Icon
                   name="Plus"
                   size={22}
                   className={`text-foreground flex-shrink-0 transition-transform duration-300 ${
-                    openIndex === index ? "rotate-45 text-orange-500" : "rotate-0"
+                    openIndex === index ? "rotate-45 text-yellow-500" : "rotate-0"
                   }`}
                 />
               </button>

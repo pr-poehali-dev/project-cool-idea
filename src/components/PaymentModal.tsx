@@ -46,7 +46,7 @@ export function PaymentModal({ open, onClose, vacancyTitle, amount = 299 }: Paym
         <div className="bg-primary px-5 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-              <Icon name="CreditCard" size={18} className="text-orange-400" />
+              <Icon name="CreditCard" size={18} className="text-yellow-400" />
             </div>
             <span className="text-white font-semibold text-sm">Оплата доступа</span>
           </div>
@@ -56,7 +56,7 @@ export function PaymentModal({ open, onClose, vacancyTitle, amount = 299 }: Paym
         </div>
 
         {/* Сумма */}
-        <div className="bg-orange-50 border-b border-orange-100 px-5 py-3 flex items-center justify-between">
+        <div className="bg-yellow-50 border-b border-yellow-100 px-5 py-3 flex items-center justify-between">
           <div>
             <p className="text-xs text-gray-500">Доступ к контактам</p>
             <p className="text-sm font-medium text-gray-800 truncate max-w-[200px]">{vacancyTitle}</p>
@@ -76,7 +76,7 @@ export function PaymentModal({ open, onClose, vacancyTitle, amount = 299 }: Paym
                 placeholder="0000 0000 0000 0000"
                 value={cardNumber}
                 onChange={e => setCardNumber(formatCard(e.target.value))}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 pr-12 tracking-wider"
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 pr-12 tracking-wider"
               />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1">
                 <div className="w-5 h-3 bg-red-500 rounded-sm opacity-80" />
@@ -95,7 +95,7 @@ export function PaymentModal({ open, onClose, vacancyTitle, amount = 299 }: Paym
                 placeholder="MM/YY"
                 value={expiry}
                 onChange={e => setExpiry(formatExpiry(e.target.value))}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
             </div>
             <div>
@@ -108,7 +108,7 @@ export function PaymentModal({ open, onClose, vacancyTitle, amount = 299 }: Paym
                 maxLength={3}
                 value={cvv}
                 onChange={e => setCvv(e.target.value.replace(/\D/g, "").slice(0, 3))}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
               />
             </div>
           </div>
@@ -121,14 +121,14 @@ export function PaymentModal({ open, onClose, vacancyTitle, amount = 299 }: Paym
               placeholder="IVAN IVANOV"
               value={name}
               onChange={e => setName(e.target.value.toUpperCase())}
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 uppercase tracking-wider"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 uppercase tracking-wider"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+            className="w-full bg-yellow-500 text-white py-3 rounded-xl font-semibold hover:bg-yellow-600 transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>

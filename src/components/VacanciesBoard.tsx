@@ -83,7 +83,7 @@ export function VacanciesBoard() {
     <section id="vacancies" className="py-20 bg-gray-50">
       <div className="container mx-auto px-6 md:px-12">
         <div className="text-center mb-12">
-          <p className="text-sm tracking-[0.3em] uppercase text-orange-500 mb-3">Площадка</p>
+          <p className="text-sm tracking-[0.3em] uppercase text-yellow-500 mb-3">Площадка</p>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Вакансии и соискатели</h2>
           <p className="text-gray-500 mt-3 max-w-xl mx-auto">Работодатели размещают вакансии — специалисты находят работу</p>
         </div>
@@ -92,7 +92,7 @@ export function VacanciesBoard() {
         <div className="flex justify-center gap-2 mb-6">
           {([["","Все объявления"],["employer","Вакансии"],["worker","Соискатели"]] as [typeof roleFilter, string][]).map(([val, label]) => (
             <button key={val} onClick={() => setRoleFilter(val)}
-              className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${roleFilter===val ? "bg-primary text-white" : "bg-white text-gray-600 border border-gray-200 hover:border-orange-300"}`}>
+              className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${roleFilter===val ? "bg-primary text-white" : "bg-white text-gray-600 border border-gray-200 hover:border-yellow-300"}`}>
               {label}
             </button>
           ))}
@@ -102,7 +102,7 @@ export function VacanciesBoard() {
         <div className="flex gap-2 flex-wrap justify-center mb-10">
           {SPECIALTIES.map(s => (
             <button key={s} onClick={() => setFilter(s)}
-              className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${filter===s ? "bg-orange-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-orange-300"}`}>
+              className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${filter===s ? "bg-yellow-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-yellow-300"}`}>
               {s}
             </button>
           ))}
@@ -114,14 +114,14 @@ export function VacanciesBoard() {
           <div className="text-center py-16">
             <Icon name="Inbox" size={48} className="text-gray-200 mx-auto mb-4" />
             <p className="text-gray-400">Объявлений пока нет</p>
-            <a href="/cabinet" className="mt-4 inline-block text-orange-500 text-sm font-medium hover:text-orange-600">
+            <a href="/cabinet" className="mt-4 inline-block text-yellow-500 text-sm font-medium hover:text-yellow-600">
               Разместить первое →
             </a>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {cards.map(c => (
-              <div key={c.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-orange-200 transition-all overflow-hidden">
+              <div key={c.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-yellow-200 transition-all overflow-hidden">
                 <div className="relative h-40 overflow-hidden">
                   <img src={getSpecialtyPhoto(c.specialty)} alt={c.specialty}
                     className="w-full h-full object-cover" />
@@ -135,7 +135,7 @@ export function VacanciesBoard() {
                     <Icon
                       name="Bookmark"
                       size={16}
-                      className={saved.has(c.id) ? "text-orange-400 fill-orange-400" : "text-white"}
+                      className={saved.has(c.id) ? "text-yellow-400 fill-yellow-400" : "text-white"}
                     />
                   </button>
                   <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
@@ -156,7 +156,7 @@ export function VacanciesBoard() {
                   </div>
 
                   {formatSalary(c.salary_from, c.salary_to) && (
-                    <p className="text-orange-500 font-bold text-sm mb-3">{formatSalary(c.salary_from, c.salary_to)}</p>
+                    <p className="text-yellow-500 font-bold text-sm mb-3">{formatSalary(c.salary_from, c.salary_to)}</p>
                   )}
 
                   {c.description && (
@@ -169,7 +169,7 @@ export function VacanciesBoard() {
                       {expanded===c.id ? "Свернуть ↑" : "Подробнее ↓"}
                     </button>
                     <button onClick={() => setContactVacancy(c)}
-                      className="flex items-center gap-1.5 bg-orange-500 text-white text-sm px-4 py-2 rounded-xl font-semibold hover:bg-orange-600 transition-colors">
+                      className="flex items-center gap-1.5 bg-yellow-500 text-white text-sm px-4 py-2 rounded-xl font-semibold hover:bg-yellow-600 transition-colors">
                       <Icon name="Phone" size={14} />
                       Связаться
                     </button>
@@ -187,7 +187,7 @@ export function VacanciesBoard() {
         )}
 
         <div className="text-center mt-10">
-          <a href="/auth" className="inline-flex items-center gap-2 bg-orange-500 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-orange-600 transition-colors text-sm">
+          <a href="/auth" className="inline-flex items-center gap-2 bg-yellow-500 text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-yellow-600 transition-colors text-sm">
             <Icon name="Plus" size={18} />
             Разместить объявление
           </a>

@@ -25,7 +25,7 @@ export function CallToAction({ onOpenModal }: CallToActionProps) {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
             <button
               onClick={onOpenModal}
-              className="inline-flex items-center justify-center gap-3 bg-orange-500 text-white px-8 py-4 text-sm font-semibold hover:bg-orange-600 transition-colors duration-300 rounded-xl"
+              className="inline-flex items-center justify-center gap-3 bg-yellow-500 text-white px-8 py-4 text-sm font-semibold hover:bg-yellow-600 transition-colors duration-300 rounded-xl"
             >
               <Icon name="Briefcase" size={18} />
               Разместить вакансию
@@ -41,27 +41,27 @@ export function CallToAction({ onOpenModal }: CallToActionProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-primary-foreground/20 pt-12">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                <Icon name="Mail" size={22} className="text-orange-400" />
+              <div className="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                <Icon name="Mail" size={22} className="text-yellow-400" />
               </div>
               <p className="text-primary-foreground/60 text-xs uppercase tracking-widest">Email</p>
-              <a href="mailto:help@ug-transfer.com" className="text-sm hover:text-orange-400 transition-colors">
+              <a href="mailto:help@ug-transfer.com" className="text-sm hover:text-yellow-400 transition-colors">
                 help@ug-transfer.com
               </a>
             </div>
             <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                <Icon name="MessageCircle" size={22} className="text-orange-400" />
+              <div className="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                <Icon name="MessageCircle" size={22} className="text-yellow-400" />
               </div>
               <p className="text-primary-foreground/60 text-xs uppercase tracking-widest">Мессенджеры</p>
               <div className="flex gap-4 text-sm">
-                <a href="#" className="hover:text-orange-400 transition-colors">WhatsApp</a>
-                <a href="#" className="hover:text-orange-400 transition-colors">Telegram</a>
+                <a href="#" className="hover:text-yellow-400 transition-colors">WhatsApp</a>
+                <a href="#" className="hover:text-yellow-400 transition-colors">Telegram</a>
               </div>
             </div>
             <div className="flex flex-col items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
-                <Icon name="MapPin" size={22} className="text-orange-400" />
+              <div className="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center">
+                <Icon name="MapPin" size={22} className="text-yellow-400" />
               </div>
               <p className="text-primary-foreground/60 text-xs uppercase tracking-widest">География</p>
               <p className="text-sm text-center">г. Ялта и пригороды,<br />Республика Крым</p>

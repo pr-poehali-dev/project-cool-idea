@@ -146,14 +146,14 @@ export default function Cabinet() {
 
   const isEmployer = user?.role === "employer"
   const roleLabel = isEmployer ? "Работодатель" : "Соискатель"
-  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white"
+  const inputCls = "w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white"
   const labelCls = "block text-sm font-medium text-gray-700 mb-1"
 
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-primary py-4 px-6 flex items-center justify-between">
         <a href="/" className="text-white font-bold text-xl tracking-tight">
-          Работа-<span className="text-orange-400">Ялта</span>
+          Работа-<span className="text-yellow-400">Ялта</span>
         </a>
         <div className="flex items-center gap-4">
           <span className="text-white/60 text-sm hidden sm:block">{user?.name}</span>
@@ -183,16 +183,16 @@ export default function Cabinet() {
         {tab === "overview" && (
           <div className="space-y-4">
             <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex items-center gap-4">
-              <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <Icon name={isEmployer ? "Building2" : "HardHat"} size={28} className="text-orange-500" />
+              <div className="w-14 h-14 bg-yellow-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <Icon name={isEmployer ? "Building2" : "HardHat"} size={28} className="text-yellow-500" />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Привет, {user?.name}!</h1>
-                <span className="inline-block mt-1 text-xs bg-orange-100 text-orange-600 px-2.5 py-1 rounded-full font-medium">{roleLabel}</span>
+                <span className="inline-block mt-1 text-xs bg-yellow-100 text-yellow-600 px-2.5 py-1 rounded-full font-medium">{roleLabel}</span>
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <button onClick={() => setTab("vacancies")} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-left hover:border-orange-200 transition-colors">
+              <button onClick={() => setTab("vacancies")} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-left hover:border-yellow-200 transition-colors">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
                     <Icon name="Briefcase" size={20} className="text-blue-500" />
@@ -201,7 +201,7 @@ export default function Cabinet() {
                 </div>
                 <p className="text-gray-400 text-sm">Управляйте своими объявлениями</p>
               </button>
-              <button onClick={() => setTab("profile")} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-left hover:border-orange-200 transition-colors">
+              <button onClick={() => setTab("profile")} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-left hover:border-yellow-200 transition-colors">
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
                     <Icon name="User" size={20} className="text-purple-500" />
@@ -218,13 +218,13 @@ export default function Cabinet() {
         {tab === "profile" && (
           <div className="space-y-4">
           {!isEmployer && (!user?.specialty || !user?.phone) && (
-            <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-start gap-3">
-              <div className="w-9 h-9 bg-orange-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Icon name="Lightbulb" size={18} className="text-orange-500" />
+            <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
+              <div className="w-9 h-9 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Icon name="Lightbulb" size={18} className="text-yellow-500" />
               </div>
               <div>
-                <p className="font-semibold text-orange-800 text-sm">Заполните профиль</p>
-                <p className="text-orange-600 text-sm mt-0.5">Работодатели ищут специалистов по специальности и городу. Чем полнее профиль — тем больше шансов получить предложение.</p>
+                <p className="font-semibold text-yellow-800 text-sm">Заполните профиль</p>
+                <p className="text-yellow-600 text-sm mt-0.5">Работодатели ищут специалистов по специальности и городу. Чем полнее профиль — тем больше шансов получить предложение.</p>
               </div>
             </div>
           )}
@@ -268,7 +268,7 @@ export default function Cabinet() {
               </div>
               <div className="sm:col-span-2 flex items-center gap-3">
                 <button type="submit" disabled={profileSaving}
-                  className="bg-orange-500 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 text-sm">
+                  className="bg-yellow-500 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-yellow-600 transition-colors disabled:opacity-50 text-sm">
                   {profileSaving?"Сохраняю...":"Сохранить"}
                 </button>
                 {profileSaved && <span className="text-green-500 text-sm flex items-center gap-1"><Icon name="CheckCircle" size={16}/>Сохранено!</span>}
@@ -320,7 +320,7 @@ export default function Cabinet() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="font-bold text-gray-900 text-lg">{isEmployer?"Мои вакансии":"Мои объявления"}</h2>
-              <button onClick={()=>setTab("new_vacancy")} className="flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-orange-600 transition-colors">
+              <button onClick={()=>setTab("new_vacancy")} className="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-yellow-600 transition-colors">
                 <Icon name="Plus" size={16}/>Добавить
               </button>
             </div>
@@ -328,10 +328,10 @@ export default function Cabinet() {
               <div className="bg-white rounded-2xl p-12 border border-gray-100 shadow-sm text-center">
                 <Icon name="Inbox" size={40} className="text-gray-200 mx-auto mb-3"/>
                 <p className="text-gray-400 text-sm">Объявлений пока нет</p>
-                <button onClick={()=>setTab("new_vacancy")} className="mt-4 text-orange-500 text-sm font-medium hover:text-orange-600">Создать первое →</button>
+                <button onClick={()=>setTab("new_vacancy")} className="mt-4 text-yellow-500 text-sm font-medium hover:text-yellow-600">Создать первое →</button>
               </div>
             ) : vacancies.map(v=>(
-              <div key={v.id} className="bg-white rounded-2xl border-2 border-orange-400 shadow-sm overflow-hidden flex flex-col sm:flex-row">
+              <div key={v.id} className="bg-white rounded-2xl border-2 border-yellow-400 shadow-sm overflow-hidden flex flex-col sm:flex-row">
                 <div className="relative w-full sm:w-36 h-32 sm:h-auto flex-shrink-0">
                   <img src={getSpecialtyPhoto(v.specialty)} alt={v.specialty} className="w-full h-full object-cover"/>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent sm:bg-gradient-to-r"/>
@@ -341,13 +341,13 @@ export default function Cabinet() {
                     <h3 className="font-semibold text-gray-900">{v.title}</h3>
                     <p className="text-sm text-gray-500 mt-0.5">{v.specialty} · {v.city}</p>
                     {(v.salary_from||v.salary_to)&&(
-                      <p className="text-sm text-orange-500 font-medium mt-1">
+                      <p className="text-sm text-yellow-500 font-medium mt-1">
                         {v.salary_from?`от ${v.salary_from.toLocaleString()} ₽`:""}{v.salary_to?` до ${v.salary_to.toLocaleString()} ₽`:""}
                       </p>
                     )}
                     {v.description&&<p className="text-sm text-gray-400 mt-2 line-clamp-2">{v.description}</p>}
                   </div>
-                  <button onClick={()=>deleteVacancy(v.id)} className="text-orange-300 hover:text-red-400 transition-colors flex-shrink-0">
+                  <button onClick={()=>deleteVacancy(v.id)} className="text-yellow-300 hover:text-red-400 transition-colors flex-shrink-0">
                     <Icon name="Trash2" size={18}/>
                   </button>
                 </div>
@@ -364,10 +364,10 @@ export default function Cabinet() {
               <div className="bg-white rounded-2xl p-12 border border-gray-100 shadow-sm text-center">
                 <Icon name="Bookmark" size={40} className="text-gray-200 mx-auto mb-3"/>
                 <p className="text-gray-400 text-sm">Нет сохранённых объявлений</p>
-                <a href="/#vacancies" className="mt-4 inline-block text-orange-500 text-sm font-medium hover:text-orange-600">Смотреть объявления →</a>
+                <a href="/#vacancies" className="mt-4 inline-block text-yellow-500 text-sm font-medium hover:text-yellow-600">Смотреть объявления →</a>
               </div>
             ) : saved.map(s => (
-              <div key={s.id} className="bg-white rounded-2xl border-2 border-orange-400 shadow-sm overflow-hidden flex flex-col sm:flex-row">
+              <div key={s.id} className="bg-white rounded-2xl border-2 border-yellow-400 shadow-sm overflow-hidden flex flex-col sm:flex-row">
                 <div className="relative w-full sm:w-36 h-32 sm:h-auto flex-shrink-0">
                   <img src={getSpecialtyPhoto(s.specialty)} alt={s.specialty} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent sm:bg-gradient-to-r" />
@@ -380,19 +380,19 @@ export default function Cabinet() {
                     </div>
                     <p className="text-sm text-gray-500">{s.specialty} · {s.city}</p>
                     {(s.salary_from||s.salary_to) && (
-                      <p className="text-sm text-orange-500 font-medium mt-1">
+                      <p className="text-sm text-yellow-500 font-medium mt-1">
                         {s.salary_from?`от ${s.salary_from.toLocaleString()} ₽`:""}{s.salary_to?` до ${s.salary_to.toLocaleString()} ₽`:""}
                       </p>
                     )}
                     {s.paid ? (
                       <div className="flex flex-col gap-1 mt-3 pt-3 border-t border-gray-100">
                         {s.contact_phone && (
-                          <a href={`tel:${s.contact_phone}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-orange-500 transition-colors">
+                          <a href={`tel:${s.contact_phone}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-yellow-500 transition-colors">
                             <Icon name="Phone" size={14}/>{s.contact_phone}
                           </a>
                         )}
                         {s.contact_email && (
-                          <a href={`mailto:${s.contact_email}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-orange-500 transition-colors">
+                          <a href={`mailto:${s.contact_email}`} className="flex items-center gap-2 text-sm text-gray-700 hover:text-yellow-500 transition-colors">
                             <Icon name="Mail" size={14}/>{s.contact_email}
                           </a>
                         )}
@@ -401,7 +401,7 @@ export default function Cabinet() {
                       <div className="flex items-center gap-2 mt-3">
                         <Icon name="Lock" size={14} className="text-gray-400"/>
                         <span className="text-sm text-gray-400">Контакты скрыты — </span>
-                        <button onClick={() => setPayingVacancy(s)} className="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors">оплатить доступ</button>
+                        <button onClick={() => setPayingVacancy(s)} className="text-sm text-yellow-500 hover:text-yellow-600 font-medium transition-colors">оплатить доступ</button>
                       </div>
                     )}
                   </div>
@@ -410,7 +410,7 @@ export default function Cabinet() {
                       await apiUsers({ action: "unsave_vacancy", vacancy_id: s.id })
                       setSaved(prev => prev.filter(x => x.id !== s.id))
                     }}
-                    className="text-orange-300 hover:text-red-400 transition-colors flex-shrink-0"
+                    className="text-yellow-300 hover:text-red-400 transition-colors flex-shrink-0"
                     title="Удалить из избранного"
                   >
                     <Icon name="BookmarkX" size={18}/>

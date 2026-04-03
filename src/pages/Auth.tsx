@@ -66,7 +66,7 @@ export default function Auth() {
       <div className="w-full max-w-md">
         <div className="text-center mb-5">
           <a href="/" className="text-white font-bold text-2xl tracking-tight">
-            Работа-<span className="text-orange-400">Ялта</span>
+            Работа-<span className="text-yellow-400">Ялта</span>
           </a>
           <p className="text-white/50 text-sm mt-1">Портал трудоустройства строительных специалистов</p>
         </div>
@@ -119,7 +119,7 @@ export default function Auth() {
                     placeholder="Например, Александр"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                   />
                 </div>
               )}
@@ -134,7 +134,7 @@ export default function Auth() {
                   placeholder="example@mail.ru"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 />
               </div>
 
@@ -148,7 +148,7 @@ export default function Auth() {
                   placeholder={mode === "register" ? "Минимум 6 символов" : "Введите пароль"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 />
               </div>
 
@@ -162,7 +162,7 @@ export default function Auth() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-yellow-500 text-white py-3 rounded-xl font-semibold hover:bg-yellow-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Загрузка..." : mode === "login" ? "Войти" : "Зарегистрироваться"}
               </button>

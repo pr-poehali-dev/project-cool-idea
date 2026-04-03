@@ -82,7 +82,7 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
         {/* Шапка с карточкой вакансии */}
         <div className="bg-primary p-5">
           <div className="flex items-start justify-between mb-3">
-            <span className="text-xs bg-orange-500 text-white px-2.5 py-1 rounded-full font-medium">{vacancy.specialty}</span>
+            <span className="text-xs bg-yellow-500 text-white px-2.5 py-1 rounded-full font-medium">{vacancy.specialty}</span>
             <button onClick={onClose} className="text-white/60 hover:text-white transition-colors">
               <Icon name="X" size={20} />
             </button>
@@ -90,7 +90,7 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
           <h3 className="text-white font-bold text-lg">{vacancy.title}</h3>
           <div className="flex items-center gap-3 mt-1.5 text-white/60 text-sm">
             <span className="flex items-center gap-1"><Icon name="MapPin" size={13} />{vacancy.city}</span>
-            {formatSalary() && <span className="text-orange-300 font-medium">{formatSalary()}</span>}
+            {formatSalary() && <span className="text-yellow-300 font-medium">{formatSalary()}</span>}
           </div>
         </div>
 
@@ -120,20 +120,20 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Ваше имя *</label>
                   <input required type="text" placeholder="Например, Александр"
                     value={name} onChange={e => setName(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
                 </div>
               )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                 <input required type="email" placeholder="example@mail.ru"
                   value={email} onChange={e => setEmail(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Пароль *</label>
                 <input required type="password" placeholder="Минимум 6 символов"
                   value={password} onChange={e => setPassword(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
               </div>
               {error && (
                 <div className="flex items-center gap-2 text-red-500 text-sm bg-red-50 rounded-xl px-4 py-2.5">
@@ -141,7 +141,7 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
                 </div>
               )}
               <button type="submit" disabled={loading}
-                className="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 mt-1">
+                className="w-full bg-yellow-500 text-white py-3 rounded-xl font-semibold hover:bg-yellow-600 transition-colors disabled:opacity-50 mt-1">
                 {loading ? "Загрузка..." : step === "register" ? "Зарегистрироваться и продолжить" : "Войти и продолжить"}
               </button>
             </form>
@@ -160,20 +160,20 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
               </div>
             </div>
 
-            <div className="bg-orange-50 border border-orange-200 rounded-2xl p-5 mb-5">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-5 mb-5">
               <div className="flex items-center gap-2 mb-3">
-                <Icon name="Lock" size={18} className="text-orange-500" />
+                <Icon name="Lock" size={18} className="text-yellow-500" />
                 <p className="font-semibold text-gray-900 text-sm">Контакты скрыты</p>
               </div>
               <p className="text-gray-600 text-sm mb-4">
                 Чтобы получить телефон и email исполнителя — оплатите доступ. Это разовый платёж за одно объявление.
               </p>
-              <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-orange-200 mb-4">
+              <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-yellow-200 mb-4">
                 <span className="text-gray-700 text-sm">Доступ к контактам</span>
                 <span className="font-bold text-gray-900">299 ₽</span>
               </div>
               <button onClick={handlePayment}
-                className="w-full bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center gap-2">
+                className="w-full bg-yellow-500 text-white py-3 rounded-xl font-semibold hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2">
                 <Icon name="CreditCard" size={18} />
                 Оплатить и получить контакты
               </button>
@@ -201,9 +201,9 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
             <div className="bg-gray-50 rounded-2xl p-5 space-y-3 mb-5">
               {vacancy.contact_phone && (
                 <a href={`tel:${vacancy.contact_phone}`}
-                  className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-gray-200 hover:border-orange-300 transition-colors">
-                  <div className="w-9 h-9 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <Icon name="Phone" size={18} className="text-orange-500" />
+                  className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-gray-200 hover:border-yellow-300 transition-colors">
+                  <div className="w-9 h-9 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <Icon name="Phone" size={18} className="text-yellow-500" />
                   </div>
                   <div>
                     <p className="text-xs text-gray-400">Телефон</p>
@@ -213,7 +213,7 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
               )}
               {vacancy.contact_email && (
                 <a href={`mailto:${vacancy.contact_email}`}
-                  className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-gray-200 hover:border-orange-300 transition-colors">
+                  className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-gray-200 hover:border-yellow-300 transition-colors">
                   <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
                     <Icon name="Mail" size={18} className="text-blue-500" />
                   </div>
