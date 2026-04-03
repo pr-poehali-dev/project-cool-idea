@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent } from "react"
+import { useState, MouseEvent } from "react"
 import { cn } from "../lib/utils"
 
 interface HeaderProps {
@@ -6,16 +6,7 @@ interface HeaderProps {
 }
 
 export function Header({ onOpenModal }: HeaderProps) {
-  const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false)
@@ -35,18 +26,11 @@ export function Header({ onOpenModal }: HeaderProps) {
   ]
 
   return (
-    <header
-      className={cn(
-        "fixed z-50 transition-all duration-500 my-0 py-0 rounded-none",
-        scrolled || mobileMenuOpen
-          ? "bg-primary backdrop-blur-md py-4 top-4 left-4 right-4 rounded-2xl"
-          : "bg-transparent py-4 top-0 left-0 right-0",
-      )}
-    >
+    <header className="fixed z-50 top-0 left-0 right-0 bg-primary backdrop-blur-md py-4">
       <nav className="container mx-auto px-6 flex items-center justify-between md:px-[24]">
         <a href="/" className="flex items-center gap-2 group" onClick={scrollToTop}>
           <span className="text-white font-bold text-xl tracking-tight">
-            Работа<span className="text-orange-400">Ялта</span>
+            Работа-<span className="text-orange-400">Ялта</span>
           </span>
         </a>
 
