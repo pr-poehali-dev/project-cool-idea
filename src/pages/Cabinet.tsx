@@ -16,9 +16,14 @@ interface Vacancy {
   contact_phone: string; contact_email: string; is_active: boolean
 }
 
-const SPECIALTIES = ["Сварщик","Каменщик","Штукатур","Плиточник","Маляр",
-  "Электрик","Сантехник","Монтажник","Плотник","Кровельщик",
-  "Бетонщик","Арматурщик","Оператор спецтехники","Другое"]
+const SPECIALTIES = [
+  "Сварщик","Каменщик","Штукатур","Плиточник","Маляр","Электрик","Сантехник",
+  "Монтажник","Плотник","Кровельщик","Бетонщик","Арматурщик","Оператор спецтехники",
+  "Прораб","Геодезист","Инженер-строитель","Дорожный рабочий","Асфальтировщик",
+  "Изолировщик","Стекольщик","Облицовщик","Паркетчик","Лепщик","Трубопроводчик",
+  "Такелажник","Разнорабочий","Водитель спецтехники","Экскаваторщик","Крановщик",
+  "Бульдозерист","Сигналист","Охранник объекта","Другое"
+]
 const SCHEDULES = ["Полный день","Вахта","Гибкий","Подработка"]
 const EXPERIENCES = ["Без опыта","1–3 года","3–5 лет","Более 5 лет"]
 
@@ -33,7 +38,7 @@ export default function Cabinet() {
   const [profileSaving, setProfileSaving] = useState(false)
   const [profileSaved, setProfileSaved] = useState(false)
   const [vacancyForm, setVacancyForm] = useState({
-    title:"",company:"",specialty:"",salary_from:"",salary_to:"",
+    company:"",specialty:"",salary_from:"",salary_to:"",
     city:"Ялта",schedule:"",experience_required:"",description:"",
     contact_phone:"",contact_email:""
   })
@@ -83,13 +88,15 @@ export default function Cabinet() {
     setVacancyError("")
     setVacancySaving(true)
     const { ok, data } = await apiVacancies({
-      action: "create", ...vacancyForm,
+      action: "create",
+      title: vacancyForm.specialty,
+      ...vacancyForm,
       salary_from: vacancyForm.salary_from ? parseInt(vacancyForm.salary_from) : null,
       salary_to: vacancyForm.salary_to ? parseInt(vacancyForm.salary_to) : null,
     })
     setVacancySaving(false)
     if (!ok) { setVacancyError(data.error || "Ошибка"); return }
-    setVacancyForm({ title:"",company:"",specialty:"",salary_from:"",salary_to:"",city:"Ялта",schedule:"",experience_required:"",description:"",contact_phone:"",contact_email:"" })
+    setVacancyForm({ company:"",specialty:"",salary_from:"",salary_to:"",city:"Ялта",schedule:"",experience_required:"",description:"",contact_phone:"",contact_email:"" })
     setTab("vacancies")
   }
 
@@ -267,10 +274,12 @@ export default function Cabinet() {
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
             <h2 className="font-bold text-gray-900 text-lg mb-6">{isEmployer?"Разместить вакансию":"Разместить объявление о поиске работы"}</h2>
             <form onSubmit={createVacancy} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2">
-                <label className={labelCls}>{isEmployer?"Название вакансии":"Заголовок"} *</label>
-                <input required className={inputCls} placeholder={isEmployer?"Например: Сварщик на объект":"Например: Ищу работу сварщиком"}
-                  value={vacancyForm.title} onChange={e=>setVacancyForm({...vacancyForm,title:e.target.value})}/>
+              <div className={isEmployer ? "" : "sm:col-span-2"}>
+                <label className={labelCls}>Специальность *</label>
+                <select required className={inputCls} value={vacancyForm.specialty} onChange={e=>setVacancyForm({...vacancyForm,specialty:e.target.value})}>
+                  <option value="">Выберите специальность</option>
+                  {SPECIALTIES.map(s=><option key={s}>{s}</option>)}
+                </select>
               </div>
               {isEmployer&&(
                 <div>
@@ -279,13 +288,6 @@ export default function Cabinet() {
                     value={vacancyForm.company} onChange={e=>setVacancyForm({...vacancyForm,company:e.target.value})}/>
                 </div>
               )}
-              <div>
-                <label className={labelCls}>Специальность *</label>
-                <select required className={inputCls} value={vacancyForm.specialty} onChange={e=>setVacancyForm({...vacancyForm,specialty:e.target.value})}>
-                  <option value="">Выберите</option>
-                  {SPECIALTIES.map(s=><option key={s}>{s}</option>)}
-                </select>
-              </div>
               <div>
                 <label className={labelCls}>Зарплата от (₽)</label>
                 <input type="number" className={inputCls} placeholder="40000"
