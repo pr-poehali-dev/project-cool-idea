@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { apiVacancies } from "@/lib/api"
+import { apiUsers, getToken } from "@/lib/auth"
 import Icon from "@/components/ui/icon"
 import { ContactModal } from "./ContactModal"
 
@@ -66,6 +67,8 @@ export function VacanciesBoard() {
   const [roleFilter, setRoleFilter] = useState<"" | "employer" | "worker">("")
   const [expanded, setExpanded] = useState<number | null>(null)
   const [contactVacancy, setContactVacancy] = useState<VacancyCard | null>(null)
+  const [saved, setSaved] = useState<Set<number>>(new Set())
+  const [saving, setSaving] = useState<number | null>(null)
 
   const load = async () => {
     setLoading(true)
@@ -78,6 +81,27 @@ export function VacanciesBoard() {
   }
 
   useEffect(() => { load() }, [filter, roleFilter])
+
+  useEffect(() => {
+    if (getToken()) {
+      apiUsers({ action: "my_saved" }).then(({ data }) => {
+        if (Array.isArray(data)) {
+          setSaved(new Set(data.map((s: { id: number }) => s.id)))
+        }
+      })
+    }
+  }, [])
+
+  const toggleSave = async (c: VacancyCard) => {
+    if (!getToken()) {
+      window.location.href = "/auth"
+      return
+    }
+    setSaving(c.id)
+    await apiUsers({ action: "save_vacancy", vacancy_id: c.id })
+    setSaved(prev => new Set([...prev, c.id]))
+    setSaving(null)
+  }
 
   const formatSalary = (from: number | null, to: number | null) => {
     if (!from && !to) return null
@@ -133,6 +157,18 @@ export function VacanciesBoard() {
                   <img src={getSpecialtyPhoto(c.specialty)} alt={c.specialty}
                     className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <button
+                    onClick={() => toggleSave(c)}
+                    disabled={saving === c.id}
+                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center transition-all"
+                    title={saved.has(c.id) ? "В избранном" : "Добавить в избранное"}
+                  >
+                    <Icon
+                      name="Bookmark"
+                      size={16}
+                      className={saved.has(c.id) ? "text-orange-400 fill-orange-400" : "text-white"}
+                    />
+                  </button>
                   <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
                     <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${c.author_role==="employer" ? "bg-blue-500 text-white" : "bg-green-500 text-white"}`}>
                       {c.author_role==="employer" ? "Вакансия" : "Соискатель"}
