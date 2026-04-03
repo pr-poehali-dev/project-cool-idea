@@ -84,9 +84,8 @@ export default function Auth() {
           </div>
 
           <div className="p-6">
-            {/* Выбор роли (только при регистрации) */}
-            {mode === "register" && (
-              <div className="flex bg-gray-100 rounded-xl p-1 mb-4">
+            {/* Выбор роли (вход и регистрация) */}
+            <div className="flex bg-gray-100 rounded-xl p-1 mb-4">
                 <button
                   type="button"
                   className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${role === "worker" ? "bg-white shadow text-gray-900" : "text-gray-500"}`}
@@ -101,8 +100,7 @@ export default function Auth() {
                 >
                   Работодатель
                 </button>
-              </div>
-            )}
+            </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               {mode === "register" && (
