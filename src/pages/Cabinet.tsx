@@ -57,6 +57,7 @@ export default function Cabinet() {
   })
   const [vacancySaving, setVacancySaving] = useState(false)
   const [vacancyError, setVacancyError] = useState("")
+  const [vacancySuccess, setVacancySuccess] = useState(false)
   const [saved, setSaved] = useState<SavedContact[]>([])
   const [payingVacancy, setPayingVacancy] = useState<SavedContact | null>(null)
   const navigate = useNavigate()
@@ -130,7 +131,10 @@ export default function Cabinet() {
     setVacancySaving(false)
     if (!ok) { setVacancyError(data.error || "Ошибка"); return }
     setVacancyForm({ company:"",specialty:"",salary_from:"",salary_to:"",city:"Ялта",schedule:"",experience_required:"",description:"",contact_phone:"",contact_email:"" })
+    setVacancySuccess(true)
+    await loadVacancies()
     setTab("vacancies")
+    setTimeout(() => setVacancySuccess(false), 4000)
   }
 
   const deleteVacancy = async (id: number) => {
@@ -324,6 +328,12 @@ export default function Cabinet() {
                 <Icon name="Plus" size={16}/>Добавить
               </button>
             </div>
+            {vacancySuccess && (
+              <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 text-sm">
+                <Icon name="CheckCircle" size={16} className="text-green-500 flex-shrink-0" />
+                <span>Объявление опубликовано! Оно появится в общем списке на главной странице.</span>
+              </div>
+            )}
             {vacancies.length===0 ? (
               <div className="bg-white rounded-2xl p-12 border border-gray-100 shadow-sm text-center">
                 <Icon name="Inbox" size={40} className="text-gray-200 mx-auto mb-3"/>
