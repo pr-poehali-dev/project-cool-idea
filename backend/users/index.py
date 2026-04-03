@@ -29,8 +29,8 @@ def get_user_by_token(cur, token: str):
     )
     return cur.fetchone()
 
-def resp(status: int, data: dict) -> dict:
-    return {"statusCode": status, "headers": CORS, "body": json.dumps(data, ensure_ascii=False)}
+def resp(status: int, data) -> dict:
+    return {"statusCode": status, "headers": CORS, "body": json.dumps(data, ensure_ascii=False, default=str)}
 
 def handler(event: dict, context) -> dict:
     """Пользователи: action=register|login|logout|me|update_profile"""
