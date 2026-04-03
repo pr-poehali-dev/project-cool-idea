@@ -1,33 +1,42 @@
 """Админ-панель: управление пользователями и объявлениями"""
 import json
 import os
-import secrets
 import psycopg2
 
 CORS = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, X-Admin-Token",
+    "Access-Control-Allow-Headers": "Content-Type, X-Session-Id",
 }
 
 def get_db():
     return psycopg2.connect(os.environ["DATABASE_URL"])
 
-def check_admin(headers: dict) -> bool:
-    token = headers.get("X-Admin-Token", "")
-    admin_pass = os.environ.get("ADMIN_PASSWORD", "")
-    return bool(token and admin_pass and secrets.compare_digest(token, admin_pass))
+def check_admin(session_id: str) -> bool:
+    if not session_id:
+        return False
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id FROM admin_sessions WHERE session_id = %s AND expires_at > NOW()",
+        (session_id,)
+    )
+    row = cur.fetchone()
+    conn.close()
+    return row is not None
 
 def resp(status: int, data) -> dict:
     return {"statusCode": status, "headers": CORS, "body": json.dumps(data, ensure_ascii=False, default=str)}
 
 def handler(event: dict, context) -> dict:
-    """Админ-панель: action=stats|users|vacancies|delete_user|delete_vacancy|toggle_vacancy"""
+    """Админ-панель: action=stats|users|vacancies|delete_user|delete_vacancy|restore_vacancy"""
     if event.get("httpMethod") == "OPTIONS":
         return {"statusCode": 200, "headers": CORS, "body": ""}
 
     headers = event.get("headers", {})
-    if not check_admin(headers):
+    session_id = headers.get("X-Session-Id", "")
+
+    if not check_admin(session_id):
         return resp(401, {"error": "Нет доступа"})
 
     body = json.loads(event.get("body") or "{}")
@@ -35,7 +44,6 @@ def handler(event: dict, context) -> dict:
     conn = get_db()
     cur = conn.cursor()
 
-    # Статистика
     if action == "stats":
         cur.execute("SELECT COUNT(*) FROM users")
         total_users = cur.fetchone()[0]
@@ -59,7 +67,6 @@ def handler(event: dict, context) -> dict:
             "saved_contacts": saved,
         })
 
-    # Список пользователей
     if action == "users":
         role = body.get("role", "")
         search = body.get("search", "")
@@ -69,8 +76,8 @@ def handler(event: dict, context) -> dict:
             where.append("role = %s")
             params.append(role)
         if search:
-            where.append("(name ILIKE %s OR email ILIKE %s)")
-            params += [f"%{search}%", f"%{search}%"]
+            where.append("(name ILIKE %s OR email ILIKE %s OR specialty ILIKE %s)")
+            params += [f"%{search}%", f"%{search}%", f"%{search}%"]
         where_sql = ("WHERE " + " AND ".join(where)) if where else ""
         cur.execute(
             f"SELECT id, name, email, role, phone, specialty, created_at "
@@ -82,7 +89,6 @@ def handler(event: dict, context) -> dict:
         keys = ["id", "name", "email", "role", "phone", "specialty", "created_at"]
         return resp(200, [dict(zip(keys, r)) for r in rows])
 
-    # Список объявлений
     if action == "vacancies":
         role_filter = body.get("role", "")
         search = body.get("search", "")
@@ -95,8 +101,8 @@ def handler(event: dict, context) -> dict:
             where.append("u.role = %s")
             params.append(role_filter)
         if search:
-            where.append("(v.title ILIKE %s OR v.specialty ILIKE %s)")
-            params += [f"%{search}%", f"%{search}%"]
+            where.append("(v.title ILIKE %s OR v.specialty ILIKE %s OR u.name ILIKE %s OR u.email ILIKE %s)")
+            params += [f"%{search}%", f"%{search}%", f"%{search}%", f"%{search}%"]
         where_sql = ("WHERE " + " AND ".join(where)) if where else ""
         cur.execute(
             f"SELECT v.id, v.title, v.specialty, v.city, v.salary_from, v.salary_to, "
@@ -112,7 +118,6 @@ def handler(event: dict, context) -> dict:
                 "description","is_active","created_at","user_id","user_name","user_email","user_role"]
         return resp(200, [dict(zip(keys, r)) for r in rows])
 
-    # Удалить пользователя
     if action == "delete_user":
         user_id = body.get("user_id")
         cur.execute("UPDATE vacancies SET is_active = FALSE WHERE user_id = %s", (user_id,))
@@ -122,7 +127,6 @@ def handler(event: dict, context) -> dict:
         conn.close()
         return resp(200, {"ok": True})
 
-    # Удалить / скрыть объявление
     if action == "delete_vacancy":
         vacancy_id = body.get("vacancy_id")
         cur.execute("UPDATE vacancies SET is_active = FALSE WHERE id = %s", (vacancy_id,))
@@ -130,7 +134,6 @@ def handler(event: dict, context) -> dict:
         conn.close()
         return resp(200, {"ok": True})
 
-    # Восстановить объявление
     if action == "restore_vacancy":
         vacancy_id = body.get("vacancy_id")
         cur.execute("UPDATE vacancies SET is_active = TRUE WHERE id = %s", (vacancy_id,))

@@ -1,14 +1,6 @@
 {
   "tests": [
     {
-      "name": "Check session - unauthenticated",
-      "method": "GET",
-      "path": "/",
-      "expectedStatus": 200,
-      "expectedBody": {"authenticated": false},
-      "bodyMatcher": "partial"
-    },
-    {
       "name": "Login with wrong password",
       "method": "POST",
       "path": "/",

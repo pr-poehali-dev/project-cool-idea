@@ -18,12 +18,12 @@ interface Vacancy {
   user_id: number; user_name: string; user_email: string; user_role: string
 }
 
-const ADMIN_TOKEN = localStorage.getItem("admin_session") || ""
+function getToken() { return localStorage.getItem("admin_session") || "" }
 
 async function api(action: string, extra: object = {}) {
   const res = await fetch(func2url["admin-panel"], {
     method: "POST",
-    headers: { "Content-Type": "application/json", "X-Admin-Token": ADMIN_TOKEN },
+    headers: { "Content-Type": "application/json", "X-Session-Id": getToken() },
     body: JSON.stringify({ action, ...extra }),
   })
   return res.json()
