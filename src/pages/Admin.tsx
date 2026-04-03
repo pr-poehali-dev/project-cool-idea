@@ -6,6 +6,13 @@ import { Tab, Stats, User, Vacancy, ShopProduct, getToken, api } from "./admin/t
 import AdminUsers from "./admin/AdminUsers"
 import AdminVacancies from "./admin/AdminVacancies"
 import AdminShop from "./admin/AdminShop"
+import AdminRental from "./admin/AdminRental"
+
+interface RentalMachine {
+  id: number; category: string; title: string; description: string
+  specs: string; price: string; image_url: string; tags: string
+  is_active: boolean; sort_order: number
+}
 
 export default function Admin() {
   const [checking, setChecking] = useState(true)
@@ -19,6 +26,10 @@ export default function Admin() {
   const [shopProducts, setShopProducts] = useState<ShopProduct[]>([])
   const [shopCategory, setShopCategory] = useState("")
   const [shopSearch, setShopSearch] = useState("")
+  // Rental state
+  const [rentalMachines, setRentalMachines] = useState<RentalMachine[]>([])
+  const [rentalCategory, setRentalCategory] = useState("")
+  const [rentalSearch, setRentalSearch] = useState("")
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -42,6 +53,7 @@ export default function Admin() {
     if (tab === "vacancies_employer") api("vacancies", { role: "employer", search, show_all: showAll }).then(d => setVacancies(Array.isArray(d) ? d : []))
     if (tab === "vacancies_worker") api("vacancies", { role: "worker", search, show_all: showAll }).then(d => setVacancies(Array.isArray(d) ? d : []))
     if (tab === "shop") api("shop_products", { category: shopCategory, search: shopSearch }).then(d => setShopProducts(Array.isArray(d) ? d : []))
+    if (tab === "rental") api("rental_machines", { category: rentalCategory, search: rentalSearch }).then(d => setRentalMachines(Array.isArray(d) ? d : []))
   }, [tab, checking, showAll])
 
   const doSearch = () => {
@@ -52,6 +64,7 @@ export default function Admin() {
   }
 
   const loadShop = () => api("shop_products", { category: shopCategory, search: shopSearch }).then(d => setShopProducts(Array.isArray(d) ? d : []))
+  const loadRental = () => api("rental_machines", { category: rentalCategory, search: rentalSearch }).then(d => setRentalMachines(Array.isArray(d) ? d : []))
 
   const logout = async () => {
     await fetch(func2url.auth, { method: "POST", headers: { "Content-Type": "application/json", "X-Session-Id": getToken() }, body: JSON.stringify({ action: "logout" }) })
@@ -72,6 +85,7 @@ export default function Admin() {
     ["vacancies_employer", "Вакансии", "Briefcase"],
     ["vacancies_worker", "Объявления соискателей", "FileText"],
     ["shop", "Магазин", "ShoppingBag"],
+    ["rental", "Аренда техники", "Truck"],
   ]
 
   const isUserTab = tab === "employers" || tab === "workers"
@@ -93,7 +107,7 @@ export default function Admin() {
         {/* Навигация */}
         <div className="flex gap-1 bg-white rounded-2xl p-1 shadow-sm border border-gray-100 mb-6 overflow-x-auto">
           {tabs.map(([t, label, icon]) => (
-            <button key={t} onClick={() => { setTab(t); setSearch("") }}
+            <button key={t} onClick={() => { setTab(t as Tab); setSearch("") }}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${tab === t ? "bg-primary text-white shadow" : "text-gray-500 hover:text-gray-800"}`}>
               <Icon name={icon as "User"} size={16} />{label}
             </button>
@@ -140,39 +154,22 @@ export default function Admin() {
 
         {/* Пользователи */}
         {isUserTab && (
-          <AdminUsers
-            users={users}
-            setUsers={setUsers}
-            search={search}
-            setSearch={setSearch}
-            doSearch={doSearch}
-          />
+          <AdminUsers users={users} setUsers={setUsers} search={search} setSearch={setSearch} doSearch={doSearch} />
         )}
 
         {/* Объявления */}
         {isVacancyTab && (
-          <AdminVacancies
-            vacancies={vacancies}
-            setVacancies={setVacancies}
-            search={search}
-            setSearch={setSearch}
-            showAll={showAll}
-            setShowAll={setShowAll}
-            doSearch={doSearch}
-          />
+          <AdminVacancies vacancies={vacancies} setVacancies={setVacancies} search={search} setSearch={setSearch} showAll={showAll} setShowAll={setShowAll} doSearch={doSearch} />
         )}
 
         {/* Магазин */}
         {tab === "shop" && (
-          <AdminShop
-            shopProducts={shopProducts}
-            setShopProducts={setShopProducts}
-            shopCategory={shopCategory}
-            setShopCategory={setShopCategory}
-            shopSearch={shopSearch}
-            setShopSearch={setShopSearch}
-            loadShop={loadShop}
-          />
+          <AdminShop shopProducts={shopProducts} setShopProducts={setShopProducts} shopCategory={shopCategory} setShopCategory={setShopCategory} shopSearch={shopSearch} setShopSearch={setShopSearch} loadShop={loadShop} />
+        )}
+
+        {/* Аренда техники */}
+        {tab === "rental" && (
+          <AdminRental machines={rentalMachines} setMachines={setRentalMachines} rentalCategory={rentalCategory} setRentalCategory={setRentalCategory} rentalSearch={rentalSearch} setRentalSearch={setRentalSearch} loadRental={loadRental} />
         )}
       </div>
     </div>

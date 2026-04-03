@@ -12,6 +12,10 @@ CORS = {
 def get_db():
     return psycopg2.connect(os.environ["DATABASE_URL"])
 
+def table(name: str) -> str:
+    schema = os.environ.get("MAIN_DB_SCHEMA", "public")
+    return f"{schema}.{name}"
+
 def resp(status: int, data) -> dict:
     return {"statusCode": status, "headers": CORS, "body": json.dumps(data, ensure_ascii=False, default=str)}
 
@@ -26,18 +30,19 @@ def handler(event: dict, context) -> dict:
     conn = get_db()
     cur = conn.cursor()
 
+    t = table("shop_products")
     if category:
         cur.execute(
-            "SELECT id, category, title, description, price, image_url, tags, sort_order "
-            "FROM shop_products WHERE is_active = TRUE AND category = %s "
-            "ORDER BY sort_order, id",
+            f"SELECT id, category, title, description, price, image_url, tags, sort_order "
+            f"FROM {t} WHERE is_active = TRUE AND category = %s "
+            f"ORDER BY sort_order, id",
             (category,)
         )
     else:
         cur.execute(
-            "SELECT id, category, title, description, price, image_url, tags, sort_order "
-            "FROM shop_products WHERE is_active = TRUE "
-            "ORDER BY category, sort_order, id"
+            f"SELECT id, category, title, description, price, image_url, tags, sort_order "
+            f"FROM {t} WHERE is_active = TRUE "
+            f"ORDER BY category, sort_order, id"
         )
 
     rows = cur.fetchall()

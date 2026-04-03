@@ -1,6 +1,6 @@
 import func2url from "../../../backend/func2url.json"
 
-export type Tab = "stats" | "employers" | "workers" | "vacancies_employer" | "vacancies_worker" | "shop"
+export type Tab = "stats" | "employers" | "workers" | "vacancies_employer" | "vacancies_worker" | "shop" | "rental"
 
 export interface Stats {
   total_users: number; employers: number; workers: number

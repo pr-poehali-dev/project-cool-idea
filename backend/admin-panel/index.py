@@ -12,6 +12,10 @@ CORS = {
 def get_db():
     return psycopg2.connect(os.environ["DATABASE_URL"])
 
+def t(name: str) -> str:
+    schema = os.environ.get("MAIN_DB_SCHEMA", "public")
+    return f"{schema}.{name}"
+
 def check_admin(session_id: str) -> bool:
     if not session_id:
         return False
@@ -174,6 +178,131 @@ def handler(event: dict, context) -> dict:
     if action == "restore_vacancy":
         vacancy_id = body.get("vacancy_id")
         cur.execute("UPDATE vacancies SET is_active = TRUE WHERE id = %s", (vacancy_id,))
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True})
+
+    if action == "shop_products":
+        category = body.get("category", "")
+        search = body.get("search", "")
+        where = []
+        params = []
+        if category:
+            where.append("category = %s")
+            params.append(category)
+        if search:
+            where.append("(title ILIKE %s OR description ILIKE %s)")
+            params += [f"%{search}%", f"%{search}%"]
+        where_sql = ("WHERE " + " AND ".join(where)) if where else ""
+        cur.execute(
+            f"SELECT id, category, title, description, price, image_url, tags, is_active, sort_order, created_at "
+            f"FROM {t('shop_products')} {where_sql} ORDER BY category, sort_order, id",
+            params
+        )
+        rows = cur.fetchall()
+        conn.close()
+        keys = ["id","category","title","description","price","image_url","tags","is_active","sort_order","created_at"]
+        return resp(200, [dict(zip(keys, r)) for r in rows])
+
+    if action == "shop_add_product":
+        cur.execute(
+            f"INSERT INTO {t('shop_products')} (category, title, description, price, image_url, tags, sort_order) "
+            f"VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
+            (body.get("category","").strip(), body.get("title","").strip(), body.get("description","").strip(),
+             body.get("price","").strip(), body.get("image_url","").strip(), body.get("tags","").strip(), body.get("sort_order",0))
+        )
+        new_id = cur.fetchone()[0]
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True, "id": new_id})
+
+    if action == "shop_edit_product":
+        product_id = body.get("product_id")
+        updates = []
+        params = []
+        for field in ["category","title","description","price","image_url","tags","sort_order"]:
+            if field in body:
+                updates.append(f"{field} = %s")
+                params.append(body[field])
+        if "is_active" in body:
+            updates.append("is_active = %s")
+            params.append(body["is_active"])
+        if not updates:
+            conn.close()
+            return resp(400, {"error": "Нечего обновлять"})
+        updates.append("updated_at = NOW()")
+        params.append(product_id)
+        cur.execute(f"UPDATE {t('shop_products')} SET {', '.join(updates)} WHERE id = %s", params)
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True})
+
+    if action == "shop_delete_product":
+        product_id = body.get("product_id")
+        cur.execute(f"DELETE FROM {t('shop_products')} WHERE id = %s", (product_id,))
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True})
+
+    if action == "rental_machines":
+        category = body.get("category", "")
+        search = body.get("search", "")
+        where = []
+        params = []
+        if category:
+            where.append("category = %s")
+            params.append(category)
+        if search:
+            where.append("(title ILIKE %s OR description ILIKE %s)")
+            params += [f"%{search}%", f"%{search}%"]
+        where_sql = ("WHERE " + " AND ".join(where)) if where else ""
+        cur.execute(
+            f"SELECT id, category, title, description, specs, price, image_url, tags, is_active, sort_order "
+            f"FROM {t('rental_machines')} {where_sql} ORDER BY category, sort_order, id",
+            params
+        )
+        rows = cur.fetchall()
+        conn.close()
+        keys = ["id","category","title","description","specs","price","image_url","tags","is_active","sort_order"]
+        return resp(200, [dict(zip(keys, r)) for r in rows])
+
+    if action == "rental_add":
+        cur.execute(
+            f"INSERT INTO {t('rental_machines')} (category, title, description, specs, price, image_url, tags, sort_order) "
+            f"VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+            (body.get("category",""), body.get("title",""), body.get("description",""),
+             body.get("specs",""), body.get("price",""), body.get("image_url",""),
+             body.get("tags",""), body.get("sort_order",0))
+        )
+        new_id = cur.fetchone()[0]
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True, "id": new_id})
+
+    if action == "rental_edit":
+        machine_id = body.get("machine_id")
+        updates = []
+        params = []
+        for field in ["category","title","description","specs","price","image_url","tags","sort_order"]:
+            if field in body:
+                updates.append(f"{field} = %s")
+                params.append(body[field])
+        if "is_active" in body:
+            updates.append("is_active = %s")
+            params.append(body["is_active"])
+        if not updates:
+            conn.close()
+            return resp(400, {"error": "Нечего обновлять"})
+        updates.append("updated_at = NOW()")
+        params.append(machine_id)
+        cur.execute(f"UPDATE {t('rental_machines')} SET {', '.join(updates)} WHERE id = %s", params)
+        conn.commit()
+        conn.close()
+        return resp(200, {"ok": True})
+
+    if action == "rental_delete":
+        machine_id = body.get("machine_id")
+        cur.execute(f"DELETE FROM {t('rental_machines')} WHERE id = %s", (machine_id,))
         conn.commit()
         conn.close()
         return resp(200, {"ok": True})
