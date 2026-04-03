@@ -32,7 +32,7 @@ export function Header({ onOpenModal }: HeaderProps) {
     { label: "Наш магазин", href: "/shop" },
     { label: "Вакансии", href: "#vacancies" },
     { label: "Агентство", href: "#agency" },
-    { label: "Преимущества", href: "#benefits" },
+    { label: "Аренда техники", href: "/rental" },
     { label: "Вопросы", href: "#faq" },
   ]
 

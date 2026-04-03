@@ -10,6 +10,7 @@ import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import Cabinet from "./pages/Cabinet";
 import Shop from "./pages/Shop";
+import Rental from "./pages/Rental";
 import Windows from "./pages/shop/Windows";
 import Doors from "./pages/shop/Doors";
 import Fence from "./pages/shop/Fence";
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/cabinet" element={<Cabinet />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/rental" element={<Rental />} />
           <Route path="/shop/windows" element={<Windows />} />
           <Route path="/shop/doors" element={<Doors />} />
           <Route path="/shop/fence" element={<Fence />} />
