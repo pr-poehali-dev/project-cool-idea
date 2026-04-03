@@ -148,7 +148,6 @@ export default function Cabinet() {
             ["profile","Профиль","User"],
             ["vacancies", isEmployer ? "Мои вакансии" : "Мои объявления","Briefcase"],
             ["saved","Сохранённые","Bookmark"],
-            ["new_vacancy", isEmployer ? "+ Вакансия" : "+ Объявление","Plus"],
           ] as [Tab,string,string][]).map(([t,label,icon]) => (
             <button key={t} onClick={() => setTab(t)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${tab===t ? "bg-primary text-white shadow" : "text-gray-500 hover:text-gray-800"}`}>
@@ -277,78 +276,6 @@ export default function Cabinet() {
                 </div>
               </div>
             ))}
-          </div>
-        )}
-
-        {/* Новая вакансия */}
-        {tab === "new_vacancy" && (
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <h2 className="font-bold text-gray-900 text-lg mb-6">Разместить объявление</h2>
-            <form onSubmit={createVacancy} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className={labelCls}>Специальность *</label>
-                <select required className={inputCls} value={vacancyForm.specialty} onChange={e=>setVacancyForm({...vacancyForm,specialty:e.target.value})}>
-                  <option value="">Выберите специальность</option>
-                  {SPECIALTIES.map(s=><option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className={labelCls}>Компания / имя</label>
-                <input className={inputCls} placeholder={isEmployer ? "ООО Стройград" : "Ваше имя"}
-                  value={vacancyForm.company} onChange={e=>setVacancyForm({...vacancyForm,company:e.target.value})}/>
-              </div>
-              <div>
-                <label className={labelCls}>Зарплата от (₽)</label>
-                <input type="number" className={inputCls} placeholder="40000"
-                  value={vacancyForm.salary_from} onChange={e=>setVacancyForm({...vacancyForm,salary_from:e.target.value})}/>
-              </div>
-              <div>
-                <label className={labelCls}>Зарплата до (₽)</label>
-                <input type="number" className={inputCls} placeholder="80000"
-                  value={vacancyForm.salary_to} onChange={e=>setVacancyForm({...vacancyForm,salary_to:e.target.value})}/>
-              </div>
-              <div>
-                <label className={labelCls}>График</label>
-                <select className={inputCls} value={vacancyForm.schedule} onChange={e=>setVacancyForm({...vacancyForm,schedule:e.target.value})}>
-                  <option value="">Выберите</option>
-                  {SCHEDULES.map(s=><option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className={labelCls}>Опыт</label>
-                <select className={inputCls} value={vacancyForm.experience_required} onChange={e=>setVacancyForm({...vacancyForm,experience_required:e.target.value})}>
-                  <option value="">Выберите</option>
-                  {EXPERIENCES.map(s=><option key={s}>{s}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className={labelCls}>Контактный телефон</label>
-                <input className={inputCls} placeholder="+7 (999) 000-00-00"
-                  value={vacancyForm.contact_phone} onChange={e=>setVacancyForm({...vacancyForm,contact_phone:e.target.value})}/>
-              </div>
-              <div>
-                <label className={labelCls}>Контактный email</label>
-                <input type="email" className={inputCls} placeholder="email@mail.ru"
-                  value={vacancyForm.contact_email} onChange={e=>setVacancyForm({...vacancyForm,contact_email:e.target.value})}/>
-              </div>
-              <div className="sm:col-span-2">
-                <label className={labelCls}>Описание</label>
-                <textarea rows={4} className={`${inputCls} resize-none`}
-                  placeholder="Опишите условия, требования, опыт, пожелания..."
-                  value={vacancyForm.description} onChange={e=>setVacancyForm({...vacancyForm,description:e.target.value})}/>
-              </div>
-              {vacancyError&&(
-                <div className="sm:col-span-2 text-red-500 text-sm bg-red-50 rounded-xl px-4 py-3 flex items-center gap-2">
-                  <Icon name="AlertCircle" size={16}/>{vacancyError}
-                </div>
-              )}
-              <div className="sm:col-span-2">
-                <button type="submit" disabled={vacancySaving}
-                  className="bg-orange-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-colors disabled:opacity-50 text-sm">
-                  {vacancySaving?"Публикую...":"Опубликовать"}
-                </button>
-              </div>
-            </form>
           </div>
         )}
 
