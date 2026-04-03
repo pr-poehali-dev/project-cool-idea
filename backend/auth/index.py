@@ -1,4 +1,4 @@
-"""Авторизация администратора сайта Работа-Ялта. v3"""
+"""Авторизация администратора сайта Работа-Ялта"""
 import json
 import os
 import hashlib
@@ -56,14 +56,19 @@ def handler(event: dict, context) -> dict:
             conn.close()
         return {"statusCode": 200, "headers": CORS, "body": json.dumps({"ok": True})}
 
+    login = body.get("login", "")
     password = body.get("password", "")
+    admin_login = os.environ.get("ADMIN_LOGIN", "")
     admin_password = os.environ.get("ADMIN_PASSWORD", "")
 
-    if not admin_password:
+    if not admin_login or not admin_password:
         return {"statusCode": 500, "headers": CORS, "body": json.dumps({"error": "Сервер не настроен"})}
 
-    if not secrets.compare_digest(password, admin_password):
-        return {"statusCode": 401, "headers": CORS, "body": json.dumps({"error": "Неверный пароль"})}
+    login_ok = secrets.compare_digest(login, admin_login)
+    password_ok = secrets.compare_digest(password, admin_password)
+
+    if not login_ok or not password_ok:
+        return {"statusCode": 401, "headers": CORS, "body": json.dumps({"error": "Неверный логин или пароль"})}
 
     new_session = hashlib.sha256(secrets.token_bytes(32)).hexdigest()
     conn = get_db()

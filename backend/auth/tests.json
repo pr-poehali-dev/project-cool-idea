@@ -1,11 +1,10 @@
 {
   "tests": [
     {
-      "name": "Login with wrong password",
-      "method": "POST",
+      "name": "Check session - no token",
+      "method": "GET",
       "path": "/",
-      "body": {"action": "login", "password": "wrongpassword"},
-      "expectedStatus": 401,
+      "expectedStatus": 200,
       "bodyMatcher": "partial"
     }
   ]

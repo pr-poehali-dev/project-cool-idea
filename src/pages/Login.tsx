@@ -4,6 +4,7 @@ import func2url from "../../backend/func2url.json"
 import Icon from "@/components/ui/icon"
 
 export default function Login() {
+  const [login, setLogin] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -17,14 +18,14 @@ export default function Login() {
     const res = await fetch(func2url.auth, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "login", password }),
+      body: JSON.stringify({ action: "login", login, password }),
     })
 
     const data = await res.json()
     setLoading(false)
 
     if (!res.ok) {
-      setError(data.error || "Неверный пароль")
+      setError(data.error || "Неверный логин или пароль")
       return
     }
 
@@ -45,11 +46,23 @@ export default function Login() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
+              <label className="block text-white/70 text-sm mb-2">Логин</label>
+              <input
+                type="text"
+                required
+                autoFocus
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+                placeholder="Введите логин"
+                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+              />
+            </div>
+
+            <div>
               <label className="block text-white/70 text-sm mb-2">Пароль</label>
               <input
                 type="password"
                 required
-                autoFocus
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Введите пароль"
