@@ -261,8 +261,12 @@ export default function Cabinet() {
                 <button onClick={()=>setTab("new_vacancy")} className="mt-4 text-orange-500 text-sm font-medium hover:text-orange-600">Создать первое →</button>
               </div>
             ) : vacancies.map(v=>(
-              <div key={v.id} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
+              <div key={v.id} className="bg-white rounded-2xl border-2 border-orange-400 shadow-sm overflow-hidden flex flex-col sm:flex-row">
+                <div className="relative w-full sm:w-36 h-32 sm:h-auto flex-shrink-0">
+                  <img src={getSpecialtyPhoto(v.specialty)} alt={v.specialty} className="w-full h-full object-cover"/>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent sm:bg-gradient-to-r"/>
+                </div>
+                <div className="flex-1 p-5 flex items-start justify-between gap-4">
                   <div>
                     <h3 className="font-semibold text-gray-900">{v.title}</h3>
                     <p className="text-sm text-gray-500 mt-0.5">{v.specialty} · {v.city}</p>
@@ -273,7 +277,7 @@ export default function Cabinet() {
                     )}
                     {v.description&&<p className="text-sm text-gray-400 mt-2 line-clamp-2">{v.description}</p>}
                   </div>
-                  <button onClick={()=>deleteVacancy(v.id)} className="text-gray-300 hover:text-red-400 transition-colors flex-shrink-0">
+                  <button onClick={()=>deleteVacancy(v.id)} className="text-orange-300 hover:text-red-400 transition-colors flex-shrink-0">
                     <Icon name="Trash2" size={18}/>
                   </button>
                 </div>
