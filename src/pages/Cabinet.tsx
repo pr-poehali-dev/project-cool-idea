@@ -68,7 +68,7 @@ export default function Cabinet() {
     ["profile", "Профиль", "User"],
     ["vacancies", isEmployer ? "Мои вакансии" : "Мои объявления", "Briefcase"],
     ["saved", "Сохранённые", "Bookmark"],
-    ...(!isEmployer ? [["purchases", "Мои покупки", "ShoppingBag"] as [Tab, string, string]] : []),
+    ["purchases", "Мои покупки", "ShoppingBag"],
   ]
 
   return (
@@ -127,17 +127,15 @@ export default function Cabinet() {
                 </div>
                 <p className="text-gray-400 text-sm">Заполните профиль для лучших результатов</p>
               </button>
-              {!isEmployer && (
-                <button onClick={() => setTab("purchases")} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-left hover:border-yellow-200 transition-colors">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-                      <Icon name="ShoppingBag" size={20} className="text-green-500" />
-                    </div>
-                    <h2 className="font-semibold text-gray-900">Мои покупки</h2>
+              <button onClick={() => setTab("purchases")} className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-left hover:border-yellow-200 transition-colors">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
+                    <Icon name="ShoppingBag" size={20} className="text-green-500" />
                   </div>
-                  <p className="text-gray-400 text-sm">Вакансии с оплаченным доступом к контактам</p>
-                </button>
-              )}
+                  <h2 className="font-semibold text-gray-900">Мои покупки</h2>
+                </div>
+                <p className="text-gray-400 text-sm">Объявления с оплаченным доступом к контактам</p>
+              </button>
             </div>
           </div>
         )}
