@@ -110,11 +110,11 @@ export default function Admin() {
 
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         {/* Навигация */}
-        <div className="flex gap-1 bg-white rounded-2xl p-1 shadow-sm border border-gray-100 mb-6 overflow-x-auto">
+        <div className="grid grid-cols-4 gap-1 bg-white rounded-2xl p-1 shadow-sm border border-gray-100 mb-6">
           {tabs.map(([t, label, icon]) => (
             <button key={t} onClick={() => { setTab(t as Tab); setSearch("") }}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${tab === t ? "bg-primary text-white shadow" : "text-gray-500 hover:text-gray-800"}`}>
-              <Icon name={icon as "User"} size={16} />{label}
+              className={`flex items-center justify-center gap-1.5 px-2 py-2.5 rounded-xl text-xs font-medium transition-all ${tab === t ? "bg-primary text-white shadow" : "text-gray-500 hover:text-gray-800"}`}>
+              <Icon name={icon as "User"} size={14} /><span className="truncate">{label}</span>
             </button>
           ))}
         </div>
