@@ -36,11 +36,21 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
 
   useEffect(() => {
     if (isLoggedIn && vacancy) {
-      checkAccessAndLoad()
+      checkPendingThenAccess()
     }
   }, [vacancy])
 
   if (!vacancy) return null
+
+  const checkPendingThenAccess = async () => {
+    const pendingKey = `pending_payment_${vacancy.id}`
+    const pendingId = localStorage.getItem(pendingKey)
+    if (pendingId) {
+      await apiPayment({ action: "check_payment", payment_id: pendingId })
+      localStorage.removeItem(pendingKey)
+    }
+    await checkAccessAndLoad()
+  }
 
   const checkAccessAndLoad = async () => {
     const { ok, data } = await apiPayment({ action: "check_access", vacancy_id: vacancy.id })
@@ -103,6 +113,7 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
       await loadPhone()
       return
     }
+    localStorage.setItem(`pending_payment_${vacancy.id}`, data.payment_id)
     window.location.href = data.confirmation_url
   }
 

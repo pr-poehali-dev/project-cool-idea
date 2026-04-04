@@ -44,7 +44,19 @@ export default function Cabinet() {
       apiUsers({ action: "my_saved" }).then(({ data }) => setSaved(Array.isArray(data) ? data : []))
     }
     if (tab === "purchases") {
-      apiPayment({ action: "my_purchases" }).then(({ data }) => setPurchases(Array.isArray(data) ? data : []))
+      const loadPurchases = async () => {
+        const keys = Object.keys(localStorage).filter(k => k.startsWith("pending_payment_"))
+        for (const key of keys) {
+          const pid = localStorage.getItem(key)
+          if (pid) {
+            await apiPayment({ action: "check_payment", payment_id: pid })
+            localStorage.removeItem(key)
+          }
+        }
+        const { data } = await apiPayment({ action: "my_purchases" })
+        setPurchases(Array.isArray(data) ? data : [])
+      }
+      loadPurchases()
     }
   }, [tab])
 

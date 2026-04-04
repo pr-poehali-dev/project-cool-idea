@@ -131,6 +131,33 @@ def handler(event: dict, context) -> dict:
         
         return resp(200, {"payment_id": payment_id, "confirmation_url": confirmation_url})
 
+    # Проверить статус платежа напрямую в ЮКассе (резервный механизм)
+    if action == "check_payment":
+        user = get_user_by_token(cur, token)
+        if not user:
+            conn.close()
+            return resp(401, {"error": "Не авторизован"})
+        payment_id = body.get("payment_id")
+        if not payment_id:
+            conn.close()
+            return resp(400, {"error": "payment_id обязателен"})
+        try:
+            payment = yookassa_request("GET", f"/payments/{payment_id}")
+            status = payment.get("status")
+            if status == "succeeded":
+                cur.execute(
+                    f"UPDATE {t('phone_access')} "
+                    f"SET payment_status = 'succeeded', expires_at = NOW() + INTERVAL '24 hours' "
+                    f"WHERE payment_id = %s AND user_id = %s AND payment_status = 'pending'",
+                    (payment_id, user[0])
+                )
+                conn.commit()
+            conn.close()
+            return resp(200, {"status": status})
+        except Exception as e:
+            conn.close()
+            return resp(500, {"error": str(e)})
+
     # Мои покупки
     if action == "my_purchases":
         user = get_user_by_token(cur, token)
