@@ -48,6 +48,29 @@ def handler(event: dict, context) -> dict:
     conn = get_db()
     cur = conn.cursor()
 
+    if action == "payments":
+        search = body.get("search", "")
+        where = []
+        params = []
+        if search:
+            where.append("(u.name ILIKE %s OR u.email ILIKE %s OR v.title ILIKE %s)")
+            params += [f"%{search}%", f"%{search}%", f"%{search}%"]
+        where_sql = ("WHERE " + " AND ".join(where)) if where else ""
+        cur.execute(
+            f"SELECT pa.id, pa.payment_id, pa.payment_status, pa.amount, pa.created_at, pa.expires_at, "
+            f"u.name, u.email, v.id, v.title, v.specialty "
+            f"FROM {t('phone_access')} pa "
+            f"JOIN {t('users')} u ON u.id = pa.user_id "
+            f"JOIN {t('vacancies')} v ON v.id = pa.vacancy_id "
+            f"{where_sql} ORDER BY pa.created_at DESC LIMIT 200",
+            params
+        )
+        rows = cur.fetchall()
+        conn.close()
+        keys = ["id","payment_id","payment_status","amount","created_at","expires_at",
+                "user_name","user_email","vacancy_id","vacancy_title","vacancy_specialty"]
+        return resp(200, [dict(zip(keys, r)) for r in rows])
+
     if action == "stats":
         cur.execute(f"SELECT COUNT(*) FROM {t('users')}")
         total_users = cur.fetchone()[0]
@@ -61,6 +84,10 @@ def handler(event: dict, context) -> dict:
         total_vacancies = cur.fetchone()[0]
         cur.execute(f"SELECT COUNT(*) FROM {t('saved_contacts')}")
         saved = cur.fetchone()[0]
+        cur.execute(f"SELECT COUNT(*), COALESCE(SUM(amount), 0) FROM {t('phone_access')} WHERE payment_status = 'succeeded'")
+        pay_row = cur.fetchone()
+        total_payments = pay_row[0]
+        total_revenue = int(pay_row[1])
         conn.close()
         return resp(200, {
             "total_users": total_users,
@@ -69,6 +96,8 @@ def handler(event: dict, context) -> dict:
             "active_vacancies": active_vacancies,
             "total_vacancies": total_vacancies,
             "saved_contacts": saved,
+            "total_payments": total_payments,
+            "total_revenue": total_revenue,
         })
 
     if action == "users":

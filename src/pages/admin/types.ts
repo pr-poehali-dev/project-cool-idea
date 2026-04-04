@@ -1,10 +1,18 @@
 import func2url from "../../../backend/func2url.json"
 
-export type Tab = "stats" | "employers" | "workers" | "vacancies_employer" | "vacancies_worker" | "shop" | "rental"
+export type Tab = "stats" | "employers" | "workers" | "vacancies_employer" | "vacancies_worker" | "shop" | "rental" | "payments"
 
 export interface Stats {
   total_users: number; employers: number; workers: number
   active_vacancies: number; total_vacancies: number; saved_contacts: number
+  total_payments: number; total_revenue: number
+}
+
+export interface Payment {
+  id: number; payment_id: string; payment_status: string; amount: number
+  created_at: string; expires_at: string
+  user_name: string; user_email: string
+  vacancy_id: number; vacancy_title: string; vacancy_specialty: string
 }
 
 export interface User {

@@ -7,6 +7,8 @@ import AdminUsers from "./admin/AdminUsers"
 import AdminVacancies from "./admin/AdminVacancies"
 import AdminShop from "./admin/AdminShop"
 import AdminRental from "./admin/AdminRental"
+import AdminPayments from "./admin/AdminPayments"
+import { Payment } from "./admin/types"
 
 interface RentalMachine {
   id: number; category: string; title: string; description: string
@@ -30,6 +32,7 @@ export default function Admin() {
   const [rentalMachines, setRentalMachines] = useState<RentalMachine[]>([])
   const [rentalCategory, setRentalCategory] = useState("")
   const [rentalSearch, setRentalSearch] = useState("")
+  const [payments, setPayments] = useState<Payment[]>([])
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -54,6 +57,7 @@ export default function Admin() {
     if (tab === "vacancies_worker") api("vacancies", { role: "worker", search, show_all: showAll }).then(d => setVacancies(Array.isArray(d) ? d : []))
     if (tab === "shop") api("shop_products", { category: shopCategory, search: shopSearch }).then(d => setShopProducts(Array.isArray(d) ? d : []))
     if (tab === "rental") api("rental_machines", { category: rentalCategory, search: rentalSearch }).then(d => setRentalMachines(Array.isArray(d) ? d : []))
+    if (tab === "payments") api("payments").then(d => setPayments(Array.isArray(d) ? d : []))
   }, [tab, checking, showAll])
 
   const doSearch = () => {
@@ -86,6 +90,7 @@ export default function Admin() {
     ["vacancies_worker", "Объявления соискателей", "FileText"],
     ["shop", "Магазин", "ShoppingBag"],
     ["rental", "Аренда техники", "Truck"],
+    ["payments", "Платежи", "CreditCard"],
   ]
 
   const isUserTab = tab === "employers" || tab === "workers"
@@ -125,6 +130,8 @@ export default function Admin() {
                 ["Активных объявлений", stats.active_vacancies, "Briefcase", "purple", "vacancies_employer"],
                 ["Всего объявлений", stats.total_vacancies, "FileText", "gray", "vacancies_employer"],
                 ["Сохранений в избранном", stats.saved_contacts, "Bookmark", "pink", null],
+                ["Успешных платежей", stats.total_payments, "CreditCard", "green", "payments"],
+                [`Выручка: ${(stats.total_revenue || 0).toLocaleString()} ₽`, stats.total_payments, "Banknote", "yellow", "payments"],
               ] as [string, number, string, string, Tab | null][]).map(([label, val, icon, color, target]) => (
                 <div
                   key={label}
@@ -170,6 +177,11 @@ export default function Admin() {
         {/* Аренда техники */}
         {tab === "rental" && (
           <AdminRental machines={rentalMachines} setMachines={setRentalMachines} rentalCategory={rentalCategory} setRentalCategory={setRentalCategory} rentalSearch={rentalSearch} setRentalSearch={setRentalSearch} loadRental={loadRental} />
+        )}
+
+        {/* Платежи */}
+        {tab === "payments" && (
+          <AdminPayments payments={payments} setPayments={setPayments} />
         )}
       </div>
     </div>
