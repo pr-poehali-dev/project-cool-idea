@@ -46,11 +46,11 @@ export function Header({ onOpenModal }: HeaderProps) {
         </a>
 
         {/* Мобильные быстрые ссылки */}
-        <div className="flex md:hidden items-center gap-1 flex-1 justify-center px-2">
-          <a href="/rental" className="text-white/80 hover:text-yellow-400 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap">
+        <div className="flex md:hidden items-center gap-1 flex-1 justify-center px-1 overflow-hidden">
+          <a href="/rental" className="text-white/80 hover:text-yellow-400 text-xs font-medium px-2 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap">
             Техника
           </a>
-          <a href="/shop" className="text-white/80 hover:text-yellow-400 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap">
+          <a href="/shop" className="text-white/80 hover:text-yellow-400 text-xs font-medium px-2 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap">
             Магазин
           </a>
         </div>
