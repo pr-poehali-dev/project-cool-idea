@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { apiUsers, saveToken, getToken } from "@/lib/auth"
+import { apiVacancies, apiPayment } from "@/lib/api"
 import Icon from "@/components/ui/icon"
 
 interface Vacancy {
@@ -30,8 +31,32 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const [phone, setPhone] = useState("")
+  const [contactEmail, setContactEmail] = useState("")
+
+  useEffect(() => {
+    if (isLoggedIn && vacancy) {
+      checkAccessAndLoad()
+    }
+  }, [vacancy])
 
   if (!vacancy) return null
+
+  const checkAccessAndLoad = async () => {
+    const { ok, data } = await apiPayment({ action: "check_access", vacancy_id: vacancy.id })
+    if (ok && data.has_access) {
+      await loadPhone()
+    }
+  }
+
+  const loadPhone = async () => {
+    const { ok, data } = await apiVacancies({ action: "get_phone", vacancy_id: vacancy.id })
+    if (ok) {
+      setPhone(data.contact_phone || "")
+      setContactEmail(data.contact_email || "")
+      setStep("contacts")
+    }
+  }
 
   const saveVacancy = async () => {
     await apiUsers({ action: "save_vacancy", vacancy_id: vacancy.id })
@@ -46,7 +71,8 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
     if (!ok) { setError(data.error || "Ошибка"); return }
     saveToken(data.token)
     await saveVacancy()
-    setStep("payment")
+    await checkAccessAndLoad()
+    if (step !== "contacts") setStep("payment")
   }
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -58,12 +84,26 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
     if (!ok) { setError(data.error || "Ошибка"); return }
     saveToken(data.token)
     await saveVacancy()
-    setStep("payment")
+    await checkAccessAndLoad()
+    if (step !== "contacts") setStep("payment")
   }
 
   const handlePayment = async () => {
-    await saveVacancy()
-    setStep("contacts")
+    setLoading(true)
+    setError("")
+    const returnUrl = window.location.href
+    const { ok, data } = await apiPayment({
+      action: "create_payment",
+      vacancy_id: vacancy.id,
+      return_url: returnUrl,
+    })
+    setLoading(false)
+    if (!ok) { setError(data.error || "Ошибка при создании платежа"); return }
+    if (data.already_paid) {
+      await loadPhone()
+      return
+    }
+    window.location.href = data.confirmation_url
   }
 
   const formatSalary = () => {
@@ -79,7 +119,7 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
       onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
 
-        {/* Шапка с карточкой вакансии */}
+        {/* Шапка */}
         <div className="bg-primary p-5">
           <div className="flex items-start justify-between mb-3">
             <span className="text-xs bg-yellow-500 text-white px-2.5 py-1 rounded-full font-medium">{vacancy.specialty}</span>
@@ -94,7 +134,7 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
           </div>
         </div>
 
-        {/* Шаги */}
+        {/* Регистрация / Вход */}
         {(step === "register" || step === "login") && (
           <div className="p-6">
             <div className="flex gap-1 bg-gray-100 rounded-xl p-1 mb-5">
@@ -110,8 +150,8 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
 
             <p className="text-gray-500 text-sm mb-4">
               {step === "register"
-                ? "Зарегистрируйтесь как работодатель — объявление сохранится в вашем кабинете"
-                : "Войдите, чтобы сохранить объявление и получить контакты"}
+                ? "Зарегистрируйтесь, чтобы получить контакты исполнителя"
+                : "Войдите, чтобы получить контакты исполнителя"}
             </p>
 
             <form onSubmit={step === "register" ? handleRegister : handleLogin} className="flex flex-col gap-3">
@@ -148,90 +188,84 @@ export function ContactModal({ vacancy, onClose }: ContactModalProps) {
           </div>
         )}
 
+        {/* Оплата */}
         {step === "payment" && (
+          <div className="p-6">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-5 mb-5">
+              <div className="flex items-center gap-2 mb-3">
+                <Icon name="Lock" size={18} className="text-yellow-500" />
+                <p className="font-semibold text-gray-900 text-sm">Номер телефона скрыт</p>
+              </div>
+              <p className="text-gray-600 text-sm mb-4">
+                Оплатите доступ — номер телефона исполнителя будет открыт на 24 часа.
+              </p>
+              <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-yellow-200 mb-4">
+                <span className="text-gray-700 text-sm">Доступ к номеру телефона</span>
+                <span className="font-bold text-gray-900 text-lg">500 ₽</span>
+              </div>
+              {error && (
+                <div className="flex items-center gap-2 text-red-500 text-sm bg-red-50 rounded-xl px-4 py-2.5 mb-3">
+                  <Icon name="AlertCircle" size={15} />{error}
+                </div>
+              )}
+              <button onClick={handlePayment} disabled={loading}
+                className="w-full bg-yellow-500 text-white py-3 rounded-xl font-semibold hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
+                <Icon name="CreditCard" size={18} />
+                {loading ? "Создаём платёж..." : "Оплатить 500 ₽"}
+              </button>
+              <p className="text-center text-gray-400 text-xs mt-3">Оплата через ЮKassa · Безопасно · Доступ на 24 часа</p>
+            </div>
+
+            <button onClick={onClose} className="w-full text-gray-400 text-sm hover:text-gray-600 transition-colors">
+              Закрыть
+            </button>
+          </div>
+        )}
+
+        {/* Контакты открыты */}
+        {step === "contacts" && (
           <div className="p-6">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
                 <Icon name="CheckCircle" size={22} className="text-green-500" />
               </div>
               <div>
-                <p className="font-semibold text-gray-900">Объявление сохранено!</p>
-                <p className="text-sm text-gray-500">Оно появилось в вашем личном кабинете</p>
+                <p className="font-semibold text-gray-900">Доступ открыт на 24 часа!</p>
+                <p className="text-sm text-gray-500">Свяжитесь с исполнителем напрямую</p>
               </div>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-5 mb-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="Lock" size={18} className="text-yellow-500" />
-                <p className="font-semibold text-gray-900 text-sm">Контакты скрыты</p>
-              </div>
-              <p className="text-gray-600 text-sm mb-4">
-                Чтобы получить телефон и email исполнителя — оплатите доступ. Это разовый платёж за одно объявление.
-              </p>
-              <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-yellow-200 mb-4">
-                <span className="text-gray-700 text-sm">Доступ к контактам</span>
-                <span className="font-bold text-gray-900">299 ₽</span>
-              </div>
-              <button onClick={handlePayment}
-                className="w-full bg-yellow-500 text-white py-3 rounded-xl font-semibold hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2">
-                <Icon name="CreditCard" size={18} />
-                Оплатить и получить контакты
-              </button>
-              <p className="text-center text-gray-400 text-xs mt-3">Оплата через ЮKassa · Безопасно</p>
+            <div className="bg-gray-50 rounded-2xl p-4 mb-4 space-y-3">
+              {phone && (
+                <a href={`tel:${phone}`}
+                  className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-gray-100 hover:border-yellow-300 transition-colors group">
+                  <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Icon name="Phone" size={18} className="text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-0.5">Телефон</p>
+                    <p className="font-semibold text-gray-900 group-hover:text-yellow-600 transition-colors">{phone}</p>
+                  </div>
+                </a>
+              )}
+              {contactEmail && (
+                <a href={`mailto:${contactEmail}`}
+                  className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-gray-100 hover:border-yellow-300 transition-colors group">
+                  <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Icon name="Mail" size={18} className="text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400 mb-0.5">Email</p>
+                    <p className="font-semibold text-gray-900 group-hover:text-yellow-600 transition-colors">{contactEmail}</p>
+                  </div>
+                </a>
+              )}
             </div>
 
-            <button onClick={onClose} className="w-full text-gray-400 text-sm hover:text-gray-600 transition-colors">
-              Позже, перейти в кабинет →
+            <button onClick={onClose}
+              className="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity">
+              Закрыть
             </button>
-          </div>
-        )}
-
-        {step === "contacts" && (
-          <div className="p-6">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Icon name="Unlock" size={22} className="text-green-500" />
-              </div>
-              <div>
-                <p className="font-semibold text-gray-900">Контакты открыты!</p>
-                <p className="text-sm text-gray-500">Свяжитесь с исполнителем удобным способом</p>
-              </div>
-            </div>
-
-            <div className="bg-gray-50 rounded-2xl p-5 space-y-3 mb-5">
-              {vacancy.contact_phone && (
-                <a href={`tel:${vacancy.contact_phone}`}
-                  className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-gray-200 hover:border-yellow-300 transition-colors">
-                  <div className="w-9 h-9 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <Icon name="Phone" size={18} className="text-yellow-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Телефон</p>
-                    <p className="font-semibold text-gray-900">{vacancy.contact_phone}</p>
-                  </div>
-                </a>
-              )}
-              {vacancy.contact_email && (
-                <a href={`mailto:${vacancy.contact_email}`}
-                  className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-gray-200 hover:border-yellow-300 transition-colors">
-                  <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
-                    <Icon name="Mail" size={18} className="text-blue-500" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400">Email</p>
-                    <p className="font-semibold text-gray-900">{vacancy.contact_email}</p>
-                  </div>
-                </a>
-              )}
-              {!vacancy.contact_phone && !vacancy.contact_email && (
-                <p className="text-gray-400 text-sm text-center py-4">Контакты не указаны в объявлении</p>
-              )}
-            </div>
-
-            <a href="/cabinet"
-              className="block w-full text-center bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors text-sm">
-              Перейти в личный кабинет
-            </a>
           </div>
         )}
       </div>

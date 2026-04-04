@@ -1,0 +1,17 @@
+{
+  "tests": [
+    {
+      "name": "OPTIONS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    },
+    {
+      "name": "check_access without token",
+      "method": "POST",
+      "path": "/",
+      "body": {"action": "check_access", "vacancy_id": 1},
+      "expectedStatus": 401
+    }
+  ]
+}

@@ -1,4 +1,6 @@
 {
+  "payment": "https://functions.poehali.dev/a34526aa-993d-4716-ab78-ee387534f5c4",
+  "payment-webhook": "https://functions.poehali.dev/f119174e-0a2c-42ea-81c0-fca19e211437",
   "rental-catalog": "https://functions.poehali.dev/33a7584a-4c77-4dba-8ee7-cc27f4ab1daa",
   "upload-image": "https://functions.poehali.dev/129ff2b2-6ddd-452a-a9f3-b5fd1104e926",
   "shop-catalog": "https://functions.poehali.dev/615929b4-b534-4a45-83d2-91ba351bdca4",

@@ -68,11 +68,17 @@ def handler(event: dict, context) -> dict:
             params + [limit]
         )
         rows = cur.fetchall()
-        conn.close()
         keys = ["id","title","company","specialty","salary_from","salary_to","city",
                 "schedule","experience_required","description","contact_phone","contact_email",
                 "created_at","author_name","author_role"]
-        return resp(200, [dict(zip(keys, r)) for r in rows])
+        result = []
+        for r in rows:
+            item = dict(zip(keys, r))
+            item["contact_phone"] = ""
+            item["contact_email"] = ""
+            result.append(item)
+        conn.close()
+        return resp(200, result)
 
     # Мои вакансии
     if action == "my":
@@ -143,6 +149,31 @@ def handler(event: dict, context) -> dict:
         conn.commit()
         conn.close()
         return resp(200, {"ok": True})
+
+    # Получить телефон после оплаты
+    if action == "get_phone":
+        user = get_user_by_token(cur, token)
+        if not user:
+            conn.close()
+            return resp(401, {"error": "Не авторизован"})
+        vacancy_id = body.get("vacancy_id")
+        cur.execute(
+            f"SELECT id FROM {t('phone_access')} "
+            f"WHERE user_id = %s AND vacancy_id = %s AND payment_status = 'succeeded' AND expires_at > NOW()",
+            (user[0], vacancy_id)
+        )
+        if not cur.fetchone():
+            conn.close()
+            return resp(403, {"error": "Нет доступа. Оплатите, чтобы увидеть номер"})
+        cur.execute(
+            f"SELECT contact_phone, contact_email FROM {t('vacancies')} WHERE id = %s AND is_active = TRUE",
+            (vacancy_id,)
+        )
+        row = cur.fetchone()
+        conn.close()
+        if not row:
+            return resp(404, {"error": "Вакансия не найдена"})
+        return resp(200, {"contact_phone": row[0], "contact_email": row[1]})
 
     conn.close()
     return resp(404, {"error": "Неизвестное действие"})

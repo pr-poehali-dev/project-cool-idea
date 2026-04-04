@@ -14,3 +14,17 @@ export async function apiVacancies(body: object) {
   const data = await res.json()
   return { ok: res.ok, data }
 }
+
+export async function apiPayment(body: object) {
+  const token = getToken()
+  const res = await fetch(func2url.payment, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { "X-Session-Token": token } : {}),
+    },
+    body: JSON.stringify(body),
+  })
+  const data = await res.json()
+  return { ok: res.ok, data }
+}
