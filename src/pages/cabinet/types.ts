@@ -16,7 +16,7 @@ export interface SavedContact {
   contact_phone: string; contact_email: string; description: string; paid: boolean
 }
 
-export type Tab = "overview" | "profile" | "vacancies" | "new_vacancy" | "saved"
+export type Tab = "overview" | "profile" | "vacancies" | "new_vacancy" | "saved" | "purchases"
 
 export const SPECIALTIES = [
   "Сварщик","Каменщик","Штукатур","Плиточник","Маляр","Электрик","Сантехник",

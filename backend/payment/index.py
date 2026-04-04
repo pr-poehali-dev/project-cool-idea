@@ -131,5 +131,26 @@ def handler(event: dict, context) -> dict:
         
         return resp(200, {"payment_id": payment_id, "confirmation_url": confirmation_url})
 
+    # Мои покупки
+    if action == "my_purchases":
+        user = get_user_by_token(cur, token)
+        if not user:
+            conn.close()
+            return resp(401, {"error": "Не авторизован"})
+        cur.execute(
+            f"SELECT pa.id, pa.payment_id, pa.amount, pa.created_at, pa.expires_at, "
+            f"v.id, v.title, v.specialty, v.contact_phone, v.contact_email "
+            f"FROM {t('phone_access')} pa "
+            f"JOIN {t('vacancies')} v ON v.id = pa.vacancy_id "
+            f"WHERE pa.user_id = %s AND pa.payment_status = 'succeeded' "
+            f"ORDER BY pa.created_at DESC",
+            (user[0],)
+        )
+        rows = cur.fetchall()
+        conn.close()
+        keys = ["id","payment_id","amount","created_at","expires_at",
+                "vacancy_id","vacancy_title","vacancy_specialty","contact_phone","contact_email"]
+        return resp(200, [dict(zip(keys, r)) for r in rows])
+
     conn.close()
     return resp(404, {"error": "Неизвестное действие"})
