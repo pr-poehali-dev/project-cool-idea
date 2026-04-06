@@ -17,7 +17,7 @@ interface Props {
 export default function CabinetVacancies({ vacancies, loadVacancies, isEmployer, tab, setTab, vacancySuccess, setVacancySuccess }: Props) {
   const [vacancyForm, setVacancyForm] = useState({
     company:"",specialty:"",salary_from:"",salary_to:"",
-    city:"Ялта",schedule:"",experience_required:"",description:"",
+    city:"",schedule:"",experience_required:"",description:"",
     contact_phone:"",contact_email:""
   })
   const [vacancySaving, setVacancySaving] = useState(false)
@@ -36,7 +36,7 @@ export default function CabinetVacancies({ vacancies, loadVacancies, isEmployer,
     })
     setVacancySaving(false)
     if (!ok) { setVacancyError(data.error || "Ошибка"); return }
-    setVacancyForm({ company:"",specialty:"",salary_from:"",salary_to:"",city:"Ялта",schedule:"",experience_required:"",description:"",contact_phone:"",contact_email:"" })
+    setVacancyForm({ company:"",specialty:"",salary_from:"",salary_to:"",city:"",schedule:"",experience_required:"",description:"",contact_phone:"",contact_email:"" })
     setVacancySuccess(true)
     await loadVacancies()
     setTab("vacancies")
@@ -91,9 +91,12 @@ export default function CabinetVacancies({ vacancies, loadVacancies, isEmployer,
         </div>
         <div>
           <label className="text-xs font-medium text-gray-500 mb-1 block">Город</label>
-          <input value={vacancyForm.city}
+          <select value={vacancyForm.city}
             onChange={e => setVacancyForm({...vacancyForm, city: e.target.value})}
-            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+            className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-white">
+            <option value="">Выберите город</option>
+            {["Симферополь","Ялта","Севастополь","Керчь","Феодосия","Евпатория","Алушта","Судак","Саки","Бахчисарай","Джанкой","Белогорск"].map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
         </div>
         <div>
           <label className="text-xs font-medium text-gray-500 mb-1 block">График работы</label>

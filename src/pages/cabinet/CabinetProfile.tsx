@@ -75,7 +75,7 @@ export default function CabinetProfile({ user, setUser, isEmployer }: Props) {
             <label className={labelCls}>Специальность</label>
             <select className={inputCls} value={profileForm.specialty||""} onChange={e=>setProfileForm({...profileForm,specialty:e.target.value})}>
               <option value="">Выберите</option>
-              {SPECIALTIES.map(s=><option key={s}>{s}</option>)}
+              {SPECIALTIES.map(s=><option key={s} value={s}>{s}</option>)}
             </select>
           </div>
           <div>
