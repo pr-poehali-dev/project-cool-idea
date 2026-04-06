@@ -96,10 +96,10 @@ export function VacanciesBoard() {
         </div>
 
         {/* Вкладки */}
-        <div className="flex justify-center gap-2 mb-6">
+        <div className="flex gap-2 mb-6">
           {([["","Все объявления"],["employer","Вакансии"],["worker","Соискатели"]] as [typeof roleFilter, string][]).map(([val, label]) => (
             <button key={val} onClick={() => setRoleFilter(val)}
-              className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${roleFilter===val ? "bg-primary text-white" : "bg-white text-gray-600 border border-gray-200 hover:border-yellow-300"}`}>
+              className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${roleFilter===val ? "bg-primary text-white" : "bg-white text-gray-600 border border-gray-200 hover:border-yellow-300"}`}>
               {label}
             </button>
           ))}
