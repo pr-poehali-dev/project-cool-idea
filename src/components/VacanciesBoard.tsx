@@ -148,32 +148,22 @@ export function VacanciesBoard() {
           ))}
         </div>
 
-        {/* Специальности + города в две строки */}
-        <div className="mb-8 space-y-3">
-          <div className="flex gap-2 flex-wrap justify-center">
-            {SPECIALTIES.map(s => (
-              <button key={s} onClick={() => setFilter(s)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${filter===s ? "bg-yellow-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-yellow-300"}`}>
-                {s}
-              </button>
-            ))}
-          </div>
-          <div className="flex gap-2 flex-wrap justify-center">
-            {CITIES.map(c => (
-              <button key={c} onClick={() => setCity(city === c ? "" : c)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${city === c ? "bg-primary text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-primary/40"}`}>
-                <Icon name="MapPin" size={11} />
-                {c}
-              </button>
-            ))}
-          </div>
+        {/* Города */}
+        <div className="flex gap-2 flex-wrap justify-center mb-4">
+          {CITIES.map(c => (
+            <button key={c} onClick={() => setCity(city === c ? "" : c)}
+              className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${city === c ? "bg-primary text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-primary/40"}`}>
+              <Icon name="MapPin" size={11} />
+              {c}
+            </button>
+          ))}
         </div>
 
-        {/* Основной layout: фильтры слева + карточки справа */}
+        {/* Основной layout: фильтры слева + специальности+карточки справа */}
         <div className="flex gap-6 items-start">
 
           {/* Панель фильтров (слева, sticky) */}
-          <aside className="hidden lg:block w-64 flex-shrink-0 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm sticky top-24">
+          <aside className="hidden lg:block w-56 flex-shrink-0 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm sticky top-24">
             <div className="flex items-center justify-between mb-5">
               <span className="font-semibold text-gray-800 flex items-center gap-2">
                 <Icon name="SlidersHorizontal" size={16} className="text-yellow-500" />
@@ -230,12 +220,22 @@ export function VacanciesBoard() {
             </div>
           </aside>
 
-          {/* Карточки */}
+          {/* Правая колонка: специальности + карточки */}
           <div className="flex-1 min-w-0">
+
+            {/* Специальности */}
+            <div className="flex gap-2 flex-wrap mb-5">
+              {SPECIALTIES.map(s => (
+                <button key={s} onClick={() => setFilter(s)}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${filter===s ? "bg-yellow-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-yellow-300"}`}>
+                  {s}
+                </button>
+              ))}
+            </div>
+
             {/* Мобильные фильтры */}
             <div className="flex gap-2 mb-4 lg:hidden">
               {[
-                { label: "Город", value: city, options: CITIES, set: setCity },
                 { label: "Занятость", value: employment, options: EMPLOYMENT_TYPES, set: setEmployment },
                 { label: "Уровень", value: qualification, options: QUALIFICATIONS, set: setQualification },
                 { label: "Зарплата", value: salaryRange, options: SALARY_RANGES, set: setSalaryRange },
