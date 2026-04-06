@@ -81,6 +81,8 @@ export function VacanciesBoard() {
   const [saved, setSaved] = useState<Set<number>>(new Set())
   const [saving, setSaving] = useState<number | null>(null)
   const [openGroup, setOpenGroup] = useState<string | null>(null)
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ employment: false, qualification: false, salary: false })
+  const toggleSection = (key: string) => setOpenSections(prev => ({ ...prev, [key]: !prev[key] }))
 
   const activeFiltersCount = [employment, qualification, salaryRange, city].filter(Boolean).length
 
@@ -236,45 +238,60 @@ export function VacanciesBoard() {
             </div>
 
             {/* Тип занятости */}
-            <div className="mb-5">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Тип занятости</p>
-              <div className="flex flex-col gap-1">
-                {EMPLOYMENT_TYPES.map(e => (
-                  <button key={e} onClick={() => setEmployment(employment === e ? "" : e)}
-                    className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${employment === e ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
-                    <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${employment === e ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
-                    {e}
-                  </button>
-                ))}
-              </div>
+            <div className="mb-2 border-b border-gray-100">
+              <button onClick={() => toggleSection("employment")} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest hover:text-gray-700 transition-colors">
+                <span className={employment ? "text-yellow-600" : ""}>Тип занятости {employment && "·"}</span>
+                <Icon name={openSections.employment ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+              </button>
+              {openSections.employment && (
+                <div className="flex flex-col gap-1 pb-3">
+                  {EMPLOYMENT_TYPES.map(e => (
+                    <button key={e} onClick={() => setEmployment(employment === e ? "" : e)}
+                      className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${employment === e ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                      <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${employment === e ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                      {e}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Квалификация */}
-            <div className="mb-5">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Квалификация</p>
-              <div className="flex flex-col gap-1">
-                {QUALIFICATIONS.map(q => (
-                  <button key={q} onClick={() => setQualification(qualification === q ? "" : q)}
-                    className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${qualification === q ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
-                    <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${qualification === q ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
-                    {q}
-                  </button>
-                ))}
-              </div>
+            <div className="mb-2 border-b border-gray-100">
+              <button onClick={() => toggleSection("qualification")} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest hover:text-gray-700 transition-colors">
+                <span className={qualification ? "text-yellow-600" : ""}>Квалификация {qualification && "·"}</span>
+                <Icon name={openSections.qualification ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+              </button>
+              {openSections.qualification && (
+                <div className="flex flex-col gap-1 pb-3">
+                  {QUALIFICATIONS.map(q => (
+                    <button key={q} onClick={() => setQualification(qualification === q ? "" : q)}
+                      className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${qualification === q ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                      <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${qualification === q ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Зарплата */}
-            <div>
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Зарплата</p>
-              <div className="flex flex-col gap-1">
-                {SALARY_RANGES.map(r => (
-                  <button key={r} onClick={() => setSalaryRange(salaryRange === r ? "" : r)}
-                    className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${salaryRange === r ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
-                    <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${salaryRange === r ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
-                    {r}
-                  </button>
-                ))}
-              </div>
+            <div className="mb-2">
+              <button onClick={() => toggleSection("salary")} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest hover:text-gray-700 transition-colors">
+                <span className={salaryRange ? "text-yellow-600" : ""}>Зарплата {salaryRange && "·"}</span>
+                <Icon name={openSections.salary ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+              </button>
+              {openSections.salary && (
+                <div className="flex flex-col gap-1 pb-3">
+                  {SALARY_RANGES.map(r => (
+                    <button key={r} onClick={() => setSalaryRange(salaryRange === r ? "" : r)}
+                      className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${salaryRange === r ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                      <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${salaryRange === r ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </aside>
 
