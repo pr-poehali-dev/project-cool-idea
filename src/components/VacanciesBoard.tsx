@@ -108,11 +108,11 @@ export function VacanciesBoard() {
         {/* Кнопка фильтров — на всю ширину над карточками */}
         <div className="mb-4">
           <button onClick={() => setMobileFiltersOpen(true)}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm font-medium shadow-sm hover:border-yellow-300 transition-all">
-            <Icon name="SlidersHorizontal" size={16} className="text-yellow-500" />
+            className="w-full flex items-center gap-3 px-5 py-3.5 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-semibold shadow transition-all">
+            <Icon name="SlidersHorizontal" size={16} />
             <span className="flex-1 text-left">Фильтры</span>
             {activeFiltersCount > 0 && (
-              <span className="bg-yellow-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{activeFiltersCount}</span>
+              <span className="bg-white text-yellow-600 text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{activeFiltersCount}</span>
             )}
           </button>
           {activeFiltersCount > 0 && (
