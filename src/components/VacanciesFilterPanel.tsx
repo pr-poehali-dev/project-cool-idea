@@ -182,7 +182,7 @@ export function VacanciesFilterPanel({
   return (
     <>
       {/* Desktop sidebar — участвует в flex-layout */}
-      <aside className="hidden lg:flex lg:flex-col w-56 flex-shrink-0 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm sticky top-24">
+      <aside className="hidden lg:flex lg:flex-col w-56 flex-shrink-0 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <span className="font-semibold text-gray-800 flex items-center gap-2">
             <Icon name="SlidersHorizontal" size={16} className="text-yellow-500" />
