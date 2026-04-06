@@ -81,12 +81,12 @@ export function VacanciesBoard() {
   const [saved, setSaved] = useState<Set<number>>(new Set())
   const [saving, setSaving] = useState<number | null>(null)
   const [openGroup, setOpenGroup] = useState<string | null>(null)
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ employment: false, qualification: false, salary: false })
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({ specialty: false, city: false, employment: false, qualification: false, salary: false })
   const toggleSection = (key: string) => setOpenSections(prev => ({ ...prev, [key]: !prev[key] }))
 
-  const activeFiltersCount = [employment, qualification, salaryRange, city].filter(Boolean).length
+  const activeFiltersCount = [filter !== "Все" ? filter : "", employment, qualification, salaryRange, city].filter(Boolean).length
 
-  const resetFilters = () => { setEmployment(""); setQualification(""); setSalaryRange(""); setCity("") }
+  const resetFilters = () => { setFilter("Все"); setOpenGroup(null); setEmployment(""); setQualification(""); setSalaryRange(""); setCity("") }
 
   const filterCards = (list: VacancyCard[]) => {
     return list.filter(c => {
@@ -171,18 +171,7 @@ export function VacanciesBoard() {
           ))}
         </div>
 
-        {/* Города */}
-        <div className="flex gap-1.5 flex-wrap justify-center mb-6">
-          {CITIES.map(c => (
-            <button key={c} onClick={() => setCity(city === c ? "" : c)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 ${city === c ? "bg-primary text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-primary/40"}`}>
-              <Icon name="MapPin" size={10} />
-              {c}
-            </button>
-          ))}
-        </div>
-
-        {/* Основной layout: фильтры слева + специальности+карточки справа */}
+        {/* Основной layout: фильтры слева + карточки справа */}
         <div className="flex gap-6 items-start">
 
           {/* Панель фильтров (слева, sticky) */}
@@ -197,6 +186,68 @@ export function VacanciesBoard() {
                   <Icon name="X" size={12} />
                   Сбросить
                 </button>
+              )}
+            </div>
+
+            {/* Профессия */}
+            <div className="mb-2 border-b border-gray-100">
+              <button onClick={() => { toggleSection("specialty"); setOpenGroup(null) }} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest hover:text-gray-700 transition-colors">
+                <span className={filter !== "Все" ? "text-yellow-600" : ""}>Профессия {filter !== "Все" && "·"}</span>
+                <Icon name={openSections.specialty ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+              </button>
+              {openSections.specialty && (
+                <div className="pb-3 space-y-1">
+                  <button onClick={() => { setFilter("Все"); setOpenGroup(null) }}
+                    className={`w-full flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${filter === "Все" ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                    <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${filter === "Все" ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                    Все профессии
+                  </button>
+                  {SPECIALTY_GROUPS.filter(g => g.label !== "Все").map(g => {
+                    const isGroupOpen = openGroup === g.label
+                    const isActive = g.subs.includes(filter)
+                    return (
+                      <div key={g.label}>
+                        <button onClick={() => setOpenGroup(isGroupOpen ? null : g.label)}
+                          className={`w-full flex items-center justify-between text-sm px-3 py-1.5 rounded-xl text-left transition-all ${isActive ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                          <span className="flex items-center gap-2">
+                            <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${isActive ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                            {g.label}
+                          </span>
+                          <Icon name={isGroupOpen ? "ChevronUp" : "ChevronDown"} size={12} className="text-gray-400 flex-shrink-0" />
+                        </button>
+                        {isGroupOpen && (
+                          <div className="pl-4 space-y-0.5 mt-0.5">
+                            {g.subs.map(s => (
+                              <button key={s} onClick={() => { setFilter(s); setOpenGroup(null) }}
+                                className={`w-full text-xs px-3 py-1.5 rounded-lg text-left transition-all ${filter === s ? "bg-yellow-100 text-yellow-700 font-semibold" : "text-gray-500 hover:bg-gray-50"}`}>
+                                {s}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Город */}
+            <div className="mb-2 border-b border-gray-100">
+              <button onClick={() => toggleSection("city")} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest hover:text-gray-700 transition-colors">
+                <span className={city ? "text-yellow-600" : ""}>Город {city && "·"}</span>
+                <Icon name={openSections.city ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+              </button>
+              {openSections.city && (
+                <div className="flex flex-col gap-1 pb-3">
+                  {CITIES.map(c => (
+                    <button key={c} onClick={() => setCity(city === c ? "" : c)}
+                      className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${city === c ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                      <Icon name="MapPin" size={12} className={city === c ? "text-yellow-500" : "text-gray-300"} />
+                      {c}
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
 
@@ -262,14 +313,28 @@ export function VacanciesBoard() {
           <div className="flex-1 min-w-0">
 
             {/* Мобильные фильтры */}
-            <div className="flex gap-2 mb-4 lg:hidden">
+            <div className="flex flex-wrap gap-2 mb-4 lg:hidden">
+              <select value={city} onChange={e => setCity(e.target.value)}
+                className={`flex-1 min-w-[120px] border rounded-xl px-2 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-yellow-300 ${city ? "border-yellow-400 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-500"}`}>
+                <option value="">Город</option>
+                {CITIES.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+              <select value={filter} onChange={e => { setFilter(e.target.value) }}
+                className={`flex-1 min-w-[120px] border rounded-xl px-2 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-yellow-300 ${filter !== "Все" ? "border-yellow-400 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-500"}`}>
+                <option value="Все">Профессия</option>
+                {SPECIALTY_GROUPS.filter(g => g.label !== "Все").map(g => (
+                  <optgroup key={g.label} label={g.label}>
+                    {g.subs.map(s => <option key={s} value={s}>{s}</option>)}
+                  </optgroup>
+                ))}
+              </select>
               {[
                 { label: "Занятость", value: employment, options: EMPLOYMENT_TYPES, set: setEmployment },
                 { label: "Уровень", value: qualification, options: QUALIFICATIONS, set: setQualification },
                 { label: "Зарплата", value: salaryRange, options: SALARY_RANGES, set: setSalaryRange },
               ].map(f => (
                 <select key={f.label} value={f.value} onChange={e => f.set(e.target.value)}
-                  className={`flex-1 border rounded-xl px-2 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-yellow-300 ${f.value ? "border-yellow-400 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-500"}`}>
+                  className={`flex-1 min-w-[120px] border rounded-xl px-2 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-yellow-300 ${f.value ? "border-yellow-400 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-500"}`}>
                   <option value="">{f.label}</option>
                   {f.options.map(o => <option key={o} value={o}>{o}</option>)}
                 </select>
