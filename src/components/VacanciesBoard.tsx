@@ -82,6 +82,7 @@ export function VacanciesBoard() {
   const [saving, setSaving] = useState<number | null>(null)
   const [openGroup, setOpenGroup] = useState<string | null>(null)
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({ specialty: false, city: false, employment: false, qualification: false, salary: false })
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
   const toggleSection = (key: string) => setOpenSections(prev => ({ ...prev, [key]: !prev[key] }))
 
   const activeFiltersCount = [filter !== "Все" ? filter : "", employment, qualification, salaryRange, city].filter(Boolean).length
@@ -312,39 +313,164 @@ export function VacanciesBoard() {
           {/* Правая колонка: карточки */}
           <div className="flex-1 min-w-0">
 
-            {/* Мобильные фильтры */}
-            <div className="flex flex-wrap gap-2 mb-4 lg:hidden">
-              <select value={city} onChange={e => setCity(e.target.value)}
-                className={`flex-1 min-w-[120px] border rounded-xl px-2 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-yellow-300 ${city ? "border-yellow-400 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-500"}`}>
-                <option value="">Город</option>
-                {CITIES.map(o => <option key={o} value={o}>{o}</option>)}
-              </select>
-              <select value={filter} onChange={e => { setFilter(e.target.value) }}
-                className={`flex-1 min-w-[120px] border rounded-xl px-2 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-yellow-300 ${filter !== "Все" ? "border-yellow-400 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-500"}`}>
-                <option value="Все">Профессия</option>
-                {SPECIALTY_GROUPS.filter(g => g.label !== "Все").map(g => (
-                  <optgroup key={g.label} label={g.label}>
-                    {g.subs.map(s => <option key={s} value={s}>{s}</option>)}
-                  </optgroup>
-                ))}
-              </select>
-              {[
-                { label: "Занятость", value: employment, options: EMPLOYMENT_TYPES, set: setEmployment },
-                { label: "Уровень", value: qualification, options: QUALIFICATIONS, set: setQualification },
-                { label: "Зарплата", value: salaryRange, options: SALARY_RANGES, set: setSalaryRange },
-              ].map(f => (
-                <select key={f.label} value={f.value} onChange={e => f.set(e.target.value)}
-                  className={`flex-1 min-w-[120px] border rounded-xl px-2 py-2 text-xs font-medium transition-all focus:outline-none focus:ring-2 focus:ring-yellow-300 ${f.value ? "border-yellow-400 bg-yellow-50 text-yellow-700" : "border-gray-200 bg-white text-gray-500"}`}>
-                  <option value="">{f.label}</option>
-                  {f.options.map(o => <option key={o} value={o}>{o}</option>)}
-                </select>
-              ))}
+            {/* Мобильная кнопка фильтров */}
+            <div className="flex items-center gap-3 mb-4 lg:hidden">
+              <button onClick={() => setMobileFiltersOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-white text-gray-600 text-sm font-medium shadow-sm hover:border-yellow-300 transition-all">
+                <Icon name="SlidersHorizontal" size={15} className="text-yellow-500" />
+                Фильтры
+                {activeFiltersCount > 0 && (
+                  <span className="bg-yellow-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{activeFiltersCount}</span>
+                )}
+              </button>
               {activeFiltersCount > 0 && (
-                <button onClick={resetFilters} className="px-3 py-2 rounded-xl border border-gray-200 bg-white text-gray-400 hover:text-red-400 text-xs transition-all">
-                  <Icon name="X" size={14} />
+                <button onClick={resetFilters} className="text-xs text-gray-400 hover:text-red-400 transition-colors flex items-center gap-1">
+                  <Icon name="X" size={12} /> Сбросить
                 </button>
               )}
             </div>
+
+            {/* Мобильный drawer с фильтрами */}
+            {mobileFiltersOpen && (
+              <div className="fixed inset-0 z-50 lg:hidden">
+                <div className="absolute inset-0 bg-black/40" onClick={() => setMobileFiltersOpen(false)} />
+                <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto">
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="font-semibold text-gray-800 flex items-center gap-2">
+                      <Icon name="SlidersHorizontal" size={16} className="text-yellow-500" />
+                      Фильтры
+                    </span>
+                    <button onClick={() => setMobileFiltersOpen(false)} className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-all">
+                      <Icon name="X" size={16} className="text-gray-500" />
+                    </button>
+                  </div>
+
+                  {/* Профессия (мобайл) */}
+                  <div className="mb-2 border-b border-gray-100">
+                    <button onClick={() => toggleSection("specialty")} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">
+                      <span className={filter !== "Все" ? "text-yellow-600" : ""}>Профессия {filter !== "Все" && "·"}</span>
+                      <Icon name={openSections.specialty ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+                    </button>
+                    {openSections.specialty && (
+                      <div className="pb-3 space-y-1">
+                        <button onClick={() => { setFilter("Все"); setOpenGroup(null) }}
+                          className={`w-full flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${filter === "Все" ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                          <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${filter === "Все" ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                          Все профессии
+                        </button>
+                        {SPECIALTY_GROUPS.filter(g => g.label !== "Все").map(g => {
+                          const isGroupOpen = openGroup === g.label
+                          const isActive = g.subs.includes(filter)
+                          return (
+                            <div key={g.label}>
+                              <button onClick={() => setOpenGroup(isGroupOpen ? null : g.label)}
+                                className={`w-full flex items-center justify-between text-sm px-3 py-1.5 rounded-xl text-left transition-all ${isActive ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                                <span className="flex items-center gap-2">
+                                  <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${isActive ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                                  {g.label}
+                                </span>
+                                <Icon name={isGroupOpen ? "ChevronUp" : "ChevronDown"} size={12} className="text-gray-400 flex-shrink-0" />
+                              </button>
+                              {isGroupOpen && (
+                                <div className="pl-4 space-y-0.5 mt-0.5">
+                                  {g.subs.map(s => (
+                                    <button key={s} onClick={() => { setFilter(s); setOpenGroup(null) }}
+                                      className={`w-full text-xs px-3 py-1.5 rounded-lg text-left transition-all ${filter === s ? "bg-yellow-100 text-yellow-700 font-semibold" : "text-gray-500 hover:bg-gray-50"}`}>
+                                      {s}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Город (мобайл) */}
+                  <div className="mb-2 border-b border-gray-100">
+                    <button onClick={() => toggleSection("city")} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">
+                      <span className={city ? "text-yellow-600" : ""}>Город {city && "·"}</span>
+                      <Icon name={openSections.city ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+                    </button>
+                    {openSections.city && (
+                      <div className="flex flex-col gap-1 pb-3">
+                        {CITIES.map(c => (
+                          <button key={c} onClick={() => setCity(city === c ? "" : c)}
+                            className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${city === c ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                            <Icon name="MapPin" size={12} className={city === c ? "text-yellow-500" : "text-gray-300"} />
+                            {c}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Занятость (мобайл) */}
+                  <div className="mb-2 border-b border-gray-100">
+                    <button onClick={() => toggleSection("employment")} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">
+                      <span className={employment ? "text-yellow-600" : ""}>Тип занятости {employment && "·"}</span>
+                      <Icon name={openSections.employment ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+                    </button>
+                    {openSections.employment && (
+                      <div className="flex flex-col gap-1 pb-3">
+                        {EMPLOYMENT_TYPES.map(e => (
+                          <button key={e} onClick={() => setEmployment(employment === e ? "" : e)}
+                            className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${employment === e ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                            <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${employment === e ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                            {e}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Квалификация (мобайл) */}
+                  <div className="mb-2 border-b border-gray-100">
+                    <button onClick={() => toggleSection("qualification")} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">
+                      <span className={qualification ? "text-yellow-600" : ""}>Квалификация {qualification && "·"}</span>
+                      <Icon name={openSections.qualification ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+                    </button>
+                    {openSections.qualification && (
+                      <div className="flex flex-col gap-1 pb-3">
+                        {QUALIFICATIONS.map(q => (
+                          <button key={q} onClick={() => setQualification(qualification === q ? "" : q)}
+                            className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${qualification === q ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                            <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${qualification === q ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                            {q}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Зарплата (мобайл) */}
+                  <div className="mb-4">
+                    <button onClick={() => toggleSection("salary")} className="w-full flex items-center justify-between py-3 text-xs font-semibold text-gray-500 uppercase tracking-widest">
+                      <span className={salaryRange ? "text-yellow-600" : ""}>Зарплата {salaryRange && "·"}</span>
+                      <Icon name={openSections.salary ? "ChevronUp" : "ChevronDown"} size={14} className="text-gray-400" />
+                    </button>
+                    {openSections.salary && (
+                      <div className="flex flex-col gap-1 pb-3">
+                        {SALARY_RANGES.map(r => (
+                          <button key={r} onClick={() => setSalaryRange(salaryRange === r ? "" : r)}
+                            className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${salaryRange === r ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                            <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${salaryRange === r ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                            {r}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <button onClick={() => setMobileFiltersOpen(false)}
+                    className="w-full py-3 bg-yellow-500 text-white rounded-2xl font-semibold text-sm hover:bg-yellow-600 transition-all">
+                    Показать результаты
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Счётчик результатов */}
             <div className="flex items-center justify-between mb-4">
