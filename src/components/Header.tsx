@@ -29,7 +29,7 @@ export function Header({ onOpenModal }: HeaderProps) {
   }
 
   const navItems = [
-    { label: "Аренда техники", mobile: "Техника", href: "/rental" },
+    { label: "Аренда техники", mobile: "Спецтехника", href: "/rental" },
     { label: "Наш магазин", mobile: "Магазин", href: "/shop" },
     { label: "Вакансии", mobile: "Вакансии", href: "#vacancies" },
     { label: "Агентство", mobile: "Агентство", href: "#agency" },
@@ -48,7 +48,7 @@ export function Header({ onOpenModal }: HeaderProps) {
         {/* Мобильные быстрые ссылки */}
         <div className="flex md:hidden items-center gap-1 flex-1 justify-center px-1 overflow-hidden">
           <a href="/rental" className="text-white/80 hover:text-yellow-400 text-xs font-medium px-2 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap">
-            Техника
+            Спецтехника
           </a>
           <a href="/shop" className="text-white/80 hover:text-yellow-400 text-xs font-medium px-2 py-1.5 rounded-lg hover:bg-white/10 transition-colors whitespace-nowrap">
             Магазин
