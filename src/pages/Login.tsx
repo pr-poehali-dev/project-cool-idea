@@ -38,7 +38,7 @@ export default function Login() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <a href="/" className="text-white font-bold text-2xl tracking-tight">
-            Работа-<span className="text-yellow-400">Ялта</span>
+            Работа-<span className="text-yellow-400">Крым</span>
           </a>
           <p className="text-white/50 text-sm mt-2">Вход для сотрудников</p>
         </div>

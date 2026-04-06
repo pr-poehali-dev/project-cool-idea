@@ -100,7 +100,7 @@ export default function Admin() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-primary py-4 px-6 flex items-center justify-between">
         <a href="/" className="text-white font-bold text-xl tracking-tight">
-          Работа-<span className="text-yellow-400">Ялта</span>
+          Работа-<span className="text-yellow-400">Крым</span>
           <span className="text-white/40 text-sm font-normal ml-3">Админ-панель</span>
         </a>
         <button onClick={logout} className="flex items-center gap-2 text-white/60 hover:text-white text-sm transition-colors">
@@ -138,8 +138,8 @@ export default function Admin() {
                   onClick={() => target && setTab(target)}
                   className={`bg-white rounded-2xl p-5 border border-gray-100 shadow-sm transition-all ${target ? "cursor-pointer hover:border-yellow-300 hover:shadow-md" : ""}`}
                 >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-${color}-100`}>
-                    <Icon name={icon as "User"} size={20} className={`text-${color}-500`} />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-yellow-50">
+                    <Icon name={icon as "User"} size={20} className="text-yellow-500" />
                   </div>
                   <p className="text-2xl font-bold text-gray-900">{val}</p>
                   <p className={`text-sm mt-0.5 ${target ? "text-yellow-500" : "text-gray-500"}`}>{label}{target ? " →" : ""}</p>

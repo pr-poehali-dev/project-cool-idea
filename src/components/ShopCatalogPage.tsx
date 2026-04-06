@@ -49,7 +49,7 @@ export default function ShopCatalogPage({ title, icon, description, heroImage, f
             <Icon name="ArrowLeft" size={20} />
           </a>
           <a href="/" className="text-white font-bold text-xl tracking-tight">
-            Работа-<span className="text-yellow-400">Ялта</span>
+            Работа-<span className="text-yellow-400">Крым</span>
           </a>
         </div>
         <div className="flex items-center gap-3">

@@ -66,7 +66,7 @@ export default function Auth() {
       <div className="w-full max-w-md">
         <div className="text-center mb-5">
           <a href="/" className="text-white font-bold text-2xl tracking-tight">
-            Работа-<span className="text-yellow-400">Ялта</span>
+            Работа-<span className="text-yellow-400">Крым</span>
           </a>
           <p className="text-white/50 text-sm mt-1">Портал трудоустройства строительных специалистов</p>
         </div>
