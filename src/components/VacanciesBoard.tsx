@@ -105,8 +105,8 @@ export function VacanciesBoard() {
           ))}
         </div>
 
-        {/* Мобильная кнопка фильтров — вне flex, над карточками */}
-        <div className="mb-4 lg:hidden">
+        {/* Кнопка фильтров — на всю ширину над карточками */}
+        <div className="mb-4">
           <button onClick={() => setMobileFiltersOpen(true)}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm font-medium shadow-sm hover:border-yellow-300 transition-all">
             <Icon name="SlidersHorizontal" size={16} className="text-yellow-500" />
@@ -122,19 +122,16 @@ export function VacanciesBoard() {
           )}
         </div>
 
-        {/* Основной layout: фильтры слева + карточки справа */}
-        <div className="flex gap-6 items-start">
+        <VacanciesFilterPanel
+          {...filterState}
+          {...filterActions}
+          activeFiltersCount={activeFiltersCount}
+          mobileFiltersOpen={mobileFiltersOpen}
+          setMobileFiltersOpen={setMobileFiltersOpen}
+        />
 
-          <VacanciesFilterPanel
-            {...filterState}
-            {...filterActions}
-            activeFiltersCount={activeFiltersCount}
-            mobileFiltersOpen={mobileFiltersOpen}
-            setMobileFiltersOpen={setMobileFiltersOpen}
-          />
-
-          {/* Правая колонка: карточки */}
-          <div className="flex-1 min-w-0">
+        {/* Карточки */}
+        <div className="w-full">
 
             {/* Счётчик результатов */}
             <div className="flex items-center justify-between mb-4">
@@ -180,7 +177,6 @@ export function VacanciesBoard() {
                 Разместить объявление
               </a>
             </div>
-          </div>
         </div>
       </div>
     </section>

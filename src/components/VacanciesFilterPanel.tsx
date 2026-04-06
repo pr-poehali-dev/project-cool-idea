@@ -181,26 +181,9 @@ export function VacanciesFilterPanel({
 }: VacanciesFilterPanelProps) {
   return (
     <>
-      {/* Desktop sidebar — участвует в flex-layout */}
-      <aside className="hidden lg:flex lg:flex-col w-56 flex-shrink-0 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="flex items-center justify-between mb-5">
-          <span className="font-semibold text-gray-800 flex items-center gap-2">
-            <Icon name="SlidersHorizontal" size={16} className="text-yellow-500" />
-            Фильтры
-          </span>
-          {activeFiltersCount > 0 && (
-            <button onClick={resetFilters} className="text-xs text-gray-400 hover:text-red-400 transition-colors flex items-center gap-1">
-              <Icon name="X" size={12} />
-              Сбросить
-            </button>
-          )}
-        </div>
-        <FilterPanelContent {...filterProps} resetFilters={resetFilters} />
-      </aside>
-
-      {/* Mobile drawer — fixed, не участвует в layout */}
+      {/* Drawer — fixed, не участвует в layout */}
       {mobileFiltersOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMobileFiltersOpen(false)} />
           <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-5">
