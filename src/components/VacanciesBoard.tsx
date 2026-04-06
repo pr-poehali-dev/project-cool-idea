@@ -13,33 +13,23 @@ interface VacancyCard {
   author_name: string; author_role: string; created_at: string
 }
 
-const SPECIALTIES = [
-  "Все",
-  // Земляные и подготовительные работы
-  "Разнорабочий","Землекоп","Подсобный рабочий","Грузчик",
-  // Каменные и кладочные работы
-  "Каменщик","Кладка блока / кирпича","Кладка плитки / камня","Печник",
-  // Штукатурные и отделочные работы
-  "Штукатур (ручная)","Штукатур (механическая)","Маляр","Отделочник","Гипсокартонщик",
-  // Плиточные и напольные работы
-  "Плиточник","Укладчик ламината / паркета","Мастер по наливным полам",
-  // Сварочные и металлоконструкции
-  "Сварщик (электросварка)","Сварщик (аргон)","Оператор сварочных роботов","Слесарь-сборщик металлоконструкций","Арматурщик",
-  // Бетонные и монолитные работы
-  "Бетонщик","Опалубщик","Монолитчик",
-  // Кровельные и фасадные работы
-  "Кровельщик","Фасадчик","Монтажник вентилируемых фасадов","Утеплительщик",
-  // Инженерные коммуникации
-  "Сантехник","Электрик","Вентиляционщик","Монтажник слаботочных систем",
-  // Плотницкие и столярные работы
-  "Плотник","Столяр","Монтажник деревянных конструкций","Установщик окон / дверей",
-  // Мастера и руководители
-  "Прораб","Мастер участка","Бригадир","Технадзор","Инженер ПТО",
-  // Спецтехника и механизация
-  "Машинист экскаватора","Машинист крана","Водитель самосвала","Оператор бетононасоса",
-  // Вспомогательные профессии
-  "Сторож / охранник объекта","Уборщик территории","Водитель категории B/C","Кладовщик стройматериалов",
+const SPECIALTY_GROUPS = [
+  { label: "Все", subs: [] },
+  { label: "Земляные работы", subs: ["Разнорабочий","Землекоп","Подсобный рабочий","Грузчик"] },
+  { label: "Каменные работы", subs: ["Каменщик","Кладка блока / кирпича","Кладка плитки / камня","Печник"] },
+  { label: "Штукатурка и отделка", subs: ["Штукатур (ручная)","Штукатур (механическая)","Маляр","Отделочник","Гипсокартонщик"] },
+  { label: "Плитка и полы", subs: ["Плиточник","Укладчик ламината / паркета","Мастер по наливным полам"] },
+  { label: "Сварка и металл", subs: ["Сварщик (электросварка)","Сварщик (аргон)","Оператор сварочных роботов","Слесарь-сборщик металлоконструкций","Арматурщик"] },
+  { label: "Бетон и монолит", subs: ["Бетонщик","Опалубщик","Монолитчик"] },
+  { label: "Кровля и фасады", subs: ["Кровельщик","Фасадчик","Монтажник вентилируемых фасадов","Утеплительщик"] },
+  { label: "Коммуникации", subs: ["Сантехник","Электрик","Вентиляционщик","Монтажник слаботочных систем"] },
+  { label: "Плотницкие работы", subs: ["Плотник","Столяр","Монтажник деревянных конструкций","Установщик окон / дверей"] },
+  { label: "Мастера и прорабы", subs: ["Прораб","Мастер участка","Бригадир","Технадзор","Инженер ПТО"] },
+  { label: "Спецтехника", subs: ["Машинист экскаватора","Машинист крана","Водитель самосвала","Оператор бетононасоса"] },
+  { label: "Вспомогательные", subs: ["Сторож / охранник объекта","Уборщик территории","Водитель категории B/C","Кладовщик стройматериалов"] },
 ]
+
+const SPECIALTIES = ["Все", ...SPECIALTY_GROUPS.flatMap(g => g.subs)]
 
 
 const EMPLOYMENT_TYPES = ["Постоянная","Временная / сезонная","Разовые задания","Вахтовый метод","Удалённая"]
@@ -60,6 +50,7 @@ export function VacanciesBoard() {
   const [contactVacancy, setContactVacancy] = useState<VacancyCard | null>(null)
   const [saved, setSaved] = useState<Set<number>>(new Set())
   const [saving, setSaving] = useState<number | null>(null)
+  const [openGroup, setOpenGroup] = useState<string | null>(null)
 
   const activeFiltersCount = [employment, qualification, salaryRange, city].filter(Boolean).length
 
@@ -148,8 +139,45 @@ export function VacanciesBoard() {
           ))}
         </div>
 
+        {/* Специальности по группам */}
+        <div className="mb-3 space-y-2">
+          <div className="flex gap-2 flex-wrap justify-center">
+            {SPECIALTY_GROUPS.map(g => {
+              const isOpen = openGroup === g.label
+              const isActive = g.label === "Все" ? filter === "Все" : g.subs.includes(filter)
+              return (
+                <button
+                  key={g.label}
+                  onClick={() => {
+                    if (g.label === "Все") { setFilter("Все"); setOpenGroup(null) }
+                    else setOpenGroup(isOpen ? null : g.label)
+                  }}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1 ${isActive ? "bg-yellow-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-yellow-300"}`}
+                >
+                  {g.label}
+                  {g.subs.length > 0 && <Icon name={isOpen ? "ChevronUp" : "ChevronDown"} size={12} />}
+                </button>
+              )
+            })}
+          </div>
+          {openGroup && (() => {
+            const group = SPECIALTY_GROUPS.find(g => g.label === openGroup)
+            if (!group) return null
+            return (
+              <div className="flex gap-2 flex-wrap justify-center py-1">
+                {group.subs.map(s => (
+                  <button key={s} onClick={() => { setFilter(s); setOpenGroup(null) }}
+                    className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all border ${filter===s ? "bg-yellow-400 text-white border-yellow-400" : "bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100"}`}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            )
+          })()}
+        </div>
+
         {/* Города */}
-        <div className="flex gap-2 flex-wrap justify-center mb-4">
+        <div className="flex gap-2 flex-wrap justify-center mb-6">
           {CITIES.map(c => (
             <button key={c} onClick={() => setCity(city === c ? "" : c)}
               className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${city === c ? "bg-primary text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-primary/40"}`}>
@@ -220,18 +248,8 @@ export function VacanciesBoard() {
             </div>
           </aside>
 
-          {/* Правая колонка: специальности + карточки */}
+          {/* Правая колонка: карточки */}
           <div className="flex-1 min-w-0">
-
-            {/* Специальности */}
-            <div className="flex gap-2 flex-wrap mb-5">
-              {SPECIALTIES.map(s => (
-                <button key={s} onClick={() => setFilter(s)}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${filter===s ? "bg-yellow-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-yellow-300"}`}>
-                  {s}
-                </button>
-              ))}
-            </div>
 
             {/* Мобильные фильтры */}
             <div className="flex gap-2 mb-4 lg:hidden">
