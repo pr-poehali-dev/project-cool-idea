@@ -68,7 +68,7 @@ export default function Auth() {
           <a href="/" className="text-white font-bold text-2xl tracking-tight">
             Работа-<span className="text-yellow-400">Крым</span>
           </a>
-          <p className="text-white/50 text-sm mt-1">Портал трудоустройства строительных специалистов</p>
+          <p className="text-white/50 text-sm mt-1">Портал трудоустройства для всех специальностей Крыма</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
