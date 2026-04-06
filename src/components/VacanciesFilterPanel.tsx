@@ -181,8 +181,8 @@ export function VacanciesFilterPanel({
 }: VacanciesFilterPanelProps) {
   return (
     <>
-      {/* Desktop sidebar */}
-      <aside className="hidden lg:block w-56 flex-shrink-0 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm sticky top-24">
+      {/* Desktop sidebar — участвует в flex-layout */}
+      <aside className="hidden lg:flex lg:flex-col w-56 flex-shrink-0 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm sticky top-24">
         <div className="flex items-center justify-between mb-5">
           <span className="font-semibold text-gray-800 flex items-center gap-2">
             <Icon name="SlidersHorizontal" size={16} className="text-yellow-500" />
@@ -198,24 +198,7 @@ export function VacanciesFilterPanel({
         <FilterPanelContent {...filterProps} resetFilters={resetFilters} />
       </aside>
 
-      {/* Mobile trigger button */}
-      <div className="flex items-center gap-3 mb-4 lg:hidden">
-        <button onClick={() => setMobileFiltersOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-white text-gray-600 text-sm font-medium shadow-sm hover:border-yellow-300 transition-all">
-          <Icon name="SlidersHorizontal" size={15} className="text-yellow-500" />
-          Фильтры
-          {activeFiltersCount > 0 && (
-            <span className="bg-yellow-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{activeFiltersCount}</span>
-          )}
-        </button>
-        {activeFiltersCount > 0 && (
-          <button onClick={resetFilters} className="text-xs text-gray-400 hover:text-red-400 transition-colors flex items-center gap-1">
-            <Icon name="X" size={12} /> Сбросить
-          </button>
-        )}
-      </div>
-
-      {/* Mobile drawer */}
+      {/* Mobile drawer — fixed, не участвует в layout */}
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMobileFiltersOpen(false)} />

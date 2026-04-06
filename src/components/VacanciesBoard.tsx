@@ -105,6 +105,23 @@ export function VacanciesBoard() {
           ))}
         </div>
 
+        {/* Мобильная кнопка фильтров — вне flex, над карточками */}
+        <div className="flex items-center gap-3 mb-4 lg:hidden">
+          <button onClick={() => setMobileFiltersOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-white text-gray-600 text-sm font-medium shadow-sm hover:border-yellow-300 transition-all">
+            <Icon name="SlidersHorizontal" size={15} className="text-yellow-500" />
+            Фильтры
+            {activeFiltersCount > 0 && (
+              <span className="bg-yellow-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{activeFiltersCount}</span>
+            )}
+          </button>
+          {activeFiltersCount > 0 && (
+            <button onClick={resetFilters} className="text-xs text-gray-400 hover:text-red-400 transition-colors flex items-center gap-1">
+              <Icon name="X" size={12} /> Сбросить
+            </button>
+          )}
+        </div>
+
         {/* Основной layout: фильтры слева + карточки справа */}
         <div className="flex gap-6 items-start">
 
