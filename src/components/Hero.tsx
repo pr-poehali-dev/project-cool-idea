@@ -18,17 +18,17 @@ export function Hero({ onOpenModal }: HeroProps) {
 
       <div className="container mx-auto px-6 md:px-12 relative z-10 text-center py-32">
         <p className="text-sm tracking-[0.3em] uppercase text-yellow-300 mb-4">
-          г. Ялта и пригороды · Строительные специальности
+          Республика Крым · Все специальности
         </p>
 
         <h1 className="text-5xl font-bold text-white mb-6 tracking-tight leading-[1.1] lg:text-7xl">
           Найдите работу
           <br />
-          <span className="text-yellow-400">в строительстве</span>
+          <span className="text-yellow-400">в Крыму</span>
         </h1>
 
         <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          Портал трудоустройства для строительных специалистов Ялты. Сварщики, каменщики, штукатуры, плиточники — находите вакансии и работодателей быстро.
+          Портал трудоустройства для всего Крыма. Вакансии во всех городах и районах полуострова — находите работу и сотрудников быстро.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -59,7 +59,7 @@ export function Hero({ onOpenModal }: HeroProps) {
           </span>
           <span className="flex items-center gap-2">
             <Icon name="MapPin" size={16} />
-            Ялта и пригороды
+            Весь Крым
           </span>
         </div>
       </div>
