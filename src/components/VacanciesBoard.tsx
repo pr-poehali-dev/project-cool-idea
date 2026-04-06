@@ -148,14 +148,25 @@ export function VacanciesBoard() {
           ))}
         </div>
 
-        {/* Специальности */}
-        <div className="flex gap-2 flex-wrap justify-center mb-8">
-          {SPECIALTIES.map(s => (
-            <button key={s} onClick={() => setFilter(s)}
-              className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${filter===s ? "bg-yellow-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-yellow-300"}`}>
-              {s}
-            </button>
-          ))}
+        {/* Специальности + города в две строки */}
+        <div className="mb-8 space-y-3">
+          <div className="flex gap-2 flex-wrap justify-center">
+            {SPECIALTIES.map(s => (
+              <button key={s} onClick={() => setFilter(s)}
+                className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${filter===s ? "bg-yellow-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-yellow-300"}`}>
+                {s}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-2 flex-wrap justify-center">
+            {CITIES.map(c => (
+              <button key={c} onClick={() => setCity(city === c ? "" : c)}
+                className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${city === c ? "bg-primary text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-primary/40"}`}>
+                <Icon name="MapPin" size={11} />
+                {c}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Основной layout: фильтры слева + карточки справа */}
@@ -174,20 +185,6 @@ export function VacanciesBoard() {
                   Сбросить
                 </button>
               )}
-            </div>
-
-            {/* Город */}
-            <div className="mb-5">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Город</p>
-              <div className="flex flex-col gap-1">
-                {CITIES.map(c => (
-                  <button key={c} onClick={() => setCity(city === c ? "" : c)}
-                    className={`flex items-center gap-2 text-sm px-3 py-1.5 rounded-xl text-left transition-all ${city === c ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
-                    <span className={`w-3 h-3 rounded-full border-2 flex-shrink-0 ${city === c ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
-                    {c}
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* Тип занятости */}
