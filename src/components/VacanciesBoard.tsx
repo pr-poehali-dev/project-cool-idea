@@ -171,49 +171,12 @@ export function VacanciesBoard() {
           ))}
         </div>
 
-        {/* Специальности по группам */}
-        <div className="mb-3 space-y-2">
-          <div className="flex gap-2 flex-wrap justify-center">
-            {SPECIALTY_GROUPS.map(g => {
-              const isOpen = openGroup === g.label
-              const isActive = g.label === "Все" ? filter === "Все" : g.subs.includes(filter)
-              return (
-                <button
-                  key={g.label}
-                  onClick={() => {
-                    if (g.label === "Все") { setFilter("Все"); setOpenGroup(null) }
-                    else setOpenGroup(isOpen ? null : g.label)
-                  }}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1 ${isActive ? "bg-yellow-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-yellow-300"}`}
-                >
-                  {g.label}
-                  {g.subs.length > 0 && <Icon name={isOpen ? "ChevronUp" : "ChevronDown"} size={12} />}
-                </button>
-              )
-            })}
-          </div>
-          {openGroup && (() => {
-            const group = SPECIALTY_GROUPS.find(g => g.label === openGroup)
-            if (!group) return null
-            return (
-              <div className="flex gap-2 flex-wrap justify-center py-1">
-                {group.subs.map(s => (
-                  <button key={s} onClick={() => { setFilter(s); setOpenGroup(null) }}
-                    className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all border ${filter===s ? "bg-yellow-400 text-white border-yellow-400" : "bg-yellow-50 text-yellow-700 border-yellow-200 hover:bg-yellow-100"}`}>
-                    {s}
-                  </button>
-                ))}
-              </div>
-            )
-          })()}
-        </div>
-
         {/* Города */}
-        <div className="flex gap-2 flex-wrap justify-center mb-6">
+        <div className="flex gap-1.5 flex-wrap justify-center mb-6">
           {CITIES.map(c => (
             <button key={c} onClick={() => setCity(city === c ? "" : c)}
-              className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${city === c ? "bg-primary text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-primary/40"}`}>
-              <Icon name="MapPin" size={11} />
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1 ${city === c ? "bg-primary text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-primary/40"}`}>
+              <Icon name="MapPin" size={10} />
               {c}
             </button>
           ))}
