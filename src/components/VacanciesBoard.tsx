@@ -42,15 +42,42 @@ const SPECIALTIES = [
 ]
 
 
+const EMPLOYMENT_TYPES = ["Постоянная","Временная / сезонная","Разовые задания","Вахтовый метод","Удалённая"]
+const QUALIFICATIONS = ["Без опыта","Начинающий специалист","Опытный мастер","Высококвалифицированный"]
+const SALARY_RANGES = ["До 30 000 ₽","30 000 – 50 000 ₽","50 000 – 80 000 ₽","От 80 000 ₽","По договорённости"]
+
 export function VacanciesBoard() {
   const [cards, setCards] = useState<VacancyCard[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState("Все")
   const [roleFilter, setRoleFilter] = useState<"" | "employer" | "worker">("")
+  const [employment, setEmployment] = useState("")
+  const [qualification, setQualification] = useState("")
+  const [salaryRange, setSalaryRange] = useState("")
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [expanded, setExpanded] = useState<number | null>(null)
   const [contactVacancy, setContactVacancy] = useState<VacancyCard | null>(null)
   const [saved, setSaved] = useState<Set<number>>(new Set())
   const [saving, setSaving] = useState<number | null>(null)
+
+  const activeFiltersCount = [employment, qualification, salaryRange].filter(Boolean).length
+
+  const filterCards = (list: VacancyCard[]) => {
+    return list.filter(c => {
+      if (salaryRange) {
+        const from = c.salary_from ?? 0
+        const to = c.salary_to ?? c.salary_from ?? 0
+        const avg = (from + to) / 2 || from || to
+        if (salaryRange === "До 30 000 ₽" && avg >= 30000) return false
+        if (salaryRange === "30 000 – 50 000 ₽" && (avg < 30000 || avg > 50000)) return false
+        if (salaryRange === "50 000 – 80 000 ₽" && (avg < 50000 || avg > 80000)) return false
+        if (salaryRange === "От 80 000 ₽" && avg < 80000) return false
+      }
+      if (qualification && c.experience_required && !c.experience_required.toLowerCase().includes(qualification.toLowerCase())) return false
+      if (employment && c.schedule && !c.schedule.toLowerCase().includes(employment.toLowerCase())) return false
+      return true
+    })
+  }
 
   const load = async () => {
     setLoading(true)
@@ -118,7 +145,7 @@ export function VacanciesBoard() {
         </div>
 
         {/* Фильтр по специальности */}
-        <div className="flex gap-2 flex-wrap justify-center mb-10">
+        <div className="flex gap-2 flex-wrap justify-center mb-4">
           {SPECIALTIES.map(s => (
             <button key={s} onClick={() => setFilter(s)}
               className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${filter===s ? "bg-yellow-500 text-white" : "bg-white text-gray-500 border border-gray-200 hover:border-yellow-300"}`}>
@@ -127,19 +154,93 @@ export function VacanciesBoard() {
           ))}
         </div>
 
+        {/* Кнопка доп. фильтров */}
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={() => setFiltersOpen(v => !v)}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border transition-all ${filtersOpen || activeFiltersCount > 0 ? "bg-primary text-white border-primary" : "bg-white text-gray-600 border-gray-200 hover:border-yellow-300"}`}
+          >
+            <Icon name="SlidersHorizontal" size={16} />
+            Фильтры
+            {activeFiltersCount > 0 && (
+              <span className="bg-yellow-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">{activeFiltersCount}</span>
+            )}
+          </button>
+          {activeFiltersCount > 0 && (
+            <button
+              onClick={() => { setEmployment(""); setQualification(""); setSalaryRange("") }}
+              className="ml-2 flex items-center gap-1 px-4 py-2.5 rounded-xl text-sm text-gray-400 border border-gray-200 bg-white hover:text-red-400 hover:border-red-200 transition-all"
+            >
+              <Icon name="X" size={14} />
+              Сбросить
+            </button>
+          )}
+        </div>
+
+        {/* Панель дополнительных фильтров */}
+        {filtersOpen && (
+          <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-8 shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Тип занятости */}
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Тип занятости</p>
+                <div className="flex flex-col gap-2">
+                  {EMPLOYMENT_TYPES.map(e => (
+                    <button key={e} onClick={() => setEmployment(employment === e ? "" : e)}
+                      className={`flex items-center gap-2 text-sm px-3 py-2 rounded-xl text-left transition-all ${employment === e ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${employment === e ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                      {e}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Квалификация */}
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Квалификация</p>
+                <div className="flex flex-col gap-2">
+                  {QUALIFICATIONS.map(q => (
+                    <button key={q} onClick={() => setQualification(qualification === q ? "" : q)}
+                      className={`flex items-center gap-2 text-sm px-3 py-2 rounded-xl text-left transition-all ${qualification === q ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${qualification === q ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Зарплата */}
+              <div>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Заработная плата</p>
+                <div className="flex flex-col gap-2">
+                  {SALARY_RANGES.map(r => (
+                    <button key={r} onClick={() => setSalaryRange(salaryRange === r ? "" : r)}
+                      className={`flex items-center gap-2 text-sm px-3 py-2 rounded-xl text-left transition-all ${salaryRange === r ? "bg-yellow-50 text-yellow-700 font-semibold border border-yellow-200" : "text-gray-600 hover:bg-gray-50 border border-transparent"}`}>
+                      <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 ${salaryRange === r ? "border-yellow-500 bg-yellow-500" : "border-gray-300"}`} />
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {loading ? (
           <div className="text-center py-16 text-gray-400 text-sm">Загружаем объявления...</div>
-        ) : cards.length === 0 ? (
+        ) : filterCards(cards).length === 0 ? (
           <div className="text-center py-16">
             <Icon name="Inbox" size={48} className="text-gray-200 mx-auto mb-4" />
-            <p className="text-gray-400">Объявлений пока нет</p>
-            <a href="/cabinet" className="mt-4 inline-block text-yellow-500 text-sm font-medium hover:text-yellow-600">
-              Разместить первое →
-            </a>
+            <p className="text-gray-400">{cards.length === 0 ? "Объявлений пока нет" : "Ничего не найдено по выбранным фильтрам"}</p>
+            {cards.length === 0 ? (
+              <a href="/cabinet" className="mt-4 inline-block text-yellow-500 text-sm font-medium hover:text-yellow-600">Разместить первое →</a>
+            ) : (
+              <button onClick={() => { setEmployment(""); setQualification(""); setSalaryRange("") }} className="mt-4 inline-block text-yellow-500 text-sm font-medium hover:text-yellow-600">Сбросить фильтры →</button>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {cards.map(c => (
+            {filterCards(cards).map(c => (
               <div key={c.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-yellow-200 transition-all overflow-hidden">
                 <div className="relative h-40 overflow-hidden">
                   <img src={getSpecialtyPhoto(c.specialty)} alt={c.specialty}
