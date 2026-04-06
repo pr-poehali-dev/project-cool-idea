@@ -87,7 +87,7 @@ export default function Cabinet() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-primary py-4 px-6 flex items-center justify-between">
         <a href="/" className="text-white font-bold text-xl tracking-tight">
-          Работа-<span className="text-yellow-400">Ялта</span>
+          Работа-<span className="text-yellow-400">Крым</span>
         </a>
         <div className="flex items-center gap-4">
           <span className="text-white/60 text-sm hidden sm:block">{user?.name}</span>

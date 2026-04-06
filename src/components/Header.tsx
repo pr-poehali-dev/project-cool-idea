@@ -41,7 +41,7 @@ export function Header({ onOpenModal }: HeaderProps) {
       <nav className="container mx-auto px-6 flex items-center justify-between md:px-[24]">
         <a href="/" className="flex items-center gap-2 group flex-shrink-0">
           <span className="text-white font-bold text-xl tracking-tight">
-            Работа-<span className="text-yellow-400">Ялта</span>
+            Работа-<span className="text-yellow-400">Крым</span>
           </span>
         </a>
 

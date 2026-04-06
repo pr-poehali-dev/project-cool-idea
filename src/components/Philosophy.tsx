@@ -14,8 +14,8 @@ const benefits = [
     icon: "Zap",
   },
   {
-    title: "Все районы Ялты",
-    description: "Вакансии и специалисты со всей Ялты: центр, Массандра, Никита, Ливадия, Форос и пригороды.",
+    title: "Весь Крым",
+    description: "Вакансии и специалисты по всему Крыму: Симферополь, Ялта, Севастополь, Керчь, Феодосия и другие города.",
     icon: "MapPin",
   },
   {
@@ -54,7 +54,7 @@ export function Philosophy() {
           <div className="lg:sticky lg:top-32 lg:self-start">
             <p className="text-muted-foreground text-sm tracking-[0.3em] uppercase mb-6">Почему мы</p>
             <h2 className="text-5xl md:text-5xl font-bold leading-[1.15] tracking-tight mb-6 text-balance lg:text-7xl">
-              Работа Ялта —
+              Работа Крым —
               <br />
               <HighlightedText>ваш надёжный</HighlightedText>
               <br />
@@ -73,7 +73,7 @@ export function Philosophy() {
 
           <div className="space-y-6 lg:pt-16">
             <p className="text-muted-foreground text-lg leading-relaxed max-w-md mb-10">
-              Более 3 лет мы объединяем строительных специалистов и работодателей Ялты. Тысячи успешных трудоустройств — наш главный результат.
+              Более 3 лет мы объединяем специалистов и работодателей по всему Крыму. Тысячи успешных трудоустройств — наш главный результат.
             </p>
 
             {benefits.map((item, index) => (

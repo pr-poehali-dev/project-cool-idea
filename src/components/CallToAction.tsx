@@ -15,11 +15,11 @@ export function CallToAction({ onOpenModal }: CallToActionProps) {
           <h2 className="text-3xl md:text-4xl lg:text-6xl font-bold leading-[1.1] tracking-tight mb-8 text-balance">
             Найдите работу или
             <br />
-            специалиста в <HighlightedText>Ялте</HighlightedText>
+            специалиста в <HighlightedText>Крыму</HighlightedText>
           </h2>
 
           <p className="text-primary-foreground/70 text-lg md:text-xl leading-relaxed mb-12 max-w-2xl mx-auto">
-            Портал трудоустройства для строительной сферы. Более 500 специалистов и 120 вакансий в Ялте и пригородах.
+            Портал трудоустройства для всего Крыма. Вакансии во всех городах и районах полуострова для любых специальностей.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
@@ -64,7 +64,7 @@ export function CallToAction({ onOpenModal }: CallToActionProps) {
                 <Icon name="MapPin" size={22} className="text-yellow-400" />
               </div>
               <p className="text-primary-foreground/60 text-xs uppercase tracking-widest">География</p>
-              <p className="text-sm text-center">г. Ялта и пригороды,<br />Республика Крым</p>
+              <p className="text-sm text-center">Республика Крым,<br />все города и районы</p>
             </div>
           </div>
         </div>

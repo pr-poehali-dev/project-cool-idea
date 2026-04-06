@@ -6,11 +6,11 @@ export function Footer() {
           <div className="md:col-span-2">
             <a href="/" className="inline-block mb-6">
               <span className="text-2xl font-bold tracking-tight">
-                Работа<span className="text-yellow-500">Ялта</span>
+                Работа<span className="text-yellow-500">Крым</span>
               </span>
             </a>
             <p className="text-muted-foreground leading-relaxed max-w-sm text-sm">
-              Портал трудоустройства для строительных специалистов. Соединяем рабочих и работодателей Ялты и пригородов.
+              Портал трудоустройства для всего Крыма. Соединяем специалистов и работодателей во всех городах полуострова.
             </p>
           </div>
 
@@ -73,7 +73,7 @@ export function Footer() {
         </div>
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row md:items-center justify-between gap-4 text-sm text-muted-foreground">
-          <p>© 2026 Работа Ялта. Все права защищены.</p>
+          <p>© 2026 Работа Крым. Все права защищены.</p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-foreground transition-colors">
               Политика конфиденциальности

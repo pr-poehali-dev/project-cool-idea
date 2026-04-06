@@ -49,7 +49,7 @@ export default function Rental() {
       {/* Шапка */}
       <header className="bg-primary py-4 px-6 flex items-center justify-between sticky top-0 z-50">
         <a href="/" className="text-white font-bold text-xl tracking-tight">
-          Работа-<span className="text-yellow-400">Ялта</span>
+          Работа-<span className="text-yellow-400">Крым</span>
         </a>
         <div className="flex items-center gap-3">
           <a href={PHONE_HREF} className="hidden sm:flex items-center gap-2 text-white/80 hover:text-white text-sm transition-colors">
@@ -66,7 +66,7 @@ export default function Rental() {
 
       {/* Герой */}
       <section className="bg-primary text-white py-12 px-6 text-center">
-        <p className="text-yellow-400 text-sm tracking-[0.3em] uppercase mb-2">Ялта и Крым · Работаем без выходных</p>
+        <p className="text-yellow-400 text-sm tracking-[0.3em] uppercase mb-2">Весь Крым · Работаем без выходных</p>
         <h1 className="text-4xl md:text-5xl font-bold mb-3 tracking-tight">Аренда спецтехники</h1>
         <p className="text-white/70 text-lg max-w-xl mx-auto mb-6">
           Экскаваторы, самосвалы, краны, бульдозеры и другая техника для строительства и вывоза грунта
@@ -91,7 +91,7 @@ export default function Rental() {
           {[
             ["Truck", "Техника с оператором"],
             ["Clock", "Аренда от 1 часа"],
-            ["MapPin", "По всей Ялте и Крыму"],
+            ["MapPin", "По всему Крыму"],
             ["Shield", "Страховка включена"],
             ["Zap", "Выезд за 2 часа"],
           ].map(([icon, text]) => (

@@ -39,10 +39,10 @@ const categories = [
     id: "mixtures",
     slug: "mixtures",
     title: "Сыпучие смеси",
-    description: "Цемент, песок, щебень, керамзит, штукатурные и кладочные смеси. Доставка по Ялте.",
+    description: "Цемент, песок, щебень, керамзит, штукатурные и кладочные смеси. Доставка по Крыму.",
     image: "https://cdn.poehali.dev/projects/7f03272f-bca4-46b6-9dc3-4ea2338fe786/files/fa66f7fe-5ac7-4c9a-bdce-2d7c339ae98f.jpg",
     icon: "Package",
-    features: ["Цемент, песок, щебень", "Доставка по Ялте", "Опт и розница", "Расчёт бесплатно"],
+    features: ["Цемент, песок, щебень", "Доставка по Крыму", "Опт и розница", "Расчёт бесплатно"],
     badge: null,
   },
   {
@@ -63,7 +63,7 @@ export default function Shop() {
       {/* Шапка */}
       <header className="bg-primary py-4 px-6 flex items-center justify-between sticky top-0 z-50">
         <a href="/" className="text-white font-bold text-xl tracking-tight">
-          Работа-<span className="text-yellow-400">Ялта</span>
+          Работа-<span className="text-yellow-400">Крым</span>
         </a>
         <div className="flex items-center gap-3">
           <a href={PHONE_HREF} className="hidden sm:flex items-center gap-2 text-white/80 hover:text-white text-sm transition-colors">
@@ -80,7 +80,7 @@ export default function Shop() {
 
       {/* Герой */}
       <section className="bg-primary text-white py-12 px-6 text-center">
-        <p className="text-yellow-400 text-sm tracking-[0.3em] uppercase mb-2">Строительные материалы · Ялта</p>
+        <p className="text-yellow-400 text-sm tracking-[0.3em] uppercase mb-2">Строительные материалы · Крым</p>
         <h1 className="text-4xl md:text-5xl font-bold mb-3 tracking-tight">Наш магазин</h1>
         <p className="text-white/70 text-lg max-w-xl mx-auto">
           Окна, двери, заборы, сыпучие смеси и бетон с доставкой по Ялте и Крыму
